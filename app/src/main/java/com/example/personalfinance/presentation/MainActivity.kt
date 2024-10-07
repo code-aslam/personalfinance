@@ -1,4 +1,4 @@
-package com.example.personalfinance
+package com.example.personalfinance.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
