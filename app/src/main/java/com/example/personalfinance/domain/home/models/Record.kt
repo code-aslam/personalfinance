@@ -4,3 +4,4 @@ data class Record(
     val id : Int,
     val amount : Double
 )
+
