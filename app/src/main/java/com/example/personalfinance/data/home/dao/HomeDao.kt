@@ -8,7 +8,7 @@ import com.example.personalfinance.data.home.entity.Record
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface RecordDao {
+interface HomeDao {
     @Insert
     suspend fun insertRecord(record : Record)
 
@@ -16,5 +16,5 @@ interface RecordDao {
     suspend fun deleteRecord(record: Record)
 
     @Query("SELECT * FROM record")
-    suspend fun getRecordList() : Flow<List<Record>>
+    fun getRecordList() : Flow<List<Record>>
 }
