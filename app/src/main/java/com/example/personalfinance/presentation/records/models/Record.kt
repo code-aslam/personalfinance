@@ -1,4 +1,4 @@
-package com.example.personalfinance.presentation.home.models
+package com.example.personalfinance.presentation.records.models
 
 data class Record(
     val id : Int,

@@ -1,20 +1,31 @@
 package com.example.personalfinance.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.personalfinance.presentation.home.HomeViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.personalfinance.navigation.NavigationHost
+import com.example.personalfinance.presentation.records.HomeViewModel
+import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.PersonalFinanceTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,31 +37,27 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PersonalFinanceTheme {
-                val recordList by homeViewModel.recordList.collectAsState()
-                homeViewModel.test()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = recordList.size.toString(),
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+//                val recordList by homeViewModel.recordList.collectAsState()
+//                homeViewModel.test()
+                MainRenderer()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MainRenderer(){
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        },
+    ){innerPadding->
+        MainConfiguration(navController = navController, innerPadding)
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    PersonalFinanceTheme {
-        Greeting("Android")
-    }
+fun MainConfiguration(navController: NavHostController, padding : PaddingValues){
+    NavigationHost(navController = navController, padding)
 }

@@ -18,3 +18,4 @@ interface HomeDao {
     @Query("SELECT * FROM record")
     fun getRecordList() : Flow<List<Record>>
 }
+
