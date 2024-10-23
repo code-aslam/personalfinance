@@ -23,7 +23,6 @@ fun BottomNavigationBar(navController: NavController){
 
         BottomNavItem.all.forEach { item ->
             BottomNavigationItem(
-                modifier = Modifier.padding(2.dp),
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route){
