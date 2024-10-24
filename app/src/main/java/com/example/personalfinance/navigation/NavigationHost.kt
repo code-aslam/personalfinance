@@ -15,7 +15,7 @@ fun NavigationHost(navController: NavHostController, padding : PaddingValues, ha
     NavHost(navController = navController, startDestination = BottomNavItem.Records.route){
         composable(BottomNavItem.Records.route) { Records(padding, handleDrawer) }
         composable(BottomNavItem.Budgets.route) { Budgets(padding, handleDrawer) }
-        composable(BottomNavItem.Accounts.route) { Accounts(padding) }
-        composable(BottomNavItem.Categories.route) { Categories(padding) }
+        composable(BottomNavItem.Accounts.route) { Accounts(padding, handleDrawer) }
+        composable(BottomNavItem.Categories.route) { Categories(padding, handleDrawer) }
     }
 }

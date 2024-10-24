@@ -1,18 +1,17 @@
 package com.example.personalfinance.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
+import com.example.personalfinance.R
 
 sealed class BottomNavItem(
     val route : String,
-    val image : ImageVector,
+    @DrawableRes val image : Int,
     val label : String
 ) {
-    data object Records : BottomNavItem("records", Icons.Default.Face, "Records")
-    data object Budgets : BottomNavItem("budgets", Icons.Default.Face, "Budgets")
-    data object Accounts : BottomNavItem("accounts", Icons.Default.Face, "Accounts")
-    data object Categories : BottomNavItem("categories", Icons.Default.Face, "Categories")
+    data object Records : BottomNavItem("records",R.drawable.ledger, "Records")
+    data object Budgets : BottomNavItem("budgets", R.drawable.budget, "Budgets")
+    data object Accounts : BottomNavItem("accounts",R.drawable.accounting, "Accounts")
+    data object Categories : BottomNavItem("categories", R.drawable.choice, "Categories")
 
     companion object{
         val all = listOf(Records, Budgets, Accounts, Categories)

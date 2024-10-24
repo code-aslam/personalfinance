@@ -26,7 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.personalfinance.ui.Toolbar
+import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.BottomShadow
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.DeepBurgundy
@@ -34,13 +36,11 @@ import com.example.personalfinance.ui.theme.DeepBurgundy
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Records(padding: PaddingValues, handleDrawer: () -> Unit) {
-    val pot = List(100) {
-        "Counter : $it"
-    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
+            .background(Beige)
     ) {
         item {
             Toolbar {
@@ -49,9 +49,10 @@ fun Records(padding: PaddingValues, handleDrawer: () -> Unit) {
         }
         stickyHeader {
             RecordHeader(padding = padding)
+            BottomShadow()
         }
-        items(pot) { item ->
-            Text(text = item)
+        item {
+            Text(text = "Records", fontSize = 20.sp)
         }
     }
 }
@@ -63,7 +64,7 @@ fun RecordHeader(padding: PaddingValues) {
             .fillMaxWidth()
             .height(60.dp),
         elevation = 0.dp,
-        backgroundColor = Color(245, 222, 179)
+        backgroundColor = Beige
     ) {
         Row(
             modifier = Modifier
@@ -101,7 +102,8 @@ fun RecordHeader(padding: PaddingValues) {
                 Text(text = "2700.00", color = CharcoalGrey)
             }
         }
-        BottomShadow()
+
+        
     }
 
 }
