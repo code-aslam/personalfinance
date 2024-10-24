@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
@@ -35,6 +37,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinance.navigation.NavigationHost
 import com.example.personalfinance.presentation.records.HomeViewModel
+import com.example.personalfinance.presentation.records.components.RecordHeader
+import com.example.personalfinance.presentation.records.components.Records
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
@@ -78,30 +82,28 @@ fun MainRenderer() {
             },
             content = {
                 Scaffold(
-                    topBar = {
-                        Toolbar {
-                            scope.launch {
-                                drawerState.apply {
-                                    if (isClosed) open() else close()
-                                }
-                            }
-                        }
-                    },
                     bottomBar = {
                         BottomNavigationBar(navController = navController)
                     },
                 ) {
                         innerPadding->
-                    MainConfiguration(navController = navController,innerPadding)
+                    MainConfiguration(navController = navController,innerPadding){
+                        scope.launch {
+                            drawerState.apply {
+                                if (isClosed) open() else close()
+                            }
+                        }
+                    }
                 }
             }
         )
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainConfiguration(navController: NavHostController, padding : PaddingValues){
-    NavigationHost(navController = navController, padding)
+fun MainConfiguration(navController: NavHostController, padding : PaddingValues, handleDrawer : () -> Unit){
+    NavigationHost(navController = navController, padding, handleDrawer)
 
 }
 
