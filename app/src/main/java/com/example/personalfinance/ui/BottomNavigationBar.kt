@@ -9,11 +9,13 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.personalfinance.navigation.BottomNavItem
+import com.example.personalfinance.ui.theme.PBGFont
 
 @Composable
 fun BottomNavigationBar(navController: NavController){
@@ -31,7 +33,7 @@ fun BottomNavigationBar(navController: NavController){
                     }
                 },
                 icon = { Icon(item.image, contentDescription = "")},
-                label = {Text(item.label, fontSize = 10.sp)}
+                label = {Text(item.label, fontSize = 10.sp, fontFamily = PBGFont, fontWeight = FontWeight.Normal)}
             )
         }
     }
