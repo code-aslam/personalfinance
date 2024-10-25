@@ -1,4 +1,4 @@
-package com.example.personalfinance.ui.theme
+package com.example.personalfinance.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

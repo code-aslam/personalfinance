@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
-import com.example.personalfinance.ui.theme.BottomShadow
+import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.DeepBurgundy
 
