@@ -7,7 +7,7 @@ import com.example.personalfinance.common.CategoryType
 @Entity
 data class Category(
     @PrimaryKey(autoGenerate = true)
-    val id : Int =  0,
+    var id : Long =  0,
     val title :String,
     val icon : Int,
     var type : CategoryType

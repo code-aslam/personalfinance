@@ -4,15 +4,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
-import com.example.personalfinance.data.home.entity.Record
 import com.example.personalfinance.domain.category.usecases.AddCategoryUseCase
+import com.example.personalfinance.domain.category.usecases.DeleteCategoryUseCase
 import com.example.personalfinance.domain.category.usecases.GetCategoriesUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,54 +20,87 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(
     private val addCategoryUseCase: AddCategoryUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
+    private val deleteCategoryUseCase: DeleteCategoryUseCase,
     useCaseExecutor: UseCaseExecutor
-):BaseViewModel(useCaseExecutor) {
+) : BaseViewModel(useCaseExecutor) {
 
     private val _incomeCategoryList = MutableStateFlow(mutableListOf<Category>())
-    val incomeCategoryList: StateFlow<MutableList<Category>> = _incomeCategoryList
+    val incomeCategoryList = _incomeCategoryList.asStateFlow()
 
     private val _expanseCategoryList = MutableStateFlow(mutableListOf<Category>())
-    val expanseCategoryList: StateFlow<MutableList<Category>> = _expanseCategoryList
+    val expanseCategoryList = _expanseCategoryList.asStateFlow()
 
     init {
-        useCaseExecutor.execute(getCategoriesUseCase,
+        updateCategories()
+    }
+
+    private fun updateCategories(){
+        useCaseExecutor.execute(
+            getCategoriesUseCase,
             Unit,
-            ::pot
+            ::handleCategories
         )
     }
 
-    fun pot(records: Flow<List<Category>>) {
+    private fun handleCategories(records: Flow<List<Category>>) {
+        val incomeList = _incomeCategoryList.value
+        val expenseList = _expanseCategoryList.value
         viewModelScope.launch {
-            records.collect {
-                _incomeCategoryList.value = it.toMutableList()
+            records.collect { list ->
+                list.forEach {cat->
+                    when(cat.type){
+                        CategoryType.INCOME -> incomeList.add(cat)
+                        else -> expenseList.add(cat)
+                    }
+                }
             }
+            _incomeCategoryList.value = incomeList
+            _expanseCategoryList.value = expenseList
         }
     }
 
 
-    fun addIncomeCategory(category: Category) {
-        viewModelScope.launch {
-            category.type = CategoryType.INCOME
-            _incomeCategoryList.value.add(category)
+    private fun addCategory(category: Category) {
+        val incomeList = _incomeCategoryList.value.toMutableList()
+        val expenseList = _expanseCategoryList.value.toMutableList()
+        useCaseExecutor.execute(addCategoryUseCase, category){
+            category.id = it
+            if(category.type == CategoryType.INCOME)
+                incomeList.add(category)
+            else
+                expenseList.add(category)
+            _incomeCategoryList.value = incomeList
+            _expanseCategoryList.value = expenseList
         }
     }
 
-    fun removeIncomeCategory(category: Category) {
-        viewModelScope.launch {
-            _incomeCategoryList.value.remove(category)
+    private fun removeCategory(category: Category) {
+        val incomeList = _incomeCategoryList.value.toMutableList()
+        val expenseList = _expanseCategoryList.value.toMutableList()
+        useCaseExecutor.execute(deleteCategoryUseCase, category){
+            if(category.type == CategoryType.INCOME)
+                incomeList.remove(category)
+            else
+                expenseList.remove(category)
+            _incomeCategoryList.value = incomeList
+            _expanseCategoryList.value = expenseList
         }
     }
 
-    fun addExpanseCategory(category: Category) {
-        viewModelScope.launch {
-            category.type = CategoryType.EXPENSE
-            _expanseCategoryList.value.add(category)
-        }
+    fun addNewCategoryAction() {
+        addCategory(
+            Category(
+                title = "hhjgggkg",
+                type = CategoryType.INCOME,
+                icon = R.drawable.budget
+            )
+        )
     }
 
-    fun removeExpanseCategory(category: Category) {
-        viewModelScope.launch {
-            _expanseCategoryList.value.remove(category)
+    fun removeCategoryAction() {
+        val list = _incomeCategoryList.value
+        if(list.size > 0){
+            removeCategory(list[list.size - 1])
         }
     }
 }

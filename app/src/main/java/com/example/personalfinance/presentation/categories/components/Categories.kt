@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,8 +43,8 @@ fun Categories(
     handleDrawer: () -> Unit,
     viewModel: CategoryViewModel
 ) {
-    val incomeCategories = viewModel.incomeCategoryList.collectAsState().value
-    val expanseCategories = viewModel.expanseCategoryList.collectAsState().value
+    val incomeCategories by viewModel.incomeCategoryList.collectAsState()
+    val expanseCategories by viewModel.expanseCategoryList.collectAsState()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -82,8 +84,21 @@ fun Categories(
             )
         }
 
+        item {
+            Button(onClick = { viewModel.addNewCategoryAction() }) {
+                Text(text = "Add New Category")
+            }
+        }
+
+        item {
+            Button(onClick = { viewModel.removeCategoryAction() }) {
+                Text(text = "Delete Category")
+            }
+        }
+
     }
 }
+
 
 @Composable
 fun CategoryHeader(padding: PaddingValues) {

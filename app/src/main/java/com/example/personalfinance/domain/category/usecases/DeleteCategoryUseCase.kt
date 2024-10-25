@@ -5,10 +5,10 @@ import com.example.personalfinance.data.category.repository.CategoryRepository
 import com.example.personalfinance.domain.cleanarchitecture.usecase.BackgroundExecutingUsecase
 import javax.inject.Inject
 
-class AddCategoryUseCase @Inject constructor(
+class DeleteCategoryUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository
-): BackgroundExecutingUsecase<Category, Long>() {
-    override suspend fun executeInBackground(request: Category) : Long {
-        return categoryRepository.addCategory(request)
+): BackgroundExecutingUsecase<Category, Unit>() {
+    override suspend fun executeInBackground(request: Category) {
+        categoryRepository.removeCategory(request)
     }
 }

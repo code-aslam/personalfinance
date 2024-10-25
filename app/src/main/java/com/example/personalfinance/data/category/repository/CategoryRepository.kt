@@ -9,8 +9,8 @@ import javax.inject.Inject
 class CategoryRepository @Inject constructor(
     private val categoryDao: CategoryDao
 ) : ICategoryRepository{
-    override suspend fun addCategory(category: Category) {
-        categoryDao.insertCategory(category)
+    override suspend fun addCategory(category: Category) : Long {
+        return categoryDao.insertCategory(category)
     }
 
     override suspend fun removeCategory(category: Category) {
