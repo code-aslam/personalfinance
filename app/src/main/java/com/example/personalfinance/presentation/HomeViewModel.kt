@@ -23,29 +23,13 @@ class HomeViewModel @Inject constructor(
     useCaseExecutor: UseCaseExecutor
 ) : BaseViewModel(useCaseExecutor) {
 
-    private val _incomeCategoryList = MutableStateFlow(mutableListOf<Category>())
-    val incomeCategoryList: StateFlow<MutableList<Category>> = _incomeCategoryList
 
-    private val _expanseCategoryList = MutableStateFlow(mutableListOf<Category>())
-    val expanseCategoryList: StateFlow<MutableList<Category>> = _expanseCategoryList
 
     private val _recordList = MutableStateFlow(emptyList<Record>())
     val recordList: StateFlow<List<Record>> = _recordList
 
     init {
-        addIncomeCategory(
-            Category(
-                title = "Income",
-                icon = R.drawable.salary
-            )
-        )
 
-        addExpanseCategory(
-            Category(
-                title = "Expanse",
-                icon = R.drawable.salary
-            )
-        )
     }
 
     fun test() {
@@ -60,31 +44,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addIncomeCategory(category: Category) {
-        viewModelScope.launch {
-            category.type = CategoryType.INCOME
-            _incomeCategoryList.value.add(category)
-        }
-    }
 
-    fun removeIncomeCategory(category: Category) {
-        viewModelScope.launch {
-            _incomeCategoryList.value.remove(category)
-        }
-    }
-
-    fun addExpanseCategory(category: Category) {
-        viewModelScope.launch {
-            category.type = CategoryType.EXPENSE
-            _expanseCategoryList.value.add(category)
-        }
-    }
-
-    fun removeExpanseCategory(category: Category) {
-        viewModelScope.launch {
-            _expanseCategoryList.value.remove(category)
-        }
-    }
 
 
 }

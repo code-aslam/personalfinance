@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinance.navigation.NavigationHost
+import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.PersonalFinanceTheme
@@ -37,13 +38,14 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val homeViewModel : HomeViewModel by viewModels()
+    private val categoryViewModel : CategoryViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PersonalFinanceTheme {
                 setupStatusBar()
-                MainRenderer(homeViewModel)
+                MainRenderer(categoryViewModel)
             }
         }
     }
@@ -51,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainRenderer(homeViewModel: HomeViewModel) {
+fun MainRenderer(categoryViewModel: CategoryViewModel) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -76,7 +78,7 @@ fun MainRenderer(homeViewModel: HomeViewModel) {
                     },
                 ) {
                         innerPadding->
-                    MainConfiguration(navController = navController,innerPadding, homeViewModel){
+                    MainConfiguration(navController = navController,innerPadding, categoryViewModel){
                         scope.launch {
                             drawerState.apply {
                                 if (isClosed) open() else close()
@@ -91,8 +93,8 @@ fun MainRenderer(homeViewModel: HomeViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainConfiguration(navController: NavHostController, padding : PaddingValues, homeViewModel: HomeViewModel, handleDrawer : () -> Unit){
-    NavigationHost(navController = navController, padding, handleDrawer, homeViewModel)
+fun MainConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, handleDrawer : () -> Unit){
+    NavigationHost(navController = navController, padding, handleDrawer, categoryViewModel)
 }
 
 @Composable

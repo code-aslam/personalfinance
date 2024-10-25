@@ -12,5 +12,5 @@ class FetchRecordsUseCase @Inject constructor(
     private val repository: IHomeRepository,
 ) : BackgroundExecutingUsecase<String, Flow<List<Record>>>(
 ) {
-    override fun executeInBackground(request: String): Flow<List<Record>> = repository.fetchRecords()
+    override suspend fun executeInBackground(request: String): Flow<List<Record>> = repository.fetchRecords()
 }

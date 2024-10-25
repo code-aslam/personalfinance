@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.R
 import com.example.personalfinance.presentation.HomeViewModel
+import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
@@ -38,7 +39,7 @@ import com.example.personalfinance.ui.theme.DeepBurgundy
 fun Categories(
     padding: PaddingValues,
     handleDrawer: () -> Unit,
-    viewModel: HomeViewModel
+    viewModel: CategoryViewModel
 ) {
     val incomeCategories = viewModel.incomeCategoryList.collectAsState().value
     val expanseCategories = viewModel.expanseCategoryList.collectAsState().value
