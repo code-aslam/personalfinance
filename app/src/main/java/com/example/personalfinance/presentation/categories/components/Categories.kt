@@ -2,6 +2,7 @@ package com.example.personalfinance.presentation.categories.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
+import androidx.compose.material3.*
 import androidx.compose.material.Card
-import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,11 +62,13 @@ fun Categories(
     val expanseCategories by viewModel.expanseCategoryList.collectAsState()
 
     var selectedCategory by remember {
-        mutableStateOf(Category(
-            title = "",
-            icon = 0,
-            type = CategoryType.INCOME
-        ))
+        mutableStateOf(
+            Category(
+                title = "",
+                icon = 0,
+                type = CategoryType.INCOME
+            )
+        )
     }
 
     LazyColumn(
@@ -119,25 +124,27 @@ fun Categories(
             }
         }
 
-        item {
-            Button(onClick = {
-                viewModel.addNewCategoryAction(
-                    Category(
-                        title = "ppp",
-                        icon = R.drawable.salary,
-                        type = CategoryType.INCOME
-                    )
-                )
-            }) {
-                Text(text = "Add New Category")
-            }
-        }
-
-        item {
-            Button(onClick = { }) {
-                Text(text = "Delete Category")
-            }
-        }
+//        item {
+//            Button(
+//
+//                onClick = {
+//                viewModel.addNewCategoryAction(
+//                    Category(
+//                        title = "ppp",
+//                        icon = R.drawable.salary,
+//                        type = CategoryType.INCOME
+//                    )
+//                )
+//            }) {
+//                Text(text = "Add New Category")
+//            }
+//        }
+//
+//        item {
+//            Button(onClick = { }) {
+//                Text(text = "Delete Category")
+//            }
+//        }
 
     }
 
@@ -146,23 +153,48 @@ fun Categories(
 
 
 @Composable
-fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory : Category) {
+fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
     val showDelete by viewModel.showDelete.collectAsState()
     if (showDelete) {
         AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
             onDismissRequest = { viewModel.hideDeleteDialogAction() },
-            title = { Text("Dialog Title") },
-            text = { Text("This is a simple dialog example.") },
+            title = {
+                Text(
+                    "Delete This Category",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Text("Deleting this category will also delete all records and budgets for this category. Ary you sure ?")
+
+            },
             confirmButton = {
-                Button(onClick = {
-                    viewModel.hideDeleteDialogAction()
-                    viewModel.removeCategoryAction(selectedCategory)
-                }) {
-                    Text("YES")
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideDeleteDialogAction()
+                        viewModel.removeCategoryAction(selectedCategory)
+                    }) {
+                    Text("YES", modifier = Modifier.background(Beige))
                 }
+
             },
             dismissButton = {
-                Button(onClick = { viewModel.hideDeleteDialogAction() }) {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideDeleteDialogAction() }) {
                     Text("NO")
                 }
             }
