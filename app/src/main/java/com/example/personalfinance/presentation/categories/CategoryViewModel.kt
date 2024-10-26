@@ -1,5 +1,10 @@
 package com.example.personalfinance.presentation.categories
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
@@ -29,6 +34,9 @@ class CategoryViewModel @Inject constructor(
 
     private val _expanseCategoryList = MutableStateFlow(mutableListOf<Category>())
     val expanseCategoryList = _expanseCategoryList.asStateFlow()
+
+    private val _showDelete = MutableStateFlow(false)
+    var showDelete = _showDelete.asStateFlow()
 
     init {
         updateCategories()
@@ -87,20 +95,20 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun addNewCategoryAction() {
+    fun addNewCategoryAction(category: Category) {
         addCategory(
-            Category(
-                title = "hhjgggkg",
-                type = CategoryType.INCOME,
-                icon = R.drawable.budget
-            )
+            category = category
         )
     }
 
-    fun removeCategoryAction() {
-        val list = _incomeCategoryList.value
-        if(list.size > 0){
-            removeCategory(list[list.size - 1])
-        }
+    fun removeCategoryAction(category: Category) {
+        removeCategory(category)
+    }
+
+    fun showDeleteDialogAction(){
+        _showDelete.value = true
+    }
+    fun hideDeleteDialogAction(){
+        _showDelete.value = false
     }
 }
