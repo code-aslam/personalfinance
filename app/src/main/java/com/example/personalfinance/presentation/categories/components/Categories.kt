@@ -1,5 +1,6 @@
 package com.example.personalfinance.presentation.categories.components
 
+import android.content.SharedPreferences.Editor
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -71,6 +73,10 @@ fun Categories(
         )
     }
 
+    var selectedIndex by remember {
+        mutableIntStateOf(0)
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -90,17 +96,20 @@ fun Categories(
             ListItemHeader(title = "Income Categories")
         }
 
-        items(incomeCategories) { item ->
+        items(incomeCategories.size) { index ->
             ListItemCategory(
-                iconRes = item.icon,
+                iconRes = incomeCategories[index].icon,
                 iconWidth = DpSize(30.dp, 30.dp),
-                title = item.title
+                title = incomeCategories[index].title
             ) {
-                selectedCategory = item
+                selectedIndex = index
+                selectedCategory = incomeCategories[index]
                 when (it) {
-                    "Edit" -> {}
+                    "Edit" -> {
+                        viewModel.showEditAction()
+                    }
                     "Delete" -> {
-                        viewModel.showDeleteDialogAction()
+                        viewModel.showDeleteAction()
                     }
                 }
             }
@@ -110,13 +119,14 @@ fun Categories(
             ListItemHeader(title = "Expense Categories")
         }
 
-        items(expanseCategories) { item ->
+        items(expanseCategories.size) { index ->
             ListItemCategory(
-                iconRes = item.icon,
+                iconRes = expanseCategories[index].icon,
                 iconWidth = DpSize(30.dp, 30.dp),
-                title = item.title
+                title = expanseCategories[index].title
             ) {
-                selectedCategory = item
+                selectedIndex = index
+                selectedCategory = expanseCategories[index]
                 when (it) {
                     "Edit" -> {}
                     "Delete" -> {}
@@ -124,31 +134,24 @@ fun Categories(
             }
         }
 
-//        item {
-//            Button(
-//
-//                onClick = {
-//                viewModel.addNewCategoryAction(
-//                    Category(
-//                        title = "ppp",
-//                        icon = R.drawable.salary,
-//                        type = CategoryType.INCOME
-//                    )
-//                )
-//            }) {
-//                Text(text = "Add New Category")
-//            }
-//        }
-//
-//        item {
-//            Button(onClick = { }) {
-//                Text(text = "Delete Category")
-//            }
-//        }
-
+        item {
+            Button(
+                onClick = {
+                viewModel.addNewCategoryAction(
+                    Category(
+                        title = "ppp",
+                        icon = R.drawable.salary,
+                        type = CategoryType.INCOME
+                    )
+                )
+            }) {
+                Text(text = "Add New Category")
+            }
+        }
     }
 
-    DeleteDialog(viewModel = viewModel, selectedCategory)
+    DeleteDialog(viewModel = viewModel, selectedCategory = selectedCategory)
+    EditDialog(viewModel = viewModel, selectedCategory = selectedCategory, selectedIndex = selectedIndex)
 }
 
 
@@ -159,7 +162,7 @@ fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
         AlertDialog(
             containerColor = Beige,
             modifier = Modifier.background(Beige),
-            onDismissRequest = { viewModel.hideDeleteDialogAction() },
+            onDismissRequest = { viewModel.hideDeleteAction() },
             title = {
                 Text(
                     "Delete This Category",
@@ -180,7 +183,7 @@ fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
                     ),
                     shape = RectangleShape,
                     onClick = {
-                        viewModel.hideDeleteDialogAction()
+                        viewModel.hideDeleteAction()
                         viewModel.removeCategoryAction(selectedCategory)
                     }) {
                     Text("YES", modifier = Modifier.background(Beige))
@@ -194,8 +197,72 @@ fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
                         contentColor = CharcoalGrey // Set the text color
                     ),
                     shape = RectangleShape,
-                    onClick = { viewModel.hideDeleteDialogAction() }) {
+                    onClick = { viewModel.hideDeleteAction() }) {
                     Text("NO")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selectedIndex :Int){
+    val showEdit by viewModel.showEdit.collectAsState()
+    if (showEdit) {
+        var textValue by remember { mutableStateOf(selectedCategory.title) }
+        AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
+            onDismissRequest = { viewModel.hideEditAction() },
+            title = {
+                Text(
+                    "Edit category",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Name", modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        value = textValue,
+                        onValueChange = { textValue = it },
+                        modifier = Modifier.weight(5f),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Beige,
+                            unfocusedContainerColor = Beige
+                        ),
+                        shape = RectangleShape
+                    )
+                }
+            },
+            confirmButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideEditAction()
+                        viewModel.updateCategoryAction(selectedCategory.copy(title = textValue), selectedIndex)
+                    }) {
+                    Text("SAVE", modifier = Modifier.background(Beige))
+                }
+
+            },
+            dismissButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideEditAction() }) {
+                    Text("CANCEL")
                 }
             }
         )

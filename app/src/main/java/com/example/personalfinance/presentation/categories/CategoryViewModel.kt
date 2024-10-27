@@ -1,15 +1,9 @@
 package com.example.personalfinance.presentation.categories
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
-import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
-import com.example.personalfinance.domain.category.usecases.AddCategoryUseCase
+import com.example.personalfinance.domain.category.usecases.AddOrUpdateCategoryUseCase
 import com.example.personalfinance.domain.category.usecases.DeleteCategoryUseCase
 import com.example.personalfinance.domain.category.usecases.GetCategoriesUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
@@ -23,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val addCategoryUseCase: AddCategoryUseCase,
+    private val addOrUpdateCategoryUseCase: AddOrUpdateCategoryUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
     useCaseExecutor: UseCaseExecutor
@@ -37,6 +31,9 @@ class CategoryViewModel @Inject constructor(
 
     private val _showDelete = MutableStateFlow(false)
     var showDelete = _showDelete.asStateFlow()
+
+    private val _showEdit = MutableStateFlow(false)
+    var showEdit = _showEdit.asStateFlow()
 
     init {
         updateCategories()
@@ -68,10 +65,10 @@ class CategoryViewModel @Inject constructor(
     }
 
 
-    private fun addCategory(category: Category) {
+    private fun addNewCategory(category: Category) {
         val incomeList = _incomeCategoryList.value.toMutableList()
         val expenseList = _expanseCategoryList.value.toMutableList()
-        useCaseExecutor.execute(addCategoryUseCase, category){
+        useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){
             category.id = it
             if(category.type == CategoryType.INCOME)
                 incomeList.add(category)
@@ -81,6 +78,22 @@ class CategoryViewModel @Inject constructor(
             _expanseCategoryList.value = expenseList
         }
     }
+
+    private fun updateCategory(category: Category, index: Int){
+        val incomeList = _incomeCategoryList.value.toMutableList()
+        val expenseList = _expanseCategoryList.value.toMutableList()
+        useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){
+            category.id = it
+            if(category.type == CategoryType.INCOME)
+                incomeList[index] = category
+            else
+                expenseList[index] = category
+            _incomeCategoryList.value = incomeList
+            _expanseCategoryList.value = expenseList
+        }
+    }
+
+
 
     private fun removeCategory(category: Category) {
         val incomeList = _incomeCategoryList.value.toMutableList()
@@ -96,19 +109,31 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun addNewCategoryAction(category: Category) {
-        addCategory(
+        addNewCategory(
             category = category
         )
+    }
+
+    fun updateCategoryAction(category: Category, index: Int){
+        updateCategory(category, index)
     }
 
     fun removeCategoryAction(category: Category) {
         removeCategory(category)
     }
 
-    fun showDeleteDialogAction(){
+    fun showDeleteAction(){
         _showDelete.value = true
     }
-    fun hideDeleteDialogAction(){
+    fun hideDeleteAction(){
         _showDelete.value = false
+    }
+
+    fun showEditAction(){
+        _showEdit.value = true
+    }
+
+    fun hideEditAction(){
+        _showEdit.value = false
     }
 }

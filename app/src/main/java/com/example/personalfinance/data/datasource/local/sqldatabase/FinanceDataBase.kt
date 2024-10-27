@@ -9,7 +9,7 @@ import com.example.personalfinance.data.home.entity.Record
 
 @Database(
     entities = [Record::class, Category::class],
-    version = 1
+    version = 2
 )
 abstract class FinanceDataBase : RoomDatabase() {
     abstract val homeDao : HomeDao
