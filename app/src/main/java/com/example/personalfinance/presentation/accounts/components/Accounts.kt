@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
@@ -30,7 +31,8 @@ import com.example.personalfinance.ui.theme.DeepBurgundy
 @Composable
 fun Accounts(
     padding: PaddingValues,
-    handleDrawer : () -> Unit){
+    handleDrawer : () -> Unit,
+    accountViewModel: AccountViewModel){
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()

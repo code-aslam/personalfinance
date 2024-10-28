@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.personalfinance.presentation.HomeViewModel
+import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.accounts.components.Accounts
 import com.example.personalfinance.presentation.budgets.components.Budgets
 import com.example.personalfinance.presentation.categories.CategoryViewModel
@@ -13,11 +14,15 @@ import com.example.personalfinance.presentation.categories.components.Categories
 import com.example.personalfinance.presentation.records.components.Records
 
 @Composable
-fun NavigationHost(navController: NavHostController, padding : PaddingValues, handleDrawer : () -> Unit, viewModel: CategoryViewModel) {
+fun NavigationHost(navController: NavHostController,
+                   padding : PaddingValues,
+                   handleDrawer : () -> Unit,
+                   categoryViewModel: CategoryViewModel,
+                   accountViewModel: AccountViewModel) {
     NavHost(navController = navController, startDestination = BottomNavItem.Records.route){
         composable(BottomNavItem.Records.route) { Records(padding, handleDrawer) }
         composable(BottomNavItem.Budgets.route) { Budgets(padding, handleDrawer) }
-        composable(BottomNavItem.Accounts.route) { Accounts(padding, handleDrawer) }
-        composable(BottomNavItem.Categories.route) { Categories(padding, handleDrawer, viewModel) }
+        composable(BottomNavItem.Accounts.route) { Accounts(padding, handleDrawer, accountViewModel) }
+        composable(BottomNavItem.Categories.route) { Categories(padding, handleDrawer, categoryViewModel) }
     }
 }

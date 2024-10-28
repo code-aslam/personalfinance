@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinance.navigation.NavigationHost
+import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.Beige
@@ -39,13 +40,14 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private val homeViewModel : HomeViewModel by viewModels()
     private val categoryViewModel : CategoryViewModel by viewModels()
+    private val accountViewModel : AccountViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PersonalFinanceTheme {
                 setupStatusBar()
-                MainRenderer(categoryViewModel)
+                MainRenderer(categoryViewModel,accountViewModel)
             }
         }
     }
@@ -53,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainRenderer(categoryViewModel: CategoryViewModel) {
+fun MainRenderer(categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -78,7 +80,7 @@ fun MainRenderer(categoryViewModel: CategoryViewModel) {
                     },
                 ) {
                         innerPadding->
-                    MainConfiguration(navController = navController,innerPadding, categoryViewModel){
+                    MainConfiguration(navController = navController,innerPadding, categoryViewModel, accountViewModel){
                         scope.launch {
                             drawerState.apply {
                                 if (isClosed) open() else close()
@@ -93,8 +95,8 @@ fun MainRenderer(categoryViewModel: CategoryViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, handleDrawer : () -> Unit){
-    NavigationHost(navController = navController, padding, handleDrawer, categoryViewModel)
+fun MainConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel, handleDrawer : () -> Unit){
+    NavigationHost(navController = navController, padding, handleDrawer, categoryViewModel,accountViewModel)
 }
 
 @Composable
