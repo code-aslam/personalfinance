@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -128,8 +130,8 @@ fun Categories(
                 selectedIndex = index
                 selectedCategory = expanseCategories[index]
                 when (it) {
-                    "Edit" -> {}
-                    "Delete" -> {}
+                    "Edit" -> {viewModel.showEditAction()}
+                    "Delete" -> {viewModel.showDeleteAction()}
                 }
             }
         }
@@ -137,13 +139,7 @@ fun Categories(
         item {
             Button(
                 onClick = {
-                viewModel.addNewCategoryAction(
-                    Category(
-                        title = "ppp",
-                        icon = R.drawable.salary,
-                        type = CategoryType.INCOME
-                    )
-                )
+                    viewModel.showAddAction()
             }) {
                 Text(text = "Add New Category")
             }
@@ -152,6 +148,7 @@ fun Categories(
 
     DeleteDialog(viewModel = viewModel, selectedCategory = selectedCategory)
     EditDialog(viewModel = viewModel, selectedCategory = selectedCategory, selectedIndex = selectedIndex)
+    AddDialog(viewModel = viewModel)
 }
 
 
@@ -262,6 +259,102 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideEditAction() }) {
+                    Text("CANCEL")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun AddDialog(viewModel: CategoryViewModel){
+    val showAdd by viewModel.showAdd.collectAsState()
+    if (showAdd) {
+        var textValue by remember { mutableStateOf("") }
+        val types by remember {
+            mutableStateOf(listOf("INCOME", "EXPENSE"))
+        }
+        var selectedType by remember {
+            mutableStateOf(types[0])
+        }
+        AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
+            onDismissRequest = { viewModel.hideAddAction() },
+            title = {
+                Text(
+                    "Add new category",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "Type")
+                        Spacer(modifier = Modifier.width(4.dp))
+                        types.forEach {
+                            type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
+                                selectedType = if(it) type else ""
+                            })
+                            Text(text = type)
+                            Spacer(modifier = Modifier.width(2.dp))
+                        }
+
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "Name", modifier = Modifier.weight(1f))
+                        OutlinedTextField(
+                            value = textValue,
+                            onValueChange = { textValue = it },
+                            modifier = Modifier.weight(5f),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Beige,
+                                unfocusedContainerColor = Beige
+                            ),
+                            shape = RectangleShape
+                        )
+                    }
+                }
+
+            },
+            confirmButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideAddAction()
+                        viewModel.addNewCategoryAction(
+                            Category(
+                                title = textValue,
+                                icon = R.drawable.salary,
+                                type = when(selectedType){
+                                    CategoryType.INCOME.name -> CategoryType.INCOME
+                                    else -> CategoryType.EXPENSE
+                                }
+                            )
+                        )
+                    }) {
+                    Text("SAVE", modifier = Modifier.background(Beige))
+                }
+
+            },
+            dismissButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideAddAction() }) {
                     Text("CANCEL")
                 }
             }

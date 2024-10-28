@@ -35,6 +35,9 @@ class CategoryViewModel @Inject constructor(
     private val _showEdit = MutableStateFlow(false)
     var showEdit = _showEdit.asStateFlow()
 
+    private val _showAdd = MutableStateFlow(false)
+    var showAdd = _showAdd.asStateFlow()
+
     init {
         updateCategories()
     }
@@ -109,9 +112,7 @@ class CategoryViewModel @Inject constructor(
     }
 
     fun addNewCategoryAction(category: Category) {
-        addNewCategory(
-            category = category
-        )
+        addNewCategory(category = category)
     }
 
     fun updateCategoryAction(category: Category, index: Int){
@@ -135,5 +136,13 @@ class CategoryViewModel @Inject constructor(
 
     fun hideEditAction(){
         _showEdit.value = false
+    }
+
+    fun showAddAction(){
+        _showAdd.value = true
+    }
+
+    fun hideAddAction(){
+        _showAdd.value = false
     }
 }
