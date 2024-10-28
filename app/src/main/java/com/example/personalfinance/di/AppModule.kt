@@ -2,15 +2,15 @@ package com.example.personalfinance.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
+import com.example.personalfinance.data.accounts.dao.AccountDao
+import com.example.personalfinance.data.accounts.repository.AccountRepository
 import com.example.personalfinance.data.category.dao.CategoryDao
 import com.example.personalfinance.data.category.repository.CategoryRepository
 import com.example.personalfinance.data.datasource.local.sqldatabase.FinanceDataBase
 import com.example.personalfinance.data.home.dao.HomeDao
 import com.example.personalfinance.data.home.repository.HomeRepository
+import com.example.personalfinance.domain.account.repository.IAccountRepository
 import com.example.personalfinance.domain.category.repository.ICategoryRepository
-import com.example.personalfinance.domain.cleanarchitecture.coroutine.CoroutineContextProvider
-import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.domain.home.repository.IHomeRepository
 import dagger.Module
 import dagger.Provides
@@ -43,6 +43,9 @@ object AppModule {
     fun provideHomeDao(dataBase: FinanceDataBase) = dataBase.homeDao
 
     @Provides
+    fun provideAccountDao(dataBase: FinanceDataBase) = dataBase.accountDao
+
+    @Provides
     fun provideCategoryDao(dataBase: FinanceDataBase) = dataBase.categoryDao
 
     @Provides
@@ -56,12 +59,14 @@ object AppModule {
     }
 
     @Provides
+    fun provideAccountRepository(accountDao: AccountDao) : IAccountRepository {
+        return AccountRepository(accountDao)
+    }
+
+    @Provides
     @Singleton
     fun provideCoroutineScope(): CoroutineScope {
         return CoroutineScope(Dispatchers.IO)
     }
-
-
-
 
 }
