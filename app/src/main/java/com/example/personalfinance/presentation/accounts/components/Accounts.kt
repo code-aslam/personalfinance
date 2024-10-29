@@ -6,16 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -112,12 +115,7 @@ fun Accounts(
         item {
             Button(
                 onClick = {
-                    accountViewModel.addNewAccountAction(
-                        Account(
-                            name = "Savings",
-                            icon = R.drawable.salary
-                        )
-                    )
+                    accountViewModel.showAddAction()
                 }) {
                 Text(text = "Add New Account")
             }
@@ -126,6 +124,7 @@ fun Accounts(
 
     DeleteDialog(viewModel = accountViewModel, selectedAccount = selectedAccount)
     EditDialog(viewModel = accountViewModel, selectedAccount = selectedAccount, selectedIndex = selectedIndex)
+    AddDialog(viewModel = accountViewModel)
 }
 
 @Composable
@@ -273,6 +272,78 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideEditAction() }) {
+                    Text("CANCEL")
+                }
+            }
+        )
+    }
+}
+
+
+@Composable
+fun AddDialog(viewModel: AccountViewModel){
+    val showAdd by viewModel.showAdd.collectAsState()
+    if (showAdd) {
+        var textValue by remember { mutableStateOf("") }
+        
+        AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
+            onDismissRequest = { viewModel.hideAddAction() },
+            title = {
+                Text(
+                    "Add new account",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Name", modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        value = textValue,
+                        onValueChange = { textValue = it },
+                        modifier = Modifier.weight(5f),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Beige,
+                            unfocusedContainerColor = Beige
+                        ),
+                        shape = RectangleShape
+                    )
+                }
+
+            },
+            confirmButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideAddAction()
+                        viewModel.addNewAccountAction(
+                            Account(
+                                name = textValue,
+                                icon = R.drawable.salary,
+                            )
+                        )
+                    }) {
+                    Text("SAVE", modifier = Modifier.background(Beige))
+                }
+
+            },
+            dismissButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideAddAction() }) {
                     Text("CANCEL")
                 }
             }

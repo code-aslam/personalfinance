@@ -33,6 +33,9 @@ class AccountViewModel @Inject constructor(
     private val _showEdit = MutableStateFlow(false)
     var showEdit = _showEdit.asStateFlow()
 
+    private val _showAdd = MutableStateFlow(false)
+    var showAdd = _showAdd.asStateFlow()
+
     init {
         updateAccounts()
     }
@@ -107,6 +110,14 @@ class AccountViewModel @Inject constructor(
 
     fun hideEditAction(){
         _showEdit.value = false
+    }
+
+    fun showAddAction(){
+        _showAdd.value = true
+    }
+
+    fun hideAddAction(){
+        _showAdd.value = false
     }
 
 }
