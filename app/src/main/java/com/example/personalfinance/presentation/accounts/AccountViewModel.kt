@@ -27,6 +27,12 @@ class AccountViewModel @Inject constructor(
     private val _accountList = MutableStateFlow(mutableListOf<Account>())
     val accountList = _accountList.asStateFlow()
 
+    private val _showDelete = MutableStateFlow(false)
+    var showDelete = _showDelete.asStateFlow()
+
+    private val _showEdit = MutableStateFlow(false)
+    var showEdit = _showEdit.asStateFlow()
+
     init {
         updateAccounts()
     }
@@ -58,7 +64,49 @@ class AccountViewModel @Inject constructor(
         }
     }
 
+    private fun removeAccount(account: Account) {
+        val list = _accountList.value.toMutableList()
+        useCaseExecutor.execute(deleteAccountUseCase, account){
+            list.remove(account)
+            _accountList.value = list
+        }
+    }
+
+    private fun updateAccount(account: Account, index: Int){
+        val list = _accountList.value.toMutableList()
+        useCaseExecutor.execute(addOrUpdateAccountUseCase, account){
+            account.id = it
+            list[index] = account
+            _accountList.value = list
+        }
+    }
+
+
     fun addNewAccountAction(account: Account){
         addNewAccount(account)
     }
+
+    fun deleteAccountAction(account: Account){
+        removeAccount(account)
+    }
+
+    fun updateAccountAction(account: Account, index : Int){
+        updateAccount(account, index)
+    }
+
+    fun showDeleteAction(){
+        _showDelete.value = true
+    }
+    fun hideDeleteAction(){
+        _showDelete.value = false
+    }
+
+    fun showEditAction(){
+        _showEdit.value = true
+    }
+
+    fun hideEditAction(){
+        _showEdit.value = false
+    }
+
 }

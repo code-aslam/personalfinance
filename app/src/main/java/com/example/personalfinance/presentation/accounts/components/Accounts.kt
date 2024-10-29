@@ -13,8 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +40,7 @@ import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.accounts.AccountViewModel
+import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
@@ -92,10 +100,10 @@ fun Accounts(
                 selectedAccount = accountList[index]
                 when (it) {
                     "Edit" -> {
-                        //accountViewModel.showEditAction()
+                        accountViewModel.showEditAction()
                     }
                     "Delete" -> {
-                        //viewModel.showDeleteAction()
+                        accountViewModel.showDeleteAction()
                     }
                 }
             }
@@ -115,6 +123,9 @@ fun Accounts(
             }
         }
     }
+
+    DeleteDialog(viewModel = accountViewModel, selectedAccount = selectedAccount)
+    EditDialog(viewModel = accountViewModel, selectedAccount = selectedAccount, selectedIndex = selectedIndex)
 }
 
 @Composable
@@ -152,7 +163,119 @@ fun AccountHeader(padding: PaddingValues){
                 }
             }
         }
+    }
+}
 
+@Composable
+fun DeleteDialog(viewModel: AccountViewModel, selectedAccount: Account) {
+    val showDelete by viewModel.showDelete.collectAsState()
+    if (showDelete) {
+        AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
+            onDismissRequest = { viewModel.hideDeleteAction() },
+            title = {
+                Text(
+                    "Delete This Account",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Text("Deleting this account will also delete all records with this account. Ary you sure ?")
 
+            },
+            confirmButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideDeleteAction()
+                        viewModel.deleteAccountAction(selectedAccount)
+                    }) {
+                    Text("YES", modifier = Modifier.background(Beige))
+                }
+
+            },
+            dismissButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideDeleteAction() }) {
+                    Text("NO")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIndex :Int){
+    val showEdit by viewModel.showEdit.collectAsState()
+    if (showEdit) {
+        var textValue by remember { mutableStateOf(selectedAccount.name) }
+        AlertDialog(
+            containerColor = Beige,
+            modifier = Modifier.background(Beige),
+            onDismissRequest = { viewModel.hideEditAction() },
+            title = {
+                Text(
+                    "Edit account",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    fontSize = 20.sp
+                )
+            },
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Name", modifier = Modifier.weight(1f))
+                    OutlinedTextField(
+                        value = textValue,
+                        onValueChange = { textValue = it },
+                        modifier = Modifier.weight(5f),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Beige,
+                            unfocusedContainerColor = Beige
+                        ),
+                        shape = RectangleShape
+                    )
+                }
+            },
+            confirmButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = {
+                        viewModel.hideEditAction()
+                        viewModel.updateAccountAction(selectedAccount.copy(name = textValue), selectedIndex)
+                    }) {
+                    Text("SAVE", modifier = Modifier.background(Beige))
+                }
+
+            },
+            dismissButton = {
+                OutlinedButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Beige, // Set the background color
+                        contentColor = CharcoalGrey // Set the text color
+                    ),
+                    shape = RectangleShape,
+                    onClick = { viewModel.hideEditAction() }) {
+                    Text("CANCEL")
+                }
+            }
+        )
     }
 }
