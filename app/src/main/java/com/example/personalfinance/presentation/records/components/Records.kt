@@ -54,7 +54,7 @@ fun RecordHeader(padding: PaddingValues) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(70.dp),
         elevation = 0.dp,
         backgroundColor = Beige
     ) {

@@ -100,8 +100,5 @@ fun ListItemCategory(
                 }
             }
         }
-
-
-
     }
 }

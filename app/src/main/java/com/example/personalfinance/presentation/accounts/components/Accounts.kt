@@ -13,17 +13,32 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.personalfinance.R
+import com.example.personalfinance.common.CategoryType
+import com.example.personalfinance.data.accounts.entity.Account
+import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
+import com.example.personalfinance.ui.ListItemAccount
+import com.example.personalfinance.ui.ListItemCategory
+import com.example.personalfinance.ui.ListItemHeaderAccount
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.DeepBurgundy
 
@@ -33,6 +48,22 @@ fun Accounts(
     padding: PaddingValues,
     handleDrawer : () -> Unit,
     accountViewModel: AccountViewModel){
+    
+    val accountList by accountViewModel.accountList.collectAsState()
+
+    var selectedAccount by remember {
+        mutableStateOf(
+            Account(
+                name = "Saving",
+                icon = R.drawable.salary
+            )
+        )
+    }
+
+    var selectedIndex by remember {
+        mutableIntStateOf(0)
+    }
+    
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -48,7 +79,40 @@ fun Accounts(
             BottomShadow()
         }
         item {
-            Text(text = "Accounts", fontSize = 20.sp)
+            ListItemHeaderAccount(title = "Accounts")
+        }
+
+
+        items(accountList.size) { index ->
+            ListItemAccount(
+                iconWidth = DpSize(30.dp, 30.dp),
+                account = accountList[index]
+            ) {
+                selectedIndex = index
+                selectedAccount = accountList[index]
+                when (it) {
+                    "Edit" -> {
+                        //accountViewModel.showEditAction()
+                    }
+                    "Delete" -> {
+                        //viewModel.showDeleteAction()
+                    }
+                }
+            }
+        }
+
+        item {
+            Button(
+                onClick = {
+                    accountViewModel.addNewAccountAction(
+                        Account(
+                            name = "Savings",
+                            icon = R.drawable.salary
+                        )
+                    )
+                }) {
+                Text(text = "Add New Account")
+            }
         }
     }
 }
@@ -63,7 +127,9 @@ fun AccountHeader(padding: PaddingValues){
         backgroundColor = Color(245, 222, 179)
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth()
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
         ) {
             Row(modifier = Modifier
                 .fillMaxWidth()
