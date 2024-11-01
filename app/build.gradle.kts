@@ -54,6 +54,10 @@ android {
 
 dependencies {
     implementation(libs.hilt.android)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime.v261)
     annotationProcessor(libs.androidx.room.compiler.v261)

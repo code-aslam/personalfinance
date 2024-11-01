@@ -1,6 +1,8 @@
 package com.example.personalfinance.presentation
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,15 +13,30 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -30,6 +47,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.personalfinance.navigation.NavigationHost
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
+import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.PersonalFinanceTheme
@@ -38,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val homeViewModel : HomeViewModel by viewModels()
+    private val recordsViewModel : RecordsViewModel by viewModels()
     private val categoryViewModel : CategoryViewModel by viewModels()
     private val accountViewModel : AccountViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +64,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PersonalFinanceTheme {
-                setupStatusBar()
-                MainRenderer(categoryViewModel,accountViewModel)
+                SetupStatusBar()
+                MainRenderer(recordsViewModel,categoryViewModel,accountViewModel)
             }
         }
     }
@@ -55,11 +73,11 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainRenderer(categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel) {
+fun MainRenderer(recordsViewModel: RecordsViewModel,categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-
+    val context= LocalContext.current
     Scaffold ()
     {
         innerPadding->
@@ -78,9 +96,20 @@ fun MainRenderer(categoryViewModel: CategoryViewModel, accountViewModel: Account
                     bottomBar = {
                         BottomNavigationBar(navController = navController, innerPadding)
                     },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {
+                                context.startActivity(Intent(context, RecordsCreatingActivity::class.java))
+                            },
+                            containerColor = Beige,
+                            shape = CircleShape
+                        ) {
+                            Icon(Icons.Default.Add, contentDescription = "")
+                        }
+                    }
                 ) {
                         innerPadding->
-                    MainConfiguration(navController = navController,innerPadding, categoryViewModel, accountViewModel){
+                    MainConfiguration(navController,innerPadding, categoryViewModel, accountViewModel){
                         scope.launch {
                             drawerState.apply {
                                 if (isClosed) open() else close()
@@ -91,6 +120,7 @@ fun MainRenderer(categoryViewModel: CategoryViewModel, accountViewModel: Account
             }
         )
     }
+    
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -100,7 +130,7 @@ fun MainConfiguration(navController: NavHostController, padding : PaddingValues,
 }
 
 @Composable
-fun setupStatusBar(){
+fun SetupStatusBar(){
     val statusBarLight = Beige.toArgb()
     val statusBarDark = Beige.toArgb()
     val navigationBarLight = Color.WHITE
@@ -110,27 +140,28 @@ fun setupStatusBar(){
 
     DisposableEffect(isDarkMode) {
         context.enableEdgeToEdge(
-            statusBarStyle = if (!isDarkMode) {
-                SystemBarStyle.light(
-                    statusBarLight,
-                    statusBarDark
-                )
-            } else {
-                SystemBarStyle.dark(
-                    statusBarDark
-                )
+            statusBarStyle = when{!isDarkMode -> SystemBarStyle.light(statusBarLight, statusBarDark)
+                else -> SystemBarStyle.dark(statusBarDark)
             },
-            navigationBarStyle = if(!isDarkMode){
-                SystemBarStyle.light(
-                    navigationBarLight,
-                    navigationBarDark
-                )
-            } else {
-                SystemBarStyle.dark(navigationBarDark)
+            navigationBarStyle = when{!isDarkMode -> SystemBarStyle.light(navigationBarLight, navigationBarDark)
+                else-> SystemBarStyle.dark(navigationBarDark)
             }
         )
 
         onDispose { }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
