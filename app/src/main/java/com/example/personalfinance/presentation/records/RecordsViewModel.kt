@@ -1,11 +1,14 @@
 package com.example.personalfinance.presentation.records
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.domain.home.usecases.FetchRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.example.personalfinance.data.home.entity.Record
+import com.example.personalfinance.domain.account.usecases.GetAccountsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,10 +21,13 @@ import javax.inject.Inject
 @HiltViewModel
 class RecordsViewModel @Inject constructor(
     private val fetchRecordsUseCase: FetchRecordsUseCase,
-    useCaseExecutor: UseCaseExecutor
+    useCaseExecutor: UseCaseExecutor,
+    private val getAllAccountsUseCase: GetAccountsUseCase,
 ) : BaseViewModel(useCaseExecutor) {
 
 
+    private val _accountList = MutableStateFlow(mutableListOf<Account>())
+    val accountList = _accountList.asStateFlow()
 
     private val _showCreateRecord = MutableStateFlow(false)
     var showCreateRecord: StateFlow<Boolean> = _showCreateRecord.asStateFlow()
@@ -33,6 +39,30 @@ class RecordsViewModel @Inject constructor(
 
     private val _symbol = MutableStateFlow("")
     var symbol : StateFlow<String> = _symbol.asStateFlow()
+
+    init {
+
+    }
+
+    fun getAccounts(){
+        useCaseExecutor.execute(
+            getAllAccountsUseCase,
+            Unit,
+            ::handleAccounts
+        )
+    }
+
+
+    private fun handleAccounts(records: Flow<List<Account>>) {
+        val accountList = _accountList.value
+        viewModelScope.launch {
+            records.collect { list ->
+                list.forEach {account-> accountList.add(account)}
+            }
+            _accountList.value = accountList
+        }
+
+    }
 
 
     fun showCreateRecord(){

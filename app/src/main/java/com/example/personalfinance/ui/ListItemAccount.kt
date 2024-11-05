@@ -61,7 +61,7 @@ fun ListItemAccount(
             ) {
 
                 Image(
-                    painter = painterResource(id = account.icon),
+                    painter = painterResource(id = R.drawable.salary),
                     contentDescription = "",
                     modifier = Modifier
                         .size(iconWidth)

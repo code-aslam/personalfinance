@@ -14,11 +14,6 @@
         android:theme="@style/Theme.PersonalFinance"
         tools:targetApi="31" >
         <activity
-            android:name=".presentation.RecordsCreatingActivity"
-            android:exported="false"
-            android:label="@string/title_activity_records_creating"
-            android:theme="@style/Theme.PersonalFinance" />
-        <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
             android:label="@string/app_name"

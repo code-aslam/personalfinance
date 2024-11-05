@@ -37,14 +37,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.personalfinance.navigation.NavigationHost
+import com.example.personalfinance.navigation.AppNavigation
+import com.example.personalfinance.navigation.BottomNavigationHostForMainScreen
+import com.example.personalfinance.navigation.Screens
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.records.RecordsViewModel
@@ -65,69 +73,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             PersonalFinanceTheme {
                 SetupStatusBar()
-                MainRenderer(recordsViewModel,categoryViewModel,accountViewModel)
+                MainScreen(recordsViewModel = recordsViewModel,
+                    categoryViewModel = categoryViewModel,
+                    accountViewModel = accountViewModel)
             }
         }
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainRenderer(recordsViewModel: RecordsViewModel,categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel) {
-    val navController = rememberNavController()
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-    val context= LocalContext.current
-    Scaffold ()
-    {
-        innerPadding->
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                Box(modifier = Modifier.padding(innerPadding)){
-                    ModalDrawerSheet(
-                        drawerShape = RectangleShape
-                    ) { /* Drawer content */ }
-                }
-
-            },
-            content = {
-                Scaffold(
-                    bottomBar = {
-                        BottomNavigationBar(navController = navController, innerPadding)
-                    },
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = {
-                                context.startActivity(Intent(context, RecordsCreatingActivity::class.java))
-                            },
-                            containerColor = Beige,
-                            shape = CircleShape
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "")
-                        }
-                    }
-                ) {
-                        innerPadding->
-                    MainConfiguration(navController,innerPadding, categoryViewModel, accountViewModel){
-                        scope.launch {
-                            drawerState.apply {
-                                if (isClosed) open() else close()
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }
-    
+fun MainScreen(accountViewModel: AccountViewModel,
+               categoryViewModel: CategoryViewModel,
+               recordsViewModel: RecordsViewModel){
+    val mainNavController = rememberNavController()
+    AppNavigation(accountViewModel = accountViewModel,
+        categoryViewModel = categoryViewModel,
+        recordsViewModel = recordsViewModel,
+        mainNavController = mainNavController)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun MainConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel, handleDrawer : () -> Unit){
-    NavigationHost(navController = navController, padding, handleDrawer, categoryViewModel,accountViewModel)
-}
 
 @Composable
 fun SetupStatusBar(){
@@ -150,6 +114,9 @@ fun SetupStatusBar(){
 
         onDispose { }
     }
+
+
+
 }
 
 

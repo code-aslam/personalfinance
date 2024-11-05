@@ -1,5 +1,6 @@
 package com.example.personalfinance.presentation.accounts
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.accounts.entity.Account
@@ -9,6 +10,7 @@ import com.example.personalfinance.domain.account.usecases.DeleteAccountUseCase
 import com.example.personalfinance.domain.account.usecases.GetAccountsUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,8 @@ class AccountViewModel @Inject constructor(
     private val deleteAccountUseCase: DeleteAccountUseCase
 ) : BaseViewModel(useCaseExecutor){
 
+    var text = "Hello"
+
     private val _accountList = MutableStateFlow(mutableListOf<Account>())
     val accountList = _accountList.asStateFlow()
 
@@ -36,11 +40,13 @@ class AccountViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
+
     init {
-        updateAccounts()
+        fetchAccounts()
     }
 
-    private fun updateAccounts(){
+    fun fetchAccounts(){
+        _accountList.value = emptyList<Account>().toMutableList()
         useCaseExecutor.execute(
             getAllAccountsUseCase,
             Unit,
@@ -57,6 +63,7 @@ class AccountViewModel @Inject constructor(
             _accountList.value = accountList
         }
     }
+
 
     private fun addNewAccount(account: Account) {
         val accountList = _accountList.value.toMutableList()

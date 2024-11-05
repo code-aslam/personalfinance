@@ -61,6 +61,8 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime.v261)
     annotationProcessor(libs.androidx.room.compiler.v261)
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.navigation.compose.v250)
     kapt(libs.androidx.room.compiler.v261)
     implementation (libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.room.ktx)
