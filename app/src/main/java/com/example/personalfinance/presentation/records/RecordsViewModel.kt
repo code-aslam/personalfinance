@@ -1,13 +1,11 @@
 package com.example.personalfinance.presentation.records
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.domain.home.usecases.FetchRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import com.example.personalfinance.data.home.entity.Record
 import com.example.personalfinance.domain.account.usecases.GetAccountsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

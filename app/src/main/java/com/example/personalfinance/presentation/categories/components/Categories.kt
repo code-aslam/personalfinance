@@ -91,9 +91,8 @@ fun Categories(
 
         items(incomeCategories.size) { index ->
             ListItemCategory(
-                iconRes = incomeCategories[index].icon,
+                category = incomeCategories[index],
                 iconWidth = DpSize(30.dp, 30.dp),
-                title = incomeCategories[index].title
             ) {
                 selectedIndex = index
                 selectedCategory = incomeCategories[index]
@@ -114,9 +113,8 @@ fun Categories(
 
         items(expanseCategories.size) { index ->
             ListItemCategory(
-                iconRes = expanseCategories[index].icon,
+                category = expanseCategories[index],
                 iconWidth = DpSize(30.dp, 30.dp),
-                title = expanseCategories[index].title
             ) {
                 selectedIndex = index
                 selectedCategory = expanseCategories[index]

@@ -1,14 +1,14 @@
-package com.example.personalfinance.data.home.dao
+package com.example.personalfinance.data.record.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.personalfinance.data.home.entity.Record
+import com.example.personalfinance.data.record.entity.Record
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface HomeDao {
+interface RecordDao {
     @Insert
     suspend fun insertRecord(record : Record)
 

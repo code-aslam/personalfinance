@@ -7,8 +7,8 @@ import com.example.personalfinance.data.accounts.repository.AccountRepository
 import com.example.personalfinance.data.category.dao.CategoryDao
 import com.example.personalfinance.data.category.repository.CategoryRepository
 import com.example.personalfinance.data.datasource.local.sqldatabase.FinanceDataBase
-import com.example.personalfinance.data.home.dao.HomeDao
-import com.example.personalfinance.data.home.repository.HomeRepository
+import com.example.personalfinance.data.record.dao.RecordDao
+import com.example.personalfinance.data.record.repository.RecordRepository
 import com.example.personalfinance.domain.account.repository.IAccountRepository
 import com.example.personalfinance.domain.category.repository.ICategoryRepository
 import com.example.personalfinance.domain.home.repository.IHomeRepository
@@ -40,7 +40,7 @@ object AppModule {
     }
 
     @Provides
-    fun provideHomeDao(dataBase: FinanceDataBase) = dataBase.homeDao
+    fun provideHomeDao(dataBase: FinanceDataBase) = dataBase.recordDao
 
     @Provides
     fun provideAccountDao(dataBase: FinanceDataBase) = dataBase.accountDao
@@ -49,8 +49,8 @@ object AppModule {
     fun provideCategoryDao(dataBase: FinanceDataBase) = dataBase.categoryDao
 
     @Provides
-    fun provideHomeRepository(homeDao: HomeDao) : IHomeRepository{
-        return HomeRepository(homeDao)
+    fun provideHomeRepository(recordDao: RecordDao) : IHomeRepository{
+        return RecordRepository(recordDao)
     }
 
     @Provides

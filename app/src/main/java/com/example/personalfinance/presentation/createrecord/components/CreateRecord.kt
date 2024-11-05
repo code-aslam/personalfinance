@@ -48,24 +48,30 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.data.accounts.entity.Account
+import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.accounts.AccountViewModel
+import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.ListItemAccount
+import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeaderAccount
 import com.example.personalfinance.ui.theme.Beige
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreateRecordScreen(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel){
+fun CreateRecordScreen(accountViewModel: AccountViewModel,
+                       recordsViewModel: RecordsViewModel,
+                       categoryViewModel: CategoryViewModel){
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        CreateRecord(accountViewModel,recordsViewModel,innerPadding)
+        CreateRecord(accountViewModel,recordsViewModel,categoryViewModel,innerPadding)
     }
 }
 
 @Composable
-fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, paddingValues: PaddingValues) {
-
+fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel, paddingValues: PaddingValues) {
     val accounts by accountViewModel.accountList.collectAsState()
+    val categoriesIncome by categoryViewModel.incomeCategoryList.collectAsState()
+    val categoriesExpanse by categoryViewModel.expanseCategoryList.collectAsState()
     val bottomSheetStateAccount = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val bottomSheetStateCategory = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -79,7 +85,21 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val symbol by recordsViewModel.symbol.collectAsState()
     var textNotes by remember { mutableStateOf("") }
     var textAmountSecond by remember { mutableStateOf("") }
-    Log.e("aslam134", accounts.size.toString())
+    var recordFrom by remember {
+        mutableStateOf("Account")
+    }
+    recordFrom = when(selectedType){
+        "INCOME", "EXPENSE" -> "Account"
+        else -> "From"
+    }
+    var recordTo by remember {
+        mutableStateOf("Category")
+    }
+    recordTo = when(selectedType){
+        "INCOME", "EXPENSE" -> "Category"
+        else -> "To"
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -147,7 +167,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     .weight(1f) ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "From", fontSize = 14.sp, modifier = Modifier.padding(4.dp))
+                Text(text = recordFrom, fontSize = 14.sp, modifier = Modifier.padding(4.dp))
                 IconButton(onClick = { scope.launch {
                     bottomSheetStateAccount.show()
                     bottomSheetStateCategory.hide()}
@@ -175,7 +195,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "To", fontSize = 14.sp, modifier = Modifier.padding(4.dp))
+                Text(text = recordTo, fontSize = 14.sp, modifier = Modifier.padding(4.dp))
                 IconButton(onClick = { scope.launch { bottomSheetStateCategory.show()
                     bottomSheetStateAccount.hide()} },
                     modifier = Modifier
@@ -441,9 +461,17 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
         modifier = Modifier.padding(paddingValues),
         sheetState = bottomSheetStateCategory,
         sheetContent = {
-            BottomSheetContentCategory(onDismiss = {
-                scope.launch { bottomSheetStateCategory.hide() }
-            })
+            when(selectedType){
+                "INCOME" -> BottomSheetContentCategory(categoriesIncome,paddingValues,onDismiss = {
+                    scope.launch { bottomSheetStateCategory.hide() }
+                })
+                "EXPENSE" -> BottomSheetContentCategory(categoriesExpanse,paddingValues,onDismiss = {
+                    scope.launch { bottomSheetStateCategory.hide() }
+                })
+                "TRANSFER" -> BottomSheetContentCategory(categoriesIncome,paddingValues,onDismiss = {
+                    scope.launch { bottomSheetStateCategory.hide() }
+                })
+            }
         }
     ) {
         // Additional content if needed
@@ -475,8 +503,25 @@ fun BottomSheetContentAccount(accounts : List<Account>, paddingValues: PaddingVa
 }
 
 @Composable
-fun BottomSheetContentCategory(onDismiss: () -> Unit) {
-    Column {
-        //Text("This is a bottom sheet Category")
+fun BottomSheetContentCategory(categories : List<Category>, paddingValues: PaddingValues, onDismiss: () -> Unit) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .background(Beige)
+    ) {
+        item {
+            ListItemHeaderAccount(title = "Select an account")
+        }
+
+
+        items(categories.size) { index ->
+            ListItemCategory(
+                iconWidth = DpSize(30.dp, 30.dp),
+                category = categories[index]
+            ) {
+
+            }
+        }
     }
 }

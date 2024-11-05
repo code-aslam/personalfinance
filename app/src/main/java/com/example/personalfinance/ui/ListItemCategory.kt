@@ -37,9 +37,8 @@ import com.example.personalfinance.ui.theme.Beige
 
 @Composable
 fun ListItemCategory(
-    @DrawableRes iconRes: Int,
+    category: Category,
     iconWidth: DpSize,
-    title: String,
     menuAction: (String) -> Unit
 ) {
     var expanded by remember {
@@ -64,13 +63,13 @@ fun ListItemCategory(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = iconRes),
+            painter = painterResource(id = category.icon),
             contentDescription = "",
             modifier = Modifier
                 .size(iconWidth)
                 .weight(1f)
         )
-        Text(text = title, modifier = Modifier.weight(4f))
+        Text(text = category.title, modifier = Modifier.weight(4f))
         Box(
             modifier = Modifier.weight(1f),
             contentAlignment = Alignment.CenterStart

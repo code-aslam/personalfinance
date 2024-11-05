@@ -28,6 +28,6 @@ fun AppNavigation(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None}){
         composable(Screens.HomeScreen.route) { HomeScreen(accountViewModel = accountViewModel, categoryViewModel = categoryViewModel, mainNavController = mainNavController) }
-        composable(Screens.CreateRecordScreen.route) { CreateRecordScreen(accountViewModel,recordsViewModel) }
+        composable(Screens.CreateRecordScreen.route) { CreateRecordScreen(accountViewModel,recordsViewModel,categoryViewModel) }
     }
 }
