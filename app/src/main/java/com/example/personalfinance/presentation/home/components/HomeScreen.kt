@@ -15,24 +15,30 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.personalfinance.navigation.BottomNavItem
 import com.example.personalfinance.navigation.BottomNavigationHostForMainScreen
 import com.example.personalfinance.navigation.Screens
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
+import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SecondaryColor
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(categoryViewModel: CategoryViewModel,
                accountViewModel: AccountViewModel,
-               mainNavController: NavHostController
+               mainNavController: NavHostController,
 ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -60,10 +66,10 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
                                     launchSingleTop = true
                                 }
                             },
-                            containerColor = Beige,
+                            containerColor = MainColor,
                             shape = CircleShape
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = "")
+                            Icon(Icons.Default.Add, contentDescription = "", tint = SecondaryColor)
                         }
                     },
                     bottomBar = {
@@ -74,7 +80,7 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
                         navController,
                         innerPadding,
                         categoryViewModel,
-                        accountViewModel
+                        accountViewModel,
                     ) {
                         scope.launch {
                             drawerState.apply {
@@ -93,6 +99,7 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
 
 
 @Composable
-fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel, handleDrawer : () -> Unit){
+fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel,handleDrawer : () -> Unit){
     BottomNavigationHostForMainScreen(navController, padding, handleDrawer, categoryViewModel,accountViewModel)
+
 }

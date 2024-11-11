@@ -42,13 +42,14 @@ import com.example.personalfinance.ui.theme.Beige
 fun ListItemAccount(
     iconWidth: DpSize,
     account: Account,
-    menuAction: (String) -> Unit
+    menuAction: (String) -> Unit,
+    onItemClick : (Account) -> Unit
 ){
     var expanded by remember {
         mutableStateOf(false)
     }
 
-        Box(modifier = Modifier.padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp)) {
+        Box(modifier = Modifier.padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp).clickable { onItemClick(account) }) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

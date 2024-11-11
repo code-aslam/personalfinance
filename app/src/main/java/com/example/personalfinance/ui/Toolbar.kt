@@ -22,7 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.personalfinance.R
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PBGFont
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +33,7 @@ fun Toolbar(handleDrawer : () -> Unit){
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(Beige),
+            .background(MainColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -40,12 +42,13 @@ fun Toolbar(handleDrawer : () -> Unit){
             IconButton(onClick = handleDrawer) {
                 Icon(
                     imageVector = Icons.Default.Menu,
-                    contentDescription = "navigation drawer menu button"
+                    contentDescription = "navigation drawer menu button",
+                    tint = SecondaryColor
                 )
             }
         }
         Column(modifier = Modifier.weight(3f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Personal Finance", fontFamily = PBGFont, fontWeight = FontWeight.Normal)
+            Text(text = "Personal Finance", fontFamily = PBGFont, fontWeight = FontWeight.Normal, color = SecondaryColor)
         }
     }
 //    CenterAlignedTopAppBar(

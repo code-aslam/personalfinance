@@ -53,6 +53,8 @@ import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeaderAccount
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.DeepBurgundy
+import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -79,8 +81,7 @@ fun Accounts(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
-            .background(Beige)) {
+            .padding(padding)) {
         item{
             Toolbar {
                 handleDrawer()
@@ -98,19 +99,23 @@ fun Accounts(
         items(accountList.size) { index ->
             ListItemAccount(
                 iconWidth = DpSize(30.dp, 30.dp),
-                account = accountList[index]
-            ) {
-                selectedIndex = index
-                selectedAccount = accountList[index]
-                when (it) {
-                    "Edit" -> {
-                        accountViewModel.showEditAction()
+                account = accountList[index],
+                menuAction = {
+                    selectedIndex = index
+                    selectedAccount = accountList[index]
+                    when (it) {
+                        "Edit" -> {
+                            accountViewModel.showEditAction()
+                        }
+                        "Delete" -> {
+                            accountViewModel.showDeleteAction()
+                        }
                     }
-                    "Delete" -> {
-                        accountViewModel.showDeleteAction()
-                    }
+                },
+                onItemClick = {
+                    //
                 }
-            }
+            )
         }
 
         item {
@@ -135,7 +140,7 @@ fun AccountHeader(padding: PaddingValues){
             .fillMaxWidth()
             .height(70.dp),
         elevation = 0.dp,
-        backgroundColor = Color(245, 222, 179)
+        backgroundColor = MainColor
     ) {
         Column(
             modifier = Modifier
@@ -150,16 +155,16 @@ fun AccountHeader(padding: PaddingValues){
                     .fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally){
-                    androidx.compose.material.Text(text = "TOTAL SPENT")
-                    androidx.compose.material.Text("1500.00",  color = DeepBurgundy)
+                    Text(text = "TOTAL SPENT", color = SecondaryColor)
+                    Text("1500.00",  color = SecondaryColor)
                 }
                 Column(modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally){
-                    androidx.compose.material.Text(text = "TOTAL BUDGET")
-                    androidx.compose.material.Text(text = "1200.00",  color = CharcoalGrey)
+                    Text(text = "TOTAL BUDGET", color = SecondaryColor)
+                    Text(text = "1200.00",  color = SecondaryColor)
                 }
             }
         }

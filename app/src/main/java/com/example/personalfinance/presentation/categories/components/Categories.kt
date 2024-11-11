@@ -43,8 +43,11 @@ import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeader
+import com.example.personalfinance.ui.theme.AccentColor
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.DeepBurgundy
+import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -74,7 +77,6 @@ fun Categories(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .background(Beige)
     ) {
         item {
             Toolbar {
@@ -93,18 +95,22 @@ fun Categories(
             ListItemCategory(
                 category = incomeCategories[index],
                 iconWidth = DpSize(30.dp, 30.dp),
-            ) {
-                selectedIndex = index
-                selectedCategory = incomeCategories[index]
-                when (it) {
-                    "Edit" -> {
-                        viewModel.showEditAction()
+                menuAction = {
+                    selectedIndex = index
+                    selectedCategory = incomeCategories[index]
+                    when (it) {
+                        "Edit" -> {
+                            viewModel.showEditAction()
+                        }
+                        "Delete" -> {
+                            viewModel.showDeleteAction()
+                        }
                     }
-                    "Delete" -> {
-                        viewModel.showDeleteAction()
-                    }
+                },
+                onItemClick = {
+
                 }
-            }
+            )
         }
 
         item {
@@ -115,22 +121,28 @@ fun Categories(
             ListItemCategory(
                 category = expanseCategories[index],
                 iconWidth = DpSize(30.dp, 30.dp),
-            ) {
-                selectedIndex = index
-                selectedCategory = expanseCategories[index]
-                when (it) {
-                    "Edit" -> {viewModel.showEditAction()}
-                    "Delete" -> {viewModel.showDeleteAction()}
+                menuAction = {
+                    selectedIndex = index
+                    selectedCategory = expanseCategories[index]
+                    when (it) {
+                        "Edit" -> {viewModel.showEditAction()}
+                        "Delete" -> {viewModel.showDeleteAction()}
+                    }
+                },
+                onItemClick = {
+                    //
                 }
-            }
+            )
         }
 
         item {
             Button(
                 onClick = {
                     viewModel.showAddAction()
-            }) {
-                Text(text = "Add New Category")
+                },
+                modifier = Modifier.background(AccentColor)
+            ) {
+                Text(text = "Add New Category", color = SecondaryColor)
             }
         }
     }
@@ -358,7 +370,7 @@ fun CategoryHeader(padding: PaddingValues) {
             .fillMaxWidth()
             .height(70.dp),
         elevation = 0.dp,
-        backgroundColor = Color(245, 222, 179)
+        backgroundColor = MainColor
     ) {
         Column(
             modifier = Modifier
@@ -377,8 +389,8 @@ fun CategoryHeader(padding: PaddingValues) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    androidx.compose.material.Text(text = "EXPANSE SO FAR")
-                    androidx.compose.material.Text("1500.00", color = DeepBurgundy)
+                    Text(text = "EXPANSE SO FAR", color = SecondaryColor)
+                    Text("1500.00", color = SecondaryColor)
                 }
                 Column(
                     modifier = Modifier
@@ -387,8 +399,8 @@ fun CategoryHeader(padding: PaddingValues) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    androidx.compose.material.Text(text = "INCOME SO FAR")
-                    androidx.compose.material.Text(text = "1200.00", color = CharcoalGrey)
+                    Text(text = "INCOME SO FAR", color = SecondaryColor)
+                    Text(text = "1200.00", color = SecondaryColor)
                 }
             }
         }

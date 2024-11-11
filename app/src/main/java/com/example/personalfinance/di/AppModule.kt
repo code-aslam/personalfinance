@@ -11,7 +11,7 @@ import com.example.personalfinance.data.record.dao.RecordDao
 import com.example.personalfinance.data.record.repository.RecordRepository
 import com.example.personalfinance.domain.account.repository.IAccountRepository
 import com.example.personalfinance.domain.category.repository.ICategoryRepository
-import com.example.personalfinance.domain.home.repository.IHomeRepository
+import com.example.personalfinance.domain.record.repository.IRecordRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -49,7 +49,7 @@ object AppModule {
     fun provideCategoryDao(dataBase: FinanceDataBase) = dataBase.categoryDao
 
     @Provides
-    fun provideHomeRepository(recordDao: RecordDao) : IHomeRepository{
+    fun provideRecordRepository(recordDao: RecordDao) : IRecordRepository{
         return RecordRepository(recordDao)
     }
 

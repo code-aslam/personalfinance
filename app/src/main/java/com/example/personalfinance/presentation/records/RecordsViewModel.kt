@@ -2,11 +2,14 @@ package com.example.personalfinance.presentation.records
 
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.data.accounts.entity.Account
+import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
-import com.example.personalfinance.domain.home.usecases.FetchRecordsUseCase
+import com.example.personalfinance.domain.record.usecases.GetRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import com.example.personalfinance.domain.account.usecases.GetAccountsUseCase
+import com.example.personalfinance.domain.record.usecases.AddOrUpdateRecordUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,14 +21,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecordsViewModel @Inject constructor(
-    private val fetchRecordsUseCase: FetchRecordsUseCase,
+    private val getRecordsUseCase: GetRecordsUseCase,
     useCaseExecutor: UseCaseExecutor,
-    private val getAllAccountsUseCase: GetAccountsUseCase,
+    private val addOrUpdateRecordUseCase: AddOrUpdateRecordUseCase
 ) : BaseViewModel(useCaseExecutor) {
 
 
-    private val _accountList = MutableStateFlow(mutableListOf<Account>())
-    val accountList = _accountList.asStateFlow()
+    private val _recordList = MutableStateFlow(mutableListOf<Record>())
+    val recordList = _recordList.asStateFlow()
 
     private val _showCreateRecord = MutableStateFlow(false)
     var showCreateRecord: StateFlow<Boolean> = _showCreateRecord.asStateFlow()
@@ -39,37 +42,48 @@ class RecordsViewModel @Inject constructor(
     var symbol : StateFlow<String> = _symbol.asStateFlow()
 
     init {
-
+        fetchRecords()
     }
 
-    fun getAccounts(){
+    fun update(){
+        _result.value = "test"
+    }
+
+    fun fetchRecords(){
         useCaseExecutor.execute(
-            getAllAccountsUseCase,
+            getRecordsUseCase,
             Unit,
-            ::handleAccounts
+            ::handleRecords
         )
     }
 
 
-    private fun handleAccounts(records: Flow<List<Account>>) {
-        val accountList = _accountList.value
+    private fun handleRecords(records: Flow<List<Record>>) {
+        val recordList = _recordList.value
+        _recordList.value.clear()
         viewModelScope.launch {
             records.collect { list ->
-                list.forEach {account-> accountList.add(account)}
+                list.forEach {record-> recordList.add(record)}
             }
-            _accountList.value = accountList
+            _recordList.value = recordList
         }
 
     }
 
 
-    fun showCreateRecord(){
-        _showCreateRecord.value = true
+    private fun addNewRecordAction(record: Record) {
+        val records = _recordList.value.toMutableList()
+        useCaseExecutor.execute(addOrUpdateRecordUseCase, record){
+            record.id = it
+            records.add(record)
+            _recordList.value = records
+        }
     }
 
-    fun hideCreateRecord(){
-        _showCreateRecord.value = false
+    fun addNewRecord(record: Record){
+        addNewRecordAction(record)
     }
+
 
     fun processCalculation(toProcess : Char){
         if(isSymbol(toProcess)){

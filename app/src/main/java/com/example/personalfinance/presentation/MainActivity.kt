@@ -45,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
@@ -55,16 +56,17 @@ import com.example.personalfinance.navigation.BottomNavigationHostForMainScreen
 import com.example.personalfinance.navigation.Screens
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
+import com.example.personalfinance.presentation.createrecord.components.CreateRecord
 import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PersonalFinanceTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val recordsViewModel : RecordsViewModel by viewModels()
     private val categoryViewModel : CategoryViewModel by viewModels()
     private val accountViewModel : AccountViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +75,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PersonalFinanceTheme {
                 SetupStatusBar()
-                MainScreen(recordsViewModel = recordsViewModel,
+                MainScreen(
                     categoryViewModel = categoryViewModel,
                     accountViewModel = accountViewModel)
             }
@@ -84,19 +86,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(accountViewModel: AccountViewModel,
                categoryViewModel: CategoryViewModel,
-               recordsViewModel: RecordsViewModel){
+               ){
     val mainNavController = rememberNavController()
     AppNavigation(accountViewModel = accountViewModel,
         categoryViewModel = categoryViewModel,
-        recordsViewModel = recordsViewModel,
         mainNavController = mainNavController)
 }
 
 
 @Composable
 fun SetupStatusBar(){
-    val statusBarLight = Beige.toArgb()
-    val statusBarDark = Beige.toArgb()
+    val statusBarLight = MainColor.toArgb()
+    val statusBarDark = MainColor.toArgb()
     val navigationBarLight = Color.WHITE
     val navigationBarDark = Color.BLACK
     val isDarkMode = isSystemInDarkTheme()

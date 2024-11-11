@@ -14,9 +14,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,16 +28,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.personalfinance.R
 import com.example.personalfinance.navigation.BottomNavItem
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PBGFont
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @Composable
 fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
     BottomNavigation(
         modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
-        backgroundColor = Beige
+        backgroundColor = MainColor
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
+        var currentRoute = navBackStackEntry?.destination?.route
 
         BottomNavItem.all.forEach { item ->
             BottomNavigationItem(
@@ -46,13 +50,18 @@ fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
                         launchSingleTop = true
                     }
                 },
-                icon = {  Image(
+                icon = {
+                    Image(
                     painter = painterResource(id = item.image), // Custom image for Home
                     contentDescription = item.label,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(SecondaryColor)
                 )},
-                label = {Text(item.label, fontSize = 10.sp, fontFamily = PBGFont, fontWeight = FontWeight.Normal)}
+                label = {Text(item.label, fontSize = 10.sp, fontFamily = PBGFont, fontWeight = FontWeight.Normal, color = SecondaryColor)}
             )
         }
+
+
     }
 }
+

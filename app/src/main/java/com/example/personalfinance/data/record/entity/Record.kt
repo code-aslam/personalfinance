@@ -7,19 +7,23 @@ import com.example.personalfinance.common.TransactionType
 @Entity
 data class Record(
     @PrimaryKey(autoGenerate = true)
-    val id : Int = 0,
+    var id : Long = 0,
 
     var transactionType : TransactionType = TransactionType.INCOME,
 
-    val categoryId : Int,
+    var categoryId : Int = -1,
 
-    val accountId : Int,
+    var accountId : Int = -1,
 
     var notes : String = "",
 
-    val date : String,
+    var date : String = "",
 
-    val time : String,
+    var time : String = "",
 
-    val amount : Double
-)
+    var amount : Double = 0.0
+){
+    companion object{
+        fun getTest()  = com.example.personalfinance.data.record.entity.Record()
+    }
+}

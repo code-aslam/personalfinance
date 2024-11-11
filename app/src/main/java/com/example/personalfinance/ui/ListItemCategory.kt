@@ -39,7 +39,8 @@ import com.example.personalfinance.ui.theme.Beige
 fun ListItemCategory(
     category: Category,
     iconWidth: DpSize,
-    menuAction: (String) -> Unit
+    menuAction: (String) -> Unit,
+    onItemClick : (Category) -> Unit
 ) {
     var expanded by remember {
         mutableStateOf(false)
@@ -59,7 +60,8 @@ fun ListItemCategory(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .padding(5.dp),
+            .padding(5.dp)
+            .clickable { onItemClick(category) },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
