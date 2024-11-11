@@ -20,17 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.ui.theme.CharcoalGrey
 import com.example.personalfinance.ui.theme.PBGFont
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @Composable
 fun ListItemHeader(title : String){
     Column {
-        Text(modifier = Modifier.padding(start = 12.dp, bottom = 4.dp, end = 12.dp), text = title, fontFamily = PBGFont, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(modifier = Modifier.padding(start = 12.dp, bottom = 4.dp, end = 12.dp), text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = SecondaryColor)
         Spacer(modifier = Modifier.padding(2.dp))
         Box(modifier = Modifier
             .padding(start = 12.dp, bottom = 4.dp, end = 12.dp)
             .fillMaxWidth()
-            .height(2.dp)
-            .background(CharcoalGrey))
+            .height(1.dp)
+            .background(SecondaryColor))
     }
 }
 

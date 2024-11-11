@@ -7,14 +7,17 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -34,6 +38,8 @@ import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.DarkForestGreenColor
+import com.example.personalfinance.ui.theme.MainColor
 
 @Composable
 fun ListItemCategory(
@@ -60,7 +66,7 @@ fun ListItemCategory(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .padding(5.dp)
+            .padding(10.dp)
             .clickable { onItemClick(category) },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -69,23 +75,26 @@ fun ListItemCategory(
             contentDescription = "",
             modifier = Modifier
                 .size(iconWidth)
-                .weight(1f)
+                .clip(CircleShape)
+                .border(2.dp, Color.White, CircleShape)
         )
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = category.title, modifier = Modifier.weight(4f))
+
         Box(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.CenterStart
+            contentAlignment = Alignment.CenterEnd
         ){
             Image(
                 painter = painterResource(id = R.drawable.dots),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(DpSize(30.dp, 30.dp))
+                    .size(DpSize(25.dp, 25.dp))
                     .clickable { expanded = true }
             )
             DropdownMenu(
                 modifier = Modifier
-                    .background(Beige)
+                    .background(MainColor)
                     .width(200.dp)
                     .shadow(elevation = 2.dp),
                 expanded = expanded,
@@ -96,7 +105,7 @@ fun ListItemCategory(
                         expanded = false
                         menuAction(option)
                     }) {
-                        Text(text = option)
+                        Text(text = option, color = DarkForestGreenColor)
                     }
                 }
             }

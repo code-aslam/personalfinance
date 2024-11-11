@@ -9,6 +9,6 @@ data class Category(
     @PrimaryKey(autoGenerate = true)
     var id : Long =  0,
     var title :String,
-    val icon : Int,
+    var icon : Int,
     var type : CategoryType
 )

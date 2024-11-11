@@ -1,6 +1,7 @@
 package com.example.personalfinance.presentation.categories
 
 import androidx.lifecycle.viewModelScope
+import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.domain.category.usecases.AddOrUpdateCategoryUseCase
@@ -29,6 +30,9 @@ class CategoryViewModel @Inject constructor(
     private val _expanseCategoryList = MutableStateFlow(mutableListOf<Category>())
     val expanseCategoryList = _expanseCategoryList.asStateFlow()
 
+    private val _categoryIconList = MutableStateFlow(mutableListOf<Int>())
+    val categoryIconList = _categoryIconList.asStateFlow()
+
     private val _showDelete = MutableStateFlow(false)
     var showDelete = _showDelete.asStateFlow()
 
@@ -40,6 +44,19 @@ class CategoryViewModel @Inject constructor(
 
     init {
         updateCategories()
+        addCategoryIcon()
+    }
+
+    private fun addCategoryIcon(){
+        _categoryIconList.value.clear()
+        _categoryIconList.value.addAll(
+            intArrayOf(
+                R.drawable.gifticon,
+                R.drawable.awardicon,
+                R.drawable.homeicon,
+                R.drawable.refundicon,
+                R.drawable.walleticon
+            ).toMutableList())
     }
 
     private fun updateCategories(){
