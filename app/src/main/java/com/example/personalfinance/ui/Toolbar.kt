@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.personalfinance.R
@@ -47,8 +48,8 @@ fun Toolbar(handleDrawer : () -> Unit){
                 )
             }
         }
-        Column(modifier = Modifier.weight(3f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Personal Finance", fontFamily = PBGFont, fontWeight = FontWeight.Normal, color = SecondaryColor)
+        Column(modifier = Modifier.weight(3f), horizontalAlignment = Alignment.Start) {
+            Text(text = "Personal Finance", fontFamily = PBGFont, fontWeight = FontWeight.Bold, color = SecondaryColor)
         }
     }
 //    CenterAlignedTopAppBar(

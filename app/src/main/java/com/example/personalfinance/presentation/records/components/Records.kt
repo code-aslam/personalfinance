@@ -48,9 +48,11 @@ import com.example.personalfinance.ui.ListItemAccount
 import com.example.personalfinance.ui.ListItemRecord
 import com.example.personalfinance.ui.theme.AccentColor
 import com.example.personalfinance.ui.theme.CharcoalGrey
+import com.example.personalfinance.ui.theme.DarkForestGreenColor
 import com.example.personalfinance.ui.theme.DeepBurgundy
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.SecondaryColor
+import com.example.personalfinance.ui.theme.SoftPinkColor
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -132,7 +134,7 @@ fun RecordHeader(padding: PaddingValues) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "EXPENSE", color = SecondaryColor)
-                Text("1500.00", color = AccentColor)
+                Text("1500.00", color = SoftPinkColor)
             }
             Column(
                 modifier = Modifier
@@ -142,7 +144,7 @@ fun RecordHeader(padding: PaddingValues) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "INCOME", color = SecondaryColor)
-                Text(text = "1200.00", color = AccentColor)
+                Text(text = "1200.00", color = DarkForestGreenColor)
             }
             Column(
                 modifier = Modifier
@@ -152,7 +154,7 @@ fun RecordHeader(padding: PaddingValues) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(text = "TOTAL", color = SecondaryColor)
-                Text(text = "2700.00", color = AccentColor)
+                Text(text = "-300.00", color = SoftPinkColor)
             }
         }
 

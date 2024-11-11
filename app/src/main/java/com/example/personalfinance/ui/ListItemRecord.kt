@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.DropdownMenu
@@ -36,25 +38,27 @@ fun ListItemRecord(
     record: Record,
     onItemClick : (Record) -> Unit
 ) {
-    Box(modifier = Modifier.padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp).clickable { onItemClick(record) }) {
+    Box(modifier = Modifier
+        .padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp)
+        .clickable { onItemClick(record) }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .padding(5.dp)
-                .clip(RoundedCornerShape(5.dp))
-                .border(1.dp, Color.Black, RoundedCornerShape(5.dp)),
+                .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
 
             Image(
-                painter = painterResource(id = R.drawable.salary),
+                painter = painterResource(id = R.drawable.gifticon),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(iconWidth)
-                    .weight(1f)
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Color.White, CircleShape)
             )
+            Spacer(modifier = Modifier.width(4.dp))
             Column(
                 modifier = Modifier.weight(4f)
             ) {

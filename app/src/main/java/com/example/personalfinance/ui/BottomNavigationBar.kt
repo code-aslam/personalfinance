@@ -16,6 +16,9 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -31,6 +34,7 @@ import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PBGFont
 import com.example.personalfinance.ui.theme.SecondaryColor
+import com.example.personalfinance.ui.theme.SoftPinkColor
 
 @Composable
 fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
@@ -54,10 +58,12 @@ fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
                     Image(
                     painter = painterResource(id = item.image), // Custom image for Home
                     contentDescription = item.label,
-                    modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(SecondaryColor)
+                    modifier = Modifier.size(if(currentRoute == item.route) 30.dp else 24.dp),
+                        colorFilter = ColorFilter.tint(if(currentRoute == item.route) SoftPinkColor else SecondaryColor)
                 )},
-                label = {Text(item.label, fontSize = 10.sp, fontFamily = PBGFont, fontWeight = FontWeight.Normal, color = SecondaryColor)}
+                label = {
+                    Text(item.label, fontSize = 10.sp, fontWeight = if(currentRoute == item.route) FontWeight.Bold else FontWeight.Normal, color = SecondaryColor)
+                }
             )
         }
 
