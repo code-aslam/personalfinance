@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
@@ -79,7 +80,7 @@ fun ListItemCategory(
                 .border(2.dp, Color.White, CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = category.title, modifier = Modifier.weight(4f))
+        Text(text = category.title, modifier = Modifier.weight(4f), fontSize = 18.sp, color = DarkForestGreenColor)
 
         Box(
             modifier = Modifier.weight(1f),

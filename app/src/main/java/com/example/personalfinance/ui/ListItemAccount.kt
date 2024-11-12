@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,9 @@ import androidx.compose.ui.unit.dp
 import com.example.personalfinance.R
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.ui.theme.DarkForestGreenColor
+import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SharpMainColor
 
 @Composable
 fun ListItemAccount(
@@ -49,46 +53,52 @@ fun ListItemAccount(
         mutableStateOf(false)
     }
 
-        Box(modifier = Modifier.padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp).clickable { onItemClick(account) }) {
+        Box(modifier = Modifier
+            .padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp)
+            .clickable { onItemClick(account) }) {
             Row(
                 modifier = Modifier
+                    .background(SharpMainColor)
                     .fillMaxWidth()
                     .height(70.dp)
-                    .padding(5.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .border(1.dp, Color.Black, RoundedCornerShape(5.dp)),
+                    .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
+                    .padding(start = 10.dp, end = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
 
+
                 Image(
-                    painter = painterResource(id = R.drawable.salary),
+                    painter = painterResource(id = account.icon),
                     contentDescription = "",
                     modifier = Modifier
                         .size(iconWidth)
-                        .weight(1f)
+                        .clip(RoundedCornerShape(4.dp))
+                        .border(1.dp, Color.White, RoundedCornerShape(4.dp))
                 )
+                Spacer(modifier = Modifier.width(4.dp))
                 Column(
                     modifier = Modifier.weight(4f)
                 ) {
-                    Text(text = "Savings")
                     Text(text = account.name)
+                    Text(text = account.initialAmount.toString())
                 }
 
                 Box(
                     modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.CenterStart
+                    contentAlignment = Alignment.CenterEnd
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.dots),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(DpSize(30.dp, 30.dp))
+                            .size(DpSize(25.dp, 25.dp))
                             .clickable { expanded = true }
                     )
                     DropdownMenu(
                         modifier = Modifier
-                            .background(Beige)
+                            .background(MainColor)
                             .width(200.dp)
                             .shadow(elevation = 2.dp),
                         expanded = expanded,
@@ -99,7 +109,7 @@ fun ListItemAccount(
                                 expanded = false
                                 menuAction(option)
                             }) {
-                                Text(text = option)
+                                Text(text = option, color = DarkForestGreenColor)
                             }
                         }
                     }

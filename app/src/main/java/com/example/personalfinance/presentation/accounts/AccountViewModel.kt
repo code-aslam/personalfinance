@@ -2,6 +2,7 @@ package com.example.personalfinance.presentation.accounts
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
@@ -40,12 +41,25 @@ class AccountViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
+    private val _accountIconList = MutableStateFlow(mutableListOf<Int>())
+    val accountIconList = _accountIconList.asStateFlow()
 
     init {
         fetchAccounts()
+        addAccountIcon()
     }
 
-    fun fetchAccounts(){
+    private fun addAccountIcon(){
+        _accountIconList.value.clear()
+        _accountIconList.value.addAll(
+            intArrayOf(
+                R.drawable.cashicon,
+                R.drawable.cardicon,
+                R.drawable.savingsicon
+            ).toMutableList())
+    }
+
+    private fun fetchAccounts(){
         _accountList.value = emptyList<Account>().toMutableList()
         useCaseExecutor.execute(
             getAllAccountsUseCase,
