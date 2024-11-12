@@ -41,6 +41,7 @@ import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.DarkForestGreenColor
 import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SecondaryColor
 
 @Composable
 fun ListItemCategory(
@@ -80,7 +81,7 @@ fun ListItemCategory(
                 .border(2.dp, Color.White, CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = category.title, modifier = Modifier.weight(4f), fontSize = 18.sp, color = DarkForestGreenColor)
+        Text(text = category.title, modifier = Modifier.weight(4f), fontSize = 18.sp, color = SecondaryColor)
 
         Box(
             modifier = Modifier.weight(1f),
@@ -106,7 +107,7 @@ fun ListItemCategory(
                         expanded = false
                         menuAction(option)
                     }) {
-                        Text(text = option, color = DarkForestGreenColor)
+                        Text(text = option, color = SecondaryColor)
                     }
                 }
             }

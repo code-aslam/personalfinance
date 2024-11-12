@@ -82,7 +82,7 @@ fun CreateRecordScreen(accountViewModel: AccountViewModel,
                        mainNavController: NavHostController){
     Scaffold(modifier = Modifier
         .fillMaxSize()
-        .background(Beige)) { innerPadding ->
+        .background(MainColor)) { innerPadding ->
         CreateRecord(accountViewModel,recordsViewModel = hiltViewModel(),categoryViewModel,innerPadding, mainNavController)
     }
 }

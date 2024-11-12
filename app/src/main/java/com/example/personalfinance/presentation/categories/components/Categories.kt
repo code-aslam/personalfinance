@@ -204,22 +204,22 @@ fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
             text = {
-                Text("Deleting this category will also delete all records and budgets for this category. Are you sure ?", color = DarkForestGreenColor, fontSize = 18.sp)
+                Text("Deleting this category will also delete all records and budgets for this category. Are you sure ?", color = SecondaryColor, fontSize = 18.sp)
 
             },
             confirmButton = {
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideDeleteAction()
@@ -233,10 +233,10 @@ fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = { viewModel.hideDeleteAction() }) {
                     Text("NO")
@@ -264,7 +264,7 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                     "Edit category",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -273,13 +273,13 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = DarkForestGreenColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
                         OutlinedTextField(
                             value = textValue,
                             onValueChange = { textValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -291,11 +291,11 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = DarkForestGreenColor)
+                        Text(text = "Icon", color = SecondaryColor)
                         Box(
                             modifier = Modifier
                                 .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp))
+                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -333,10 +333,10 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideEditAction()
@@ -350,10 +350,10 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideEditAction() }) {
@@ -389,7 +389,7 @@ fun AddDialog(viewModel: CategoryViewModel){
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -398,13 +398,13 @@ fun AddDialog(viewModel: CategoryViewModel){
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = "Type", color = DarkForestGreenColor)
+                        Text(text = "Type", color = SecondaryColor)
                         Spacer(modifier = Modifier.width(4.dp))
                         types.forEach {
                             type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
                                 selectedType = if(it) type else ""
                             })
-                            Text(text = type)
+                            Text(text = type, color = SecondaryColor)
                             Spacer(modifier = Modifier.width(2.dp))
                         }
 
@@ -412,13 +412,13 @@ fun AddDialog(viewModel: CategoryViewModel){
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = DarkForestGreenColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
                         OutlinedTextField(
                             value = textValue,
                             onValueChange = { textValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -430,11 +430,11 @@ fun AddDialog(viewModel: CategoryViewModel){
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = DarkForestGreenColor)
+                        Text(text = "Icon", color = SecondaryColor)
                         Box(
                             modifier = Modifier
                                 .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp))
+                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -473,10 +473,10 @@ fun AddDialog(viewModel: CategoryViewModel){
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideAddAction()
@@ -499,10 +499,10 @@ fun AddDialog(viewModel: CategoryViewModel){
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideAddAction() }) {

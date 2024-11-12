@@ -40,6 +40,7 @@ import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.DarkForestGreenColor
 import com.example.personalfinance.ui.theme.MainColor
+import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
 
 @Composable
@@ -109,7 +110,7 @@ fun ListItemAccount(
                                 expanded = false
                                 menuAction(option)
                             }) {
-                                Text(text = option, color = DarkForestGreenColor)
+                                Text(text = option, color = SecondaryColor)
                             }
                         }
                     }

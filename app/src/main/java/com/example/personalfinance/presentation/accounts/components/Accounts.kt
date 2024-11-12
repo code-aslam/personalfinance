@@ -221,21 +221,21 @@ fun DeleteDialog(viewModel: AccountViewModel, selectedAccount: Account) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
             text = {
-                Text("Deleting this account will also delete all records with this account. Are you sure ?", color = DarkForestGreenColor, fontSize = 18.sp)
+                Text("Deleting this account will also delete all records with this account. Are you sure ?", color = SecondaryColor, fontSize = 18.sp)
             },
             confirmButton = {
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideDeleteAction()
@@ -249,10 +249,10 @@ fun DeleteDialog(viewModel: AccountViewModel, selectedAccount: Account) {
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = { viewModel.hideDeleteAction() }) {
                     Text("NO")
@@ -282,7 +282,7 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                     "Edit account",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -291,13 +291,13 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Initial Amount", modifier = Modifier.weight(1f))
+                        Text(text = "Initial Amount", modifier = Modifier.weight(1f), color = SecondaryColor)
                         OutlinedTextField(
                             value = textInitialAmountValue.toString(),
                             onValueChange = { textInitialAmountValue = it.toInt() },
                             modifier = Modifier
                                 .weight(1.5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -308,13 +308,13 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                         modifier = Modifier.padding(top = 10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = DarkForestGreenColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
                         OutlinedTextField(
                             value = textNameValue,
                             onValueChange = { textNameValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -326,11 +326,11 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = DarkForestGreenColor)
+                        Text(text = "Icon", color = SecondaryColor)
                         Box(
                             modifier = Modifier
                                 .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp))
+                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -367,10 +367,10 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideEditAction()
@@ -384,10 +384,10 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideEditAction() }) {
@@ -419,7 +419,7 @@ fun AddDialog(viewModel: AccountViewModel){
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    color = DarkForestGreenColor,
+                    color = SecondaryColor,
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -428,13 +428,13 @@ fun AddDialog(viewModel: AccountViewModel){
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Initial Amount", modifier = Modifier.weight(1f))
+                        Text(text = "Initial Amount", modifier = Modifier.weight(1f), color = SecondaryColor)
                         OutlinedTextField(
                             value = textInitialAmountValue,
                             onValueChange = { textInitialAmountValue = it },
                             modifier = Modifier
                                 .weight(1.5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -445,13 +445,13 @@ fun AddDialog(viewModel: AccountViewModel){
                         modifier = Modifier.padding(top = 10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = DarkForestGreenColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
                         OutlinedTextField(
                             value = textNameValue,
                             onValueChange = { textNameValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
                                 focusedContainerColor = SharpMainColor,
                                 unfocusedContainerColor = SharpMainColor
@@ -463,11 +463,11 @@ fun AddDialog(viewModel: AccountViewModel){
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = DarkForestGreenColor)
+                        Text(text = "Icon", color = SecondaryColor)
                         Box(
                             modifier = Modifier
                                 .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp))
+                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -506,10 +506,10 @@ fun AddDialog(viewModel: AccountViewModel){
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     onClick = {
                         viewModel.hideAddAction()
@@ -529,10 +529,10 @@ fun AddDialog(viewModel: AccountViewModel){
                 Button(
                     modifier = Modifier
                         .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, DarkForestGreenColor, RoundedCornerShape(5.dp)),
+                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MainColor, // Set the background color
-                        contentColor = DarkForestGreenColor // Set the text color
+                        contentColor = SecondaryColor // Set the text color
                     ),
                     shape = RectangleShape,
                     onClick = { viewModel.hideAddAction() }) {
