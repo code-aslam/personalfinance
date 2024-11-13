@@ -119,8 +119,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     var selectedType by remember {
         mutableStateOf(types[0])
     }
-    val result by recordsViewModel.result.collectAsState()
-    val symbol by recordsViewModel.symbol.collectAsState()
+    val result by createRecordViewModel.result.collectAsState()
+    val symbol by createRecordViewModel.symbol.collectAsState()
     var textNotes by remember { mutableStateOf("") }
     var textAmountSecond by remember { mutableStateOf("") }
     var recordFrom by remember {
@@ -347,7 +347,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     .weight(0.5f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = symbol, fontSize = 30.sp, modifier = Modifier.weight(2f))
+                Text(text = symbol, fontSize = 40.sp, modifier = Modifier.weight(2f))
                 Text(
                     text = result,
                     modifier = Modifier
@@ -355,11 +355,11 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     textAlign = TextAlign.End,
                     fontSize = 40.sp
                 )
-                IconButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(2f)) {
+                IconButton(onClick = { createRecordViewModel.processDelete() }, modifier = Modifier.weight(2f)) {
                     Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        imageVector = ImageVector.vectorResource(id = R.drawable.backspace),
                         contentDescription = "Clear amount one at a time",
-                        tint = Color.Black
+                        tint = SecondaryColor
                     )
                 }
 
@@ -370,7 +370,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             Row(
             ) {
                 // + 7 8 9
-                TextButton(onClick = { recordsViewModel.processCalculation('+') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('+') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -381,7 +381,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "+", fontSize = 30.sp, color = MainColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('7') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('7') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -393,7 +393,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "7", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('8') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('8') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -405,7 +405,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "8", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('9') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('9') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -423,7 +423,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             Row(
             ) {
                 // + 7 8 9
-                TextButton(onClick = { recordsViewModel.processCalculation('-') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('-') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -434,7 +434,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "-", fontSize = 30.sp, color = MainColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('4') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('4') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -447,7 +447,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "4", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('5') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('5') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -460,7 +460,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "5", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('6') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('6') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -480,7 +480,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             Row(
             ) {
                 // + 7 8 9
-                TextButton(onClick = { recordsViewModel.processCalculation('*') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('*') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -491,7 +491,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "*", fontSize = 30.sp, color = MainColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('1') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('1') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -503,7 +503,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "1", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('2') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('2') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -515,7 +515,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "2", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('3') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('3') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -533,7 +533,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             Row(
             ) {
                 // + 7 8 9
-                TextButton(onClick = { recordsViewModel.processCalculation('/') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('/') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -544,7 +544,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "/", fontSize = 30.sp, color = MainColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('0') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('0') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -556,7 +556,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = "0", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('.') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('.') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -568,7 +568,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Text(text = ".", fontSize = 30.sp, color = SecondaryColor)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
-                TextButton(onClick = { recordsViewModel.processCalculation('=') },
+                TextButton(onClick = { createRecordViewModel.processCalculation('=') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
@@ -678,7 +678,9 @@ fun BottomSheetContentCategory(categories: List<Category>, createRecordViewModel
             ) {
                 rowItems.forEach {
                     category ->
-                    Box(modifier = Modifier.background(MainColor).weight(1f),
+                    Box(modifier = Modifier
+                        .background(MainColor)
+                        .weight(1f),
                         contentAlignment = Alignment.Center){
                         ListItemCreateRecordCategory(
                             iconWidth = DpSize(30.dp, 30.dp),
