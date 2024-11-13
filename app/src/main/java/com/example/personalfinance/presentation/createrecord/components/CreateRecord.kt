@@ -54,7 +54,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -220,6 +222,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                         color = SecondaryColor,
                         modifier = Modifier.clickable {
                             selectedType = type
+                            createRecordViewModel.updateCategory(Category.testData())
                         })
                 }
 
@@ -254,6 +257,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                 ) {
                     Image(
                         painter = painterResource(id = selectedAccount.icon),
+                        colorFilter = if(selectedAccount.icon == R.drawable.walletbig)
+                            ColorFilter.tint(SecondaryColor) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         contentDescription = selectedAccount.name,
                         modifier = Modifier
                             .size(35.dp)
@@ -290,6 +295,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Image(
                         painter = painterResource(id = selectedCategory.icon),
                         contentDescription = "Category",
+                        colorFilter = if(selectedCategory.icon == R.drawable.price)
+                            ColorFilter.tint(SecondaryColor) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         modifier = Modifier
                             .size(35.dp)
                             .clip(CircleShape)
@@ -602,7 +609,10 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
         sheetState = bottomSheetStateCategory,
         sheetContent = {
             when(selectedType){
-                "INCOME", "EXPENSE" -> BottomSheetContentCategory(categoriesIncome,createRecordViewModel,onDismiss = {
+                "INCOME" -> BottomSheetContentCategory(categoriesIncome,createRecordViewModel,onDismiss = {
+                    scope.launch { bottomSheetStateCategory.hide() }
+                })
+                "EXPENSE" -> BottomSheetContentCategory(categoriesExpanse,createRecordViewModel,onDismiss = {
                     scope.launch { bottomSheetStateCategory.hide() }
                 })
                 "TRANSFER" -> BottomSheetContentAccount(createRecordViewModel,accountViewModel,true,onDismiss = {
@@ -651,7 +661,7 @@ fun BottomSheetContentAccount(createRecordViewModel: CreateRecordViewModel,
 }
 
 @Composable
-fun BottomSheetContentCategory(categories : List<Category>, createRecordViewModel: CreateRecordViewModel, onDismiss: () -> Unit) {
+fun BottomSheetContentCategory(categories: List<Category>, createRecordViewModel: CreateRecordViewModel, onDismiss: () -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
