@@ -11,7 +11,7 @@ import com.example.personalfinance.data.record.entity.Record
 
 @Database(
     entities = [Record::class, Category::class, Account::class],
-    version = 6
+    version = 7
 )
 abstract class FinanceDataBase : RoomDatabase() {
     abstract val recordDao : RecordDao

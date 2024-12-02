@@ -1,6 +1,7 @@
 package com.example.personalfinance.presentation.createrecord.components
 
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,11 +38,15 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -59,6 +64,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
@@ -77,6 +83,8 @@ import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.createrecord.CreateRecordViewModel
 import com.example.personalfinance.presentation.records.RecordsViewModel
+import com.example.personalfinance.presentation.ui.components.DatePickerModal
+import com.example.personalfinance.presentation.ui.components.TimePickerModel
 import com.example.personalfinance.ui.ListItemAccount
 import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemCreateRecordAccount
@@ -89,7 +97,12 @@ import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PBGFont
 import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun CreateRecordScreen(mainNavController: NavHostController){
@@ -101,6 +114,7 @@ fun CreateRecordScreen(mainNavController: NavHostController){
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
     val createRecordViewModel : CreateRecordViewModel = hiltViewModel()
@@ -123,6 +137,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val symbol by createRecordViewModel.symbol.collectAsState()
     var textNotes by remember { mutableStateOf("") }
     var textAmountSecond by remember { mutableStateOf("") }
+    val selectedDate by createRecordViewModel.selectedDate.collectAsState()
+    val selectedTime by createRecordViewModel.selectedTime.collectAsState()
     var recordFrom by remember {
         mutableStateOf("Account")
     }
@@ -137,9 +153,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
         "INCOME", "EXPENSE" -> "Category"
         else -> "To"
     }
-//    var categorySelected by remember {
-//        mutableStateOf(Category())
-//    }
+
 
     Column(
         modifier = Modifier
@@ -582,11 +596,11 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
-                    Text(text = "Oct 30, 2024", fontSize = 20.sp, color = SecondaryColor)
+                TextButton(onClick = { createRecordViewModel.setDatePicker(true) }, modifier = Modifier.weight(1f)) {
+                    Text(text = selectedDate, fontSize = 20.sp, color = SecondaryColor)
                 }
-                TextButton(onClick = { /*TODO*/ }, modifier = Modifier.weight(1f)) {
-                    Text(text = "11:00 AM", fontSize = 20.sp, color = SecondaryColor)
+                TextButton(onClick = { createRecordViewModel.setTimePicker(true) }, modifier = Modifier.weight(1f)) {
+                    Text(text = selectedTime, fontSize = 20.sp, color = SecondaryColor)
                 }
             }
         }
@@ -623,7 +637,23 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     ) {
         // Additional content if needed
     }
+
+
+    DatePickerModal(onDateSelected = {
+        date -> createRecordViewModel.updateDate(date)
+    }, onDismiss = {
+        createRecordViewModel.setDatePicker(false)
+    }, createRecordViewModel = createRecordViewModel)
+
+
+    TimePickerModel(onTimeSelected = {
+            time -> createRecordViewModel.updateTime(time)
+    }, onDismiss = {
+        createRecordViewModel.setTimePicker(false)
+    }, createRecordViewModel = createRecordViewModel)
 }
+
+
 
 @Composable
 fun BottomSheetContentAccount(createRecordViewModel: CreateRecordViewModel,

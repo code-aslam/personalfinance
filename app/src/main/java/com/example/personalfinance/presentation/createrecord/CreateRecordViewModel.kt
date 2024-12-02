@@ -4,6 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
+import com.example.personalfinance.common.toRequiredFormat
+import com.example.personalfinance.common.toRequiredTimeFormat
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
@@ -12,6 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Date
 import java.util.Stack
 import javax.inject.Inject
 
@@ -49,6 +54,18 @@ class CreateRecordViewModel @Inject constructor(
 
     private val _transactionType = MutableStateFlow(false)
     val transactionType = _transactionType.asStateFlow()
+
+    private val _showDatePicker = MutableStateFlow(false)
+    var showDatePicker = _showDatePicker.asStateFlow()
+
+    private val _showTimePicker = MutableStateFlow(false)
+    var showTimePicker = _showTimePicker.asStateFlow()
+
+    private val _selectedDate = MutableStateFlow(Date().toRequiredFormat())
+    var selectedDate = _selectedDate.asStateFlow()
+
+    private val _selectedTime = MutableStateFlow(Date().toRequiredTimeFormat())
+    var selectedTime = _selectedTime.asStateFlow()
 
     private var part1 = ""
     private var part2 = ""
@@ -120,6 +137,22 @@ class CreateRecordViewModel @Inject constructor(
     }
     private fun isSymbol(toProcess: Char) : Boolean{
         return (toProcess == '+' || toProcess == '-' || toProcess == '*' || toProcess == '/' || toProcess == '=')
+    }
+
+    fun setDatePicker(show : Boolean){
+        _showDatePicker.value = show
+    }
+
+    fun setTimePicker(show : Boolean){
+        _showTimePicker.value = show
+    }
+
+    fun updateDate(newDate : String){
+        _selectedDate.value = newDate
+    }
+
+    fun updateTime(newDate: String){
+        _selectedTime.value = newDate
     }
 
 }
