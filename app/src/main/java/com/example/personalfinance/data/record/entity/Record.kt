@@ -11,13 +11,13 @@ data class Record(
 
     var transactionType : TransactionType = TransactionType.INCOME,
 
-    var categoryId : Int = -1,
+    var categoryId : Long = -1,
 
-    var accountId : Int = -1,
+    var accountId : Long = -1,
 
     var notes : String = "",
 
-    var date : String = "",
+    var date : Long = 0,
 
     var time : String = "",
 

@@ -1,9 +1,12 @@
 package com.example.personalfinance.presentation.createrecord
 
+import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
+import com.example.personalfinance.common.toRequireFormat
 import com.example.personalfinance.common.toRequiredFormat
 import com.example.personalfinance.common.toRequiredTimeFormat
 import com.example.personalfinance.data.accounts.entity.Account
@@ -63,6 +66,9 @@ class CreateRecordViewModel @Inject constructor(
 
     private val _selectedDate = MutableStateFlow(Date().toRequiredFormat())
     var selectedDate = _selectedDate.asStateFlow()
+
+    private val _selectedDateMills = MutableStateFlow(System.currentTimeMillis())
+    var selectedDateMills = _selectedDateMills.asStateFlow()
 
     private val _selectedTime = MutableStateFlow(Date().toRequiredTimeFormat())
     var selectedTime = _selectedTime.asStateFlow()
@@ -147,8 +153,11 @@ class CreateRecordViewModel @Inject constructor(
         _showTimePicker.value = show
     }
 
-    fun updateDate(newDate : String){
-        _selectedDate.value = newDate
+    fun updateDate(newDateMills : Long?){
+        newDateMills?.let {
+           _selectedDate.value = Date(it).toRequiredFormat()
+            _selectedDateMills.value = it
+        }
     }
 
     fun updateTime(newDate: String){

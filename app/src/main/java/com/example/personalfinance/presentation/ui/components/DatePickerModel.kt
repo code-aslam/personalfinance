@@ -3,6 +3,7 @@ package com.example.personalfinance.presentation.ui.components
 import androidx.compose.material.TextButton
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
@@ -15,7 +16,7 @@ import com.example.personalfinance.presentation.createrecord.CreateRecordViewMod
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
-    onDateSelected: (String) -> Unit,
+    onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
     createRecordViewModel: CreateRecordViewModel
 ) {
@@ -27,7 +28,7 @@ fun DatePickerModal(
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = {
-                    onDateSelected(datePickerState.toRequireFormat())
+                    onDateSelected(datePickerState.selectedDateMillis)
                     onDismiss()
                 }) {
                     Text("OK")

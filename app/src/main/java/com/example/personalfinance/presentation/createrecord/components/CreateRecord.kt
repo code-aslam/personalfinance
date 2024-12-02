@@ -76,6 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.personalfinance.R
+import com.example.personalfinance.common.TransactionType
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.data.record.entity.Record
@@ -127,28 +128,23 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val selectedCategory by createRecordViewModel.selectedCategory.collectAsState()
     val transferType by createRecordViewModel.transactionType.collectAsState()
     val scope = rememberCoroutineScope()
-    val types by remember {
-        mutableStateOf(listOf("INCOME", "EXPENSE"))
-    }
-    var selectedType by remember {
-        mutableStateOf(types[0])
-    }
+    val types by remember { mutableStateOf(listOf("INCOME", "EXPENSE")) }
+    var selectedType by remember { mutableStateOf(types[0]) }
     val result by createRecordViewModel.result.collectAsState()
     val symbol by createRecordViewModel.symbol.collectAsState()
     var textNotes by remember { mutableStateOf("") }
     var textAmountSecond by remember { mutableStateOf("") }
+
     val selectedDate by createRecordViewModel.selectedDate.collectAsState()
+    val selectedDateMills by createRecordViewModel.selectedDateMills.collectAsState()
+
     val selectedTime by createRecordViewModel.selectedTime.collectAsState()
-    var recordFrom by remember {
-        mutableStateOf("Account")
-    }
+    var recordFrom by remember { mutableStateOf("Account") }
     recordFrom = when(selectedType){
         "INCOME", "EXPENSE" -> "Account"
         else -> "From"
     }
-    var recordTo by remember {
-        mutableStateOf("Category")
-    }
+    var recordTo by remember { mutableStateOf("Category") }
     recordTo = when(selectedType){
         "INCOME", "EXPENSE" -> "Category"
         else -> "To"
@@ -186,7 +182,15 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
 
             IconButton(onClick = {
                 recordsViewModel.addNewRecord(
-                    Record(notes = textNotes)
+                    Record(
+                        transactionType = if(selectedType == "INCOME") TransactionType.INCOME else TransactionType.EXPANSE,
+                        categoryId = selectedCategory.id,
+                        accountId = selectedAccount.id,
+                        date = selectedDateMills,
+                        time = selectedTime,
+                        amount = result.toDouble(),
+                        notes = textNotes
+                    )
                 )
                 mainNavController.popBackStack()
             }, modifier = Modifier.weight(1f)) {
@@ -640,7 +644,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
 
 
     DatePickerModal(onDateSelected = {
-        date -> createRecordViewModel.updateDate(date)
+        selectedDateMills -> createRecordViewModel.updateDate(selectedDateMills)
     }, onDismiss = {
         createRecordViewModel.setDatePicker(false)
     }, createRecordViewModel = createRecordViewModel)
