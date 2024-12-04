@@ -1,15 +1,11 @@
 package com.example.personalfinance.data.record.entity
 
 import androidx.annotation.DrawableRes
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.common.TransactionType
 
-@Entity
-data class Record(
-    @PrimaryKey(autoGenerate = true)
-    var id : Long = 0,
+data class RecordWithCategoryAndAccount(
+    var recordId : Long = 0,
 
     var transactionType : TransactionType = TransactionType.INCOME,
 
@@ -23,10 +19,15 @@ data class Record(
 
     var time : String = "",
 
-    var amount : Double = 0.0
+    var amount : Double = 0.0,
 
-){
-    companion object{
-        fun getTest()  = com.example.personalfinance.data.record.entity.Record()
-    }
-}
+    val accountInitialAmount : Double = 0.0,
+    val accountName : String = "",
+    @DrawableRes
+    val accountIcon : Int = -1,
+
+    val categoryTitle :String = "",
+    @DrawableRes
+    var categoryIcon : Int = -1,
+    var categoryType : CategoryType = CategoryType.INCOME
+)

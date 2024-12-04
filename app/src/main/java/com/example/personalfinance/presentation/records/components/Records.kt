@@ -39,7 +39,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.personalfinance.R
 import com.example.personalfinance.data.record.entity.Record
+import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.navigation.BottomNavItem
+import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
@@ -56,26 +58,24 @@ import com.example.personalfinance.ui.theme.SoftPinkColor
 import kotlinx.coroutines.flow.collectLatest
 
 
-@SuppressLint("StateFlowValueCalledInComposition")
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Records(padding: PaddingValues,
             handleDrawer: () -> Unit,
-            recordsViewModel: RecordsViewModel,
 navController: NavHostController) {
+    val recordsViewModel : RecordsViewModel = hiltViewModel()
 
-    val recordList by recordsViewModel.recordList.collectAsState()
+    val recordWithCategoryAndAccountList by recordsViewModel.recordWithCategoryAndAccountList.collectAsState()
 
-    List(recordList, padding, handleDrawer)
+    List(recordWithCategoryAndAccountList, padding, handleDrawer)
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun List(recordList: List<Record>, padding: PaddingValues, handleDrawer: () -> Unit){
+fun List(recordList: List<RecordWithCategoryAndAccount>, padding: PaddingValues, handleDrawer: () -> Unit){
     var selectedRecord by remember {
         mutableStateOf(
-            Record.getTest()
+            RecordWithCategoryAndAccount()
         )
     }
 

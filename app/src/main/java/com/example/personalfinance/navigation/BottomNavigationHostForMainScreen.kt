@@ -26,7 +26,6 @@ fun BottomNavigationHostForMainScreen(navController: NavHostController,
                    categoryViewModel: CategoryViewModel,
                    accountViewModel: AccountViewModel) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val recordsViewModel : RecordsViewModel = hiltViewModel()
     NavHost(navController = navController,
         startDestination = BottomNavItem.Records.route,
         enterTransition = { EnterTransition.None },
@@ -34,7 +33,6 @@ fun BottomNavigationHostForMainScreen(navController: NavHostController,
         composable(BottomNavItem.Records.route) {
                 Records(padding,
                 handleDrawer,
-                    recordsViewModel,
                 navController)
         }
         composable(BottomNavItem.Budgets.route) { Budgets(padding, handleDrawer) }

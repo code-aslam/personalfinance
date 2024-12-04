@@ -30,13 +30,14 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.personalfinance.R
 import com.example.personalfinance.data.record.entity.Record
+import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.ui.theme.Beige
 
 @Composable
 fun ListItemRecord(
     iconWidth: DpSize,
-    record: Record,
-    onItemClick : (Record) -> Unit
+    record: RecordWithCategoryAndAccount,
+    onItemClick : (RecordWithCategoryAndAccount) -> Unit
 ) {
     Box(modifier = Modifier
         .padding(start = 15.dp, top = 5.dp, bottom = 5.dp, end = 15.dp)
@@ -51,7 +52,7 @@ fun ListItemRecord(
         ) {
 
             Image(
-                painter = painterResource(id = R.drawable.gifticon),
+                painter = painterResource(id = record.categoryIcon),
                 contentDescription = "",
                 modifier = Modifier
                     .size(50.dp)
@@ -62,7 +63,7 @@ fun ListItemRecord(
             Column(
                 modifier = Modifier.weight(4f)
             ) {
-                Text(text = "Savings")
+                Text(text = record.categoryTitle)
                 Text(text = record.amount.toString())
             }
 

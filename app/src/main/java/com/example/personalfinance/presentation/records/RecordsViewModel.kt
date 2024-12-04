@@ -3,6 +3,7 @@ package com.example.personalfinance.presentation.records
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.record.entity.Record
+import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.domain.record.usecases.GetRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
@@ -30,6 +31,9 @@ class RecordsViewModel @Inject constructor(
     private val _recordList = MutableStateFlow(mutableListOf<Record>())
     val recordList = _recordList.asStateFlow()
 
+    private val _recordWithCategoryAndAccountList = MutableStateFlow(mutableListOf<RecordWithCategoryAndAccount>())
+    val recordWithCategoryAndAccountList = _recordWithCategoryAndAccountList.asStateFlow()
+
     private val _showCreateRecord = MutableStateFlow(false)
     var showCreateRecord: StateFlow<Boolean> = _showCreateRecord.asStateFlow()
 
@@ -48,14 +52,14 @@ class RecordsViewModel @Inject constructor(
     }
 
 
-    private fun handleRecords(records: Flow<List<Record>>) {
-        val recordList = _recordList.value
-        _recordList.value.clear()
+    private fun handleRecords(records: Flow<List<RecordWithCategoryAndAccount>>) {
+        val recordList = _recordWithCategoryAndAccountList.value
+        _recordWithCategoryAndAccountList.value.clear()
         viewModelScope.launch {
             records.collect { list ->
                 list.forEach {record-> recordList.add(record)}
             }
-            _recordList.value = recordList
+            _recordWithCategoryAndAccountList.value = recordList
         }
 
     }
