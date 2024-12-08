@@ -63,7 +63,6 @@ fun Records(padding: PaddingValues,
             handleDrawer: () -> Unit,
 navController: NavHostController) {
     val recordsViewModel : RecordsViewModel = hiltViewModel()
-
     val recordWithCategoryAndAccountList by recordsViewModel.recordWithCategoryAndAccountList.collectAsState()
 
     List(recordWithCategoryAndAccountList, padding, handleDrawer)

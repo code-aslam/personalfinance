@@ -37,6 +37,8 @@ class RecordsViewModel @Inject constructor(
     private val _showCreateRecord = MutableStateFlow(false)
     var showCreateRecord: StateFlow<Boolean> = _showCreateRecord.asStateFlow()
 
+    private val _initDone = MutableStateFlow(false)
+    var initDone: StateFlow<Boolean> = _initDone.asStateFlow()
 
     init {
         fetchRecords()
@@ -60,6 +62,7 @@ class RecordsViewModel @Inject constructor(
                 list.forEach {record-> recordList.add(record)}
             }
             _recordWithCategoryAndAccountList.value = recordList
+            _initDone.value = true
         }
 
     }
