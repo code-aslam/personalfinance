@@ -60,6 +60,7 @@ import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.categories.CategoryViewModel
+import com.example.personalfinance.presentation.ui.components.Dialog
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
@@ -91,10 +92,15 @@ fun Accounts(
         )
     }
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
-    
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    val showDelete by accountViewModel.showDelete.collectAsState()
+    val showEdit by accountViewModel.showEdit.collectAsState()
+    val accountIconList by accountViewModel.accountIconList.collectAsState()
+    val showAdd by accountViewModel.showAdd.collectAsState()
+
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +112,7 @@ fun Accounts(
             }
         }
         stickyHeader {
-            AccountHeader(padding = padding)
+            AccountHeader()
             BottomShadow()
         }
         item {
@@ -164,137 +170,36 @@ fun Accounts(
         }
     }
 
-    DeleteDialog(viewModel = accountViewModel, selectedAccount = selectedAccount)
-    EditDialog(viewModel = accountViewModel, selectedAccount = selectedAccount, selectedIndex = selectedIndex)
-    AddDialog(viewModel = accountViewModel)
-}
-
-@Composable
-fun AccountHeader(padding: PaddingValues){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()) {
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL SPENT", color = SecondaryColor)
-                    Text("1500.00",  color = SecondaryColor)
-                }
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL BUDGET", color = SecondaryColor)
-                    Text(text = "1200.00",  color = SecondaryColor)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DeleteDialog(viewModel: AccountViewModel, selectedAccount: Account) {
-    val showDelete by viewModel.showDelete.collectAsState()
-    if (showDelete) {
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideDeleteAction() },
-            title = {
-                Text(
-                    "Delete This Account",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+    if(showDelete) {
+        Dialog(
+            title = "Delete This Account",
+            content = {
                 Text("Deleting this account will also delete all records with this account. Are you sure ?", color = SecondaryColor, fontSize = 18.sp)
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideDeleteAction()
-                        viewModel.deleteAccountAction(selectedAccount)
-                    }) {
-                    Text("YES")
-                }
-
-            },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = { viewModel.hideDeleteAction() }) {
-                    Text("NO")
-                }
-            }
+            confirmText = "YES",
+            onConfirm = { accountViewModel.deleteAccountAction(selectedAccount)},
+            dismissText = "NO",
+            onDismiss = { accountViewModel.hideDeleteAction() }
         )
     }
-}
 
-@Composable
-fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIndex :Int){
-    val showEdit by viewModel.showEdit.collectAsState()
-    val accountIconList by viewModel.accountIconList.collectAsState()
-
-    if (showEdit) {
+    if(showEdit){
         var textNameValue by remember { mutableStateOf(selectedAccount.name) }
-        var textInitialAmountValue by remember { mutableIntStateOf(selectedAccount.initialAmount) }
-        var selectedIcon by remember {
-            mutableIntStateOf(selectedAccount.icon)
-        }
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideEditAction() },
-            title = {
-                Text(
-                    "Edit account",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+        var textInitialAmountValue by remember { mutableStateOf(selectedAccount.initialAmount.toString()) }
+        var selectedIcon by remember { mutableIntStateOf(selectedAccount.icon) }
+        Dialog(
+            title = "Edit account",
+            content = {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "Initial Amount", modifier = Modifier.weight(1f), color = SecondaryColor)
                         OutlinedTextField(
-                            value = textInitialAmountValue.toString(),
-                            onValueChange = { textInitialAmountValue = it.toInt() },
+                            value = textInitialAmountValue,
+                            onValueChange = {
+                                textInitialAmountValue = it
+                            },
                             modifier = Modifier
                                 .weight(1.5f)
                                 .background(SecondaryColor, RoundedCornerShape(5.dp)),
@@ -363,67 +268,27 @@ fun EditDialog(viewModel: AccountViewModel, selectedAccount: Account, selectedIn
                     }
                 }
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideEditAction()
-                        viewModel.updateAccountAction(selectedAccount.copy(name = textNameValue, icon = selectedIcon, initialAmount = textInitialAmountValue), selectedIndex)
-                    }) {
-                    Text("SAVE")
-                }
-
+            confirmText = "SAVE",
+            onConfirm = {
+                accountViewModel.updateAccountAction(
+                    selectedAccount.copy(
+                        name = textNameValue,
+                        icon = selectedIcon,
+                        initialAmount = if(textInitialAmountValue.toIntOrNull() != null) textInitialAmountValue.toInt() else 0),
+                    selectedIndex)
             },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    shape = RectangleShape,
-                    onClick = { viewModel.hideEditAction() }) {
-                    Text("CANCEL")
-                }
-            }
+            dismissText = "NO",
+            onDismiss = { accountViewModel.hideEditAction() }
         )
     }
-}
 
-
-@Composable
-fun AddDialog(viewModel: AccountViewModel){
-    val showAdd by viewModel.showAdd.collectAsState()
-    val accountIconList by viewModel.accountIconList.collectAsState()
-    var selectedIcon by remember {
-        mutableIntStateOf(accountIconList[0])
-    }
-    if (showAdd) {
-        var textInitialAmountValue by remember { mutableStateOf("") }
+    if(showAdd) {
         var textNameValue by remember { mutableStateOf("") }
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideAddAction() },
-            title = {
-                Text(
-                    "Add new account",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+        var textInitialAmountValue by remember { mutableStateOf("") }
+        var selectedIcon by remember { mutableIntStateOf(accountIconList[0]) }
+        Dialog(
+            title = "Add new account",
+            content = {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -499,46 +364,54 @@ fun AddDialog(viewModel: AccountViewModel){
                         }
                     }
                 }
-
-
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideAddAction()
-                        viewModel.addNewAccountAction(
-                            Account(
-                                name = textNameValue,
-                                icon = selectedIcon,
-                                initialAmount = textInitialAmountValue.toInt()
-                            )
-                        )
-                    }) {
-                    Text("SAVE", modifier = Modifier.background(MainColor))
+            confirmText = "SAVE",
+            onConfirm = { accountViewModel.addNewAccountAction(Account(
+                    name = textNameValue,
+                    icon = selectedIcon,
+                    initialAmount = textInitialAmountValue.toInt()
+                )
+            )},
+            dismissText = "CANCEL",
+            onDismiss = { accountViewModel.hideAddAction() }
+        )
+    }
+}
+
+@Composable
+fun AccountHeader(){
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp),
+        elevation = 0.dp,
+        backgroundColor = MainColor
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+        ) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()) {
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally){
+                    Text(text = "TOTAL SPENT", color = SecondaryColor)
+                    Text("1500.00",  color = SecondaryColor)
                 }
-
-            },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    shape = RectangleShape,
-                    onClick = { viewModel.hideAddAction() }) {
-                    Text("CANCEL", modifier = Modifier.background(MainColor))
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally){
+                    Text(text = "TOTAL BUDGET", color = SecondaryColor)
+                    Text(text = "1200.00",  color = SecondaryColor)
                 }
             }
-        )
+        }
     }
 }
