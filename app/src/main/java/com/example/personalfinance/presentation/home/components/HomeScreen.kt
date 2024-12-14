@@ -36,9 +36,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(categoryViewModel: CategoryViewModel,
-               accountViewModel: AccountViewModel,
-               mainNavController: NavHostController,
+fun HomeScreen(mainNavController: NavHostController,
 ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -78,9 +76,7 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
                 ) { innerPadding ->
                     HomeScreenConfiguration(
                         navController,
-                        innerPadding,
-                        categoryViewModel,
-                        accountViewModel,
+                        innerPadding
                     ) {
                         scope.launch {
                             drawerState.apply {
@@ -99,7 +95,6 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
 
 
 @Composable
-fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel,handleDrawer : () -> Unit){
-    BottomNavigationHostForMainScreen(navController, padding, handleDrawer, categoryViewModel,accountViewModel)
-
+fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues,handleDrawer : () -> Unit){
+    BottomNavigationHostForMainScreen(navController, padding, handleDrawer)
 }

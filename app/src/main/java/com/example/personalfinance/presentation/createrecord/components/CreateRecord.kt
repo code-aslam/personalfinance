@@ -106,12 +106,17 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun CreateRecordScreen(mainNavController: NavHostController){
+fun CreateRecordScreen(
+    mainNavController: NavHostController,
+    accountViewModel: AccountViewModel,
+    recordsViewModel: RecordsViewModel,
+    categoryViewModel: CategoryViewModel
+){
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(MainColor)) { innerPadding ->
-        CreateRecord(accountViewModel = hiltViewModel(),recordsViewModel = hiltViewModel(),categoryViewModel = hiltViewModel(),innerPadding, mainNavController)
+        CreateRecord(accountViewModel,recordsViewModel,categoryViewModel,innerPadding, mainNavController)
     }
 }
 

@@ -61,8 +61,8 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun Records(padding: PaddingValues,
             handleDrawer: () -> Unit,
+            recordsViewModel: RecordsViewModel,
 navController: NavHostController) {
-    val recordsViewModel : RecordsViewModel = hiltViewModel()
     val recordWithCategoryAndAccountList by recordsViewModel.recordWithCategoryAndAccountList.collectAsState()
 
     List(recordWithCategoryAndAccountList, padding, handleDrawer)

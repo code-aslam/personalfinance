@@ -22,21 +22,33 @@ import com.example.personalfinance.presentation.records.components.Records
 @Composable
 fun BottomNavigationHostForMainScreen(navController: NavHostController,
                    padding : PaddingValues,
-                   handleDrawer : () -> Unit,
-                   categoryViewModel: CategoryViewModel,
-                   accountViewModel: AccountViewModel) {
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                   handleDrawer : () -> Unit) {
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+
     NavHost(navController = navController,
         startDestination = BottomNavItem.Records.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None}){
         composable(BottomNavItem.Records.route) {
-                Records(padding,
-                handleDrawer,
-                navController)
+            backstackEntry->  Records(padding,
+            handleDrawer,
+            recordsViewModel = hiltViewModel(backstackEntry),
+            navController)
         }
-        composable(BottomNavItem.Budgets.route) { Budgets(padding, handleDrawer) }
-        composable(BottomNavItem.Accounts.route) { Accounts(padding, handleDrawer, accountViewModel) }
-        composable(BottomNavItem.Categories.route) { Categories(padding, handleDrawer, categoryViewModel) }
+        composable(BottomNavItem.Budgets.route) {
+            Budgets(padding, handleDrawer)
+
+        }
+        composable(BottomNavItem.Accounts.route) {
+            currentBackStackEntry?.let {
+                Accounts(padding, handleDrawer, accountViewModel = hiltViewModel(it))
+            }
+        }
+        composable(BottomNavItem.Categories.route) {
+            currentBackStackEntry?.let {
+                Categories(padding, handleDrawer, viewModel = hiltViewModel(it))
+            }
+
+        }
     }
 }

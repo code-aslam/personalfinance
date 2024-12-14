@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,16 +21,22 @@ import com.example.personalfinance.presentation.records.RecordsViewModel
 
 @Composable
 fun AppNavigation(
-    accountViewModel: AccountViewModel,
-    categoryViewModel: CategoryViewModel,
-    mainNavController : NavHostController
+    mainNavController : NavHostController,
+    startDestination : String = Screens.HomeScreen.route
 ){
-    val currentBackStackEntry by mainNavController.currentBackStackEntryAsState()
     NavHost(navController = mainNavController,
-        startDestination = Screens.HomeScreen.route,
+        startDestination = startDestination,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None}){
-        composable(Screens.HomeScreen.route) { HomeScreen(accountViewModel = accountViewModel, categoryViewModel = categoryViewModel, mainNavController = mainNavController) }
-        composable(Screens.CreateRecordScreen.route) { CreateRecordScreen(mainNavController) }
+        composable(Screens.HomeScreen.route) {
+            HomeScreen(mainNavController = mainNavController)
+        }
+        composable(Screens.CreateRecordScreen.route) {
+            backstackEntry ->
+            CreateRecordScreen(mainNavController,
+                accountViewModel = hiltViewModel(backstackEntry),
+                recordsViewModel = hiltViewModel(backstackEntry),
+                categoryViewModel = hiltViewModel(backstackEntry))
+        }
     }
 }
