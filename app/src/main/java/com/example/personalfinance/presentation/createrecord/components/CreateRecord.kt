@@ -1,7 +1,5 @@
 package com.example.personalfinance.presentation.createrecord.components
 
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,26 +26,18 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,26 +47,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.personalfinance.R
 import com.example.personalfinance.common.TransactionType
-import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.presentation.accounts.AccountViewModel
@@ -86,40 +69,38 @@ import com.example.personalfinance.presentation.createrecord.CreateRecordViewMod
 import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.presentation.ui.components.DatePickerModal
 import com.example.personalfinance.presentation.ui.components.TimePickerModel
-import com.example.personalfinance.ui.ListItemAccount
-import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemCreateRecordAccount
 import com.example.personalfinance.ui.ListItemCreateRecordCategory
 import com.example.personalfinance.ui.ListItemHeaderAccount
-import com.example.personalfinance.ui.theme.AccentColor
-import com.example.personalfinance.ui.theme.Beige
-import com.example.personalfinance.ui.theme.LightBeige
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.PBGFont
 import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
-import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 @Composable
-fun CreateRecordScreen(mainNavController: NavHostController){
+fun CreateRecordScreen(
+    mainNavController: NavHostController,
+    accountViewModel: AccountViewModel,
+    recordsViewModel: RecordsViewModel,
+    categoryViewModel: CategoryViewModel,
+    createRecordViewModel: CreateRecordViewModel
+){
 
+    LaunchedEffect(Unit) {
+        accountViewModel.fetchAccounts()
+        categoryViewModel.fetchCategories()
+    }
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(MainColor)) { innerPadding ->
-        CreateRecord(accountViewModel = hiltViewModel(),recordsViewModel = hiltViewModel(),categoryViewModel = hiltViewModel(),innerPadding, mainNavController)
+        CreateRecord(accountViewModel,recordsViewModel,categoryViewModel, createRecordViewModel,innerPadding, mainNavController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
-    val createRecordViewModel : CreateRecordViewModel = hiltViewModel()
-
+fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel,createRecordViewModel: CreateRecordViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
     val categoriesIncome by categoryViewModel.incomeCategoryList.collectAsState()
     val categoriesExpanse by categoryViewModel.expanseCategoryList.collectAsState()
     val bottomSheetStateAccount = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)

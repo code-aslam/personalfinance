@@ -15,30 +15,21 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.personalfinance.navigation.BottomNavItem
 import com.example.personalfinance.navigation.BottomNavigationHostForMainScreen
 import com.example.personalfinance.navigation.Screens
-import com.example.personalfinance.presentation.accounts.AccountViewModel
-import com.example.personalfinance.presentation.categories.CategoryViewModel
-import com.example.personalfinance.presentation.records.RecordsViewModel
 import com.example.personalfinance.ui.BottomNavigationBar
-import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.SecondaryColor
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun HomeScreen(categoryViewModel: CategoryViewModel,
-               accountViewModel: AccountViewModel,
-               mainNavController: NavHostController,
+fun HomeScreen(mainNavController: NavHostController,
 ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -78,9 +69,7 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
                 ) { innerPadding ->
                     HomeScreenConfiguration(
                         navController,
-                        innerPadding,
-                        categoryViewModel,
-                        accountViewModel,
+                        innerPadding
                     ) {
                         scope.launch {
                             drawerState.apply {
@@ -99,7 +88,6 @@ fun HomeScreen(categoryViewModel: CategoryViewModel,
 
 
 @Composable
-fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues, categoryViewModel: CategoryViewModel, accountViewModel: AccountViewModel,handleDrawer : () -> Unit){
-    BottomNavigationHostForMainScreen(navController, padding, handleDrawer, categoryViewModel,accountViewModel)
-
+fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues,handleDrawer : () -> Unit){
+    BottomNavigationHostForMainScreen(navController, padding, handleDrawer)
 }

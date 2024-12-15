@@ -19,19 +19,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,27 +45,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
-import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.presentation.categories.CategoryViewModel
-import com.example.personalfinance.ui.Toolbar
-import com.example.personalfinance.ui.theme.Beige
+import com.example.personalfinance.presentation.ui.components.Dialog
+import com.example.personalfinance.presentation.ui.components.FinanceHeader
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeader
-import com.example.personalfinance.ui.theme.AccentColor
-import com.example.personalfinance.ui.theme.CharcoalGrey
+import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.DarkForestGreenColor
-import com.example.personalfinance.ui.theme.DeepBurgundy
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
@@ -75,6 +71,7 @@ fun Categories(
     handleDrawer: () -> Unit,
     viewModel: CategoryViewModel
 ) {
+
     val incomeCategories by viewModel.incomeCategoryList.collectAsState()
     val expanseCategories by viewModel.expanseCategoryList.collectAsState()
 
@@ -89,9 +86,17 @@ fun Categories(
         )
     }
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
+    val dataMap: MutableMap<String, String> = mutableMapOf(
+        "TOTAL SPENT" to "1500.00",
+        "TOTAL BUDGET" to "1200.00"
+    )
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    val showDelete by viewModel.showDelete.collectAsState()
+    val showEdit by viewModel.showEdit.collectAsState()
+    val showAdd by viewModel.showAdd.collectAsState()
+    val categoryIconList by viewModel.categoryIconList.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -105,12 +110,13 @@ fun Categories(
             }
         }
         stickyHeader {
-            CategoryHeader(padding = padding)
-            BottomShadow()
+            FinanceHeader(dataMap)
         }
         item {
             ListItemHeader(title = "Income Categories")
         }
+
+
 
         items(incomeCategories.size) { index ->
             ListItemCategory(
@@ -156,6 +162,7 @@ fun Categories(
             )
         }
 
+
         item{
             Column(
                 modifier = Modifier
@@ -184,91 +191,26 @@ fun Categories(
         }
     }
 
-    DeleteDialog(viewModel = viewModel, selectedCategory = selectedCategory)
-    EditDialog(viewModel = viewModel, selectedCategory = selectedCategory, selectedIndex = selectedIndex)
-    AddDialog(viewModel = viewModel)
-}
-
-
-@Composable
-fun DeleteDialog(viewModel: CategoryViewModel, selectedCategory: Category) {
-    val showDelete by viewModel.showDelete.collectAsState()
-    if (showDelete) {
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideDeleteAction() },
-            title = {
-                Text(
-                    "Delete This Category",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+    if(showDelete) {
+        Dialog(
+            title = "Delete This Category",
+            content = {
                 Text("Deleting this category will also delete all records and budgets for this category. Are you sure ?", color = SecondaryColor, fontSize = 18.sp)
-
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideDeleteAction()
-                        viewModel.removeCategoryAction(selectedCategory)
-                    }) {
-                    Text("YES")
-                }
-
-            },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = { viewModel.hideDeleteAction() }) {
-                    Text("NO")
-                }
-            }
+            confirmText = "YES",
+            onConfirm = { viewModel.removeCategoryAction(selectedCategory)},
+            dismissText = "NO",
+            onDismiss = { viewModel.hideDeleteAction() }
         )
     }
-}
 
-@Composable
-fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selectedIndex :Int){
-    val showEdit by viewModel.showEdit.collectAsState()
-    val categoryIconList by viewModel.categoryIconList.collectAsState()
-    if (showEdit) {
-        var selectedIcon by remember {
-            mutableIntStateOf(selectedCategory.icon)
-        }
+    if(showEdit){
+        var selectedIcon by remember { mutableIntStateOf(selectedCategory.icon) }
         var textValue by remember { mutableStateOf(selectedCategory.title) }
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideEditAction() },
-            title = {
-                Text(
-                    "Edit category",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+
+        Dialog(
+            title = "Edit Category",
+            content = {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -313,9 +255,13 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
                                                 painter = painterResource(id = item),
                                                 contentDescription = "",
                                                 modifier = Modifier
-                                                    .size(if(selectedIcon == item) 52.dp else 50.dp)
+                                                    .size(if (selectedIcon == item) 52.dp else 50.dp)
                                                     .clip(CircleShape)
-                                                    .border(2.dp, if(selectedIcon == item) DarkForestGreenColor else Color.White, CircleShape)
+                                                    .border(
+                                                        2.dp,
+                                                        if (selectedIcon == item) DarkForestGreenColor else Color.White,
+                                                        CircleShape
+                                                    )
                                                     .clickable {
                                                         selectedIcon = item
                                                     }
@@ -329,49 +275,16 @@ fun EditDialog(viewModel: CategoryViewModel, selectedCategory: Category, selecte
 
                 }
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideEditAction()
-                        viewModel.updateCategoryAction(selectedCategory.copy(title = textValue, icon = selectedIcon), selectedIndex)
-                    }) {
-                    Text("SAVE")
-                }
-
+            confirmText = "YES",
+            onConfirm = {
+                viewModel.updateCategoryAction(selectedCategory.copy(title = textValue, icon = selectedIcon), selectedIndex)
             },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    shape = RectangleShape,
-                    onClick = { viewModel.hideEditAction() }) {
-                    Text("CANCEL")
-                }
-            }
+            dismissText = "NO",
+            onDismiss = { viewModel.hideEditAction() }
         )
     }
-}
 
-@Composable
-fun AddDialog(viewModel: CategoryViewModel){
-    val showAdd by viewModel.showAdd.collectAsState()
-    val categoryIconList by viewModel.categoryIconList.collectAsState()
-    var selectedIcon by remember {
-        mutableIntStateOf(categoryIconList[0])
-    }
-    if (showAdd) {
+    if(showAdd){
         var textValue by remember { mutableStateOf("") }
         val types by remember {
             mutableStateOf(listOf("INCOME", "EXPENSE"))
@@ -379,21 +292,12 @@ fun AddDialog(viewModel: CategoryViewModel){
         var selectedType by remember {
             mutableStateOf(types[0])
         }
-        AlertDialog(
-            containerColor = MainColor,
-            modifier = Modifier.background(Color.Transparent),
-            onDismissRequest = { viewModel.hideAddAction() },
-            title = {
-                Text(
-                    "Add new category",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    color = SecondaryColor,
-                    fontWeight = FontWeight.Bold
-                )
-            },
-            text = {
+        var selectedIcon by remember {
+            mutableIntStateOf(categoryIconList[0])
+        }
+        Dialog(
+            title = "Add new category",
+            content = {
                 Column {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -401,9 +305,9 @@ fun AddDialog(viewModel: CategoryViewModel){
                         Text(text = "Type", color = SecondaryColor)
                         Spacer(modifier = Modifier.width(4.dp))
                         types.forEach {
-                            type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
-                                selectedType = if(it) type else ""
-                            })
+                                type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
+                            selectedType = if(it) type else ""
+                        })
                             Text(text = type, color = SecondaryColor)
                             Spacer(modifier = Modifier.width(2.dp))
                         }
@@ -424,7 +328,7 @@ fun AddDialog(viewModel: CategoryViewModel){
                                 unfocusedContainerColor = SharpMainColor
                             ),
 
-                        )
+                            )
                     }
 
                     Column(
@@ -452,9 +356,13 @@ fun AddDialog(viewModel: CategoryViewModel){
                                                 painter = painterResource(id = item),
                                                 contentDescription = "",
                                                 modifier = Modifier
-                                                    .size(if(selectedIcon == item) 52.dp else 50.dp)
+                                                    .size(if (selectedIcon == item) 52.dp else 50.dp)
                                                     .clip(CircleShape)
-                                                    .border(2.dp, if(selectedIcon == item) DarkForestGreenColor else Color.White, CircleShape)
+                                                    .border(
+                                                        2.dp,
+                                                        if (selectedIcon == item) DarkForestGreenColor else Color.White,
+                                                        CircleShape
+                                                    )
                                                     .clickable {
                                                         selectedIcon = item
                                                     }
@@ -467,94 +375,21 @@ fun AddDialog(viewModel: CategoryViewModel){
                     }
 
                 }
-
             },
-            confirmButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    onClick = {
-                        viewModel.hideAddAction()
-                        viewModel.addNewCategoryAction(
-                            Category(
-                                title = textValue,
-                                icon = selectedIcon,
-                                type = when(selectedType){
-                                    CategoryType.INCOME.name -> CategoryType.INCOME
-                                    else -> CategoryType.EXPENSE
-                                }
-                            )
-                        )
-                    }) {
-                    Text("SAVE", modifier = Modifier.background(MainColor))
-                }
-
-            },
-            dismissButton = {
-                Button(
-                    modifier = Modifier
-                        .background(MainColor, RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp)),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MainColor, // Set the background color
-                        contentColor = SecondaryColor // Set the text color
-                    ),
-                    shape = RectangleShape,
-                    onClick = { viewModel.hideAddAction() }) {
-                    Text("CANCEL", modifier = Modifier.background(MainColor))
-                }
-            }
+            confirmText = "SAVE",
+            onConfirm = { viewModel.addNewCategoryAction(
+                Category(
+                    title = textValue,
+                    icon = selectedIcon,
+                    type = when(selectedType){
+                        CategoryType.INCOME.name -> CategoryType.INCOME
+                        else -> CategoryType.EXPENSE
+                    }
+                )
+            )},
+            dismissText = "CANCEL",
+            onDismiss = { viewModel.hideAddAction()  }
         )
     }
 }
 
-@Composable
-fun CategoryHeader(padding: PaddingValues) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "EXPANSE SO FAR", color = SecondaryColor)
-                    Text("1500.00", color = SoftPinkColor)
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "INCOME SO FAR", color = SecondaryColor)
-                    Text(text = "1200.00", color = DarkForestGreenColor)
-                }
-            }
-        }
-
-
-    }
-}

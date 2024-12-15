@@ -67,30 +67,22 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val categoryViewModel : CategoryViewModel by viewModels()
-    private val accountViewModel : AccountViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             PersonalFinanceTheme {
                 SetupStatusBar()
-                MainScreen(
-                    categoryViewModel = categoryViewModel,
-                    accountViewModel = accountViewModel)
+                MainScreen()
             }
         }
     }
 }
 
 @Composable
-fun MainScreen(accountViewModel: AccountViewModel,
-               categoryViewModel: CategoryViewModel,
-               ){
+fun MainScreen(){
     val mainNavController = rememberNavController()
-    AppNavigation(accountViewModel = accountViewModel,
-        categoryViewModel = categoryViewModel,
-        mainNavController = mainNavController)
+    AppNavigation(mainNavController = mainNavController)
 }
 
 
