@@ -47,6 +47,7 @@ import com.example.personalfinance.R
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.ui.components.Dialog
+import com.example.personalfinance.presentation.ui.components.FinanceHeader
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemAccount
 import com.example.personalfinance.ui.ListItemHeaderAccount
@@ -63,9 +64,10 @@ fun Accounts(
     handleDrawer : () -> Unit,
     accountViewModel: AccountViewModel){
 
-    LaunchedEffect(Unit) {
-        accountViewModel.fetchAccounts()
-    }
+    val dataMap: MutableMap<String, String> = mutableMapOf(
+        "TOTAL SPENT" to "1500.00",
+        "TOTAL BUDGET" to "1200.00"
+    )
     
     val accountList by accountViewModel.accountList.collectAsState()
 
@@ -98,8 +100,7 @@ fun Accounts(
             }
         }
         stickyHeader {
-            AccountHeader()
-            BottomShadow()
+            FinanceHeader(dataMap)
         }
         item {
             ListItemHeaderAccount(title = "Accounts")
@@ -372,40 +373,3 @@ fun Accounts(
     }
 }
 
-@Composable
-fun AccountHeader(){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()) {
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL SPENT", color = SecondaryColor)
-                    Text("1500.00",  color = SecondaryColor)
-                }
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL BUDGET", color = SecondaryColor)
-                    Text(text = "1200.00",  color = SecondaryColor)
-                }
-            }
-        }
-    }
-}

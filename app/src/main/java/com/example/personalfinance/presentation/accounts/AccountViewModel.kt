@@ -42,6 +42,7 @@ class AccountViewModel @Inject constructor(
 
 
     init {
+        fetchAccounts()
         addAccountIcon()
     }
 

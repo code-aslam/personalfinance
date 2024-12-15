@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.personalfinance.presentation.ui.components.FinanceHeader
 import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
@@ -33,6 +34,12 @@ import com.example.personalfinance.ui.theme.SecondaryColor
 fun Budgets(
     padding: PaddingValues,
     handleDrawer : () -> Unit){
+
+    val dataMap: MutableMap<String, String> = mutableMapOf(
+        "TOTAL SPENT" to "1500.00",
+        "TOTAL BUDGET" to "1200.00"
+    )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -43,49 +50,10 @@ fun Budgets(
             }
         }
         stickyHeader {
-            BudgetHeader(padding = padding)
-            BottomShadow()
+            FinanceHeader(dataMap)
         }
         item {
             Text(text = "Budgets", fontSize = 20.sp)
         }
-    }
-}
-
-@Composable
-fun BudgetHeader(padding: PaddingValues){
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Column(
-            modifier = Modifier.fillMaxHeight().fillMaxWidth()
-        ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()) {
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL SPENT", color = SecondaryColor)
-                    Text("1500.00",  color = SecondaryColor)
-                }
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally){
-                    Text(text = "TOTAL BUDGET", color = SecondaryColor)
-                    Text(text = "1200.00",  color = SecondaryColor)
-                }
-            }
-        }
-
-
     }
 }

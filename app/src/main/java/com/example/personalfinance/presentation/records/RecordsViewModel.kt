@@ -26,6 +26,10 @@ class RecordsViewModel @Inject constructor(
     private val _recordWithCategoryAndAccountList = MutableStateFlow(mutableListOf<RecordWithCategoryAndAccount>())
     val recordWithCategoryAndAccountList = _recordWithCategoryAndAccountList.asStateFlow()
 
+    init {
+        fetchRecords()
+    }
+
     fun fetchRecords(){
         viewModelScope.launch {
             useCaseExecutor.execute(

@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -51,6 +53,7 @@ import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.ui.components.Dialog
+import com.example.personalfinance.presentation.ui.components.FinanceHeader
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeader
@@ -69,10 +72,6 @@ fun Categories(
     viewModel: CategoryViewModel
 ) {
 
-    LaunchedEffect(Unit){
-        viewModel.fetchCategories()
-    }
-
     val incomeCategories by viewModel.incomeCategoryList.collectAsState()
     val expanseCategories by viewModel.expanseCategoryList.collectAsState()
 
@@ -87,9 +86,12 @@ fun Categories(
         )
     }
 
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
+    val dataMap: MutableMap<String, String> = mutableMapOf(
+        "TOTAL SPENT" to "1500.00",
+        "TOTAL BUDGET" to "1200.00"
+    )
+
+    var selectedIndex by remember { mutableIntStateOf(0) }
 
     val showDelete by viewModel.showDelete.collectAsState()
     val showEdit by viewModel.showEdit.collectAsState()
@@ -108,12 +110,13 @@ fun Categories(
             }
         }
         stickyHeader {
-            CategoryHeader(padding = padding)
-            BottomShadow()
+            FinanceHeader(dataMap)
         }
         item {
             ListItemHeader(title = "Income Categories")
         }
+
+
 
         items(incomeCategories.size) { index ->
             ListItemCategory(
@@ -158,6 +161,7 @@ fun Categories(
                 }
             )
         }
+
 
         item{
             Column(
@@ -389,49 +393,3 @@ fun Categories(
     }
 }
 
-
-@Composable
-fun CategoryHeader(padding: PaddingValues) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "EXPANSE SO FAR", color = SecondaryColor)
-                    Text("1500.00", color = SoftPinkColor)
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "INCOME SO FAR", color = SecondaryColor)
-                    Text(text = "1200.00", color = DarkForestGreenColor)
-                }
-            }
-        }
-
-
-    }
-}

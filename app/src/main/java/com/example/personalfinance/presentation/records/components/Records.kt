@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.presentation.records.RecordsViewModel
+import com.example.personalfinance.presentation.ui.components.FinanceHeader
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemRecord
 import com.example.personalfinance.ui.Toolbar
@@ -42,28 +43,32 @@ fun Records(padding: PaddingValues,
             handleDrawer: () -> Unit,
             recordsViewModel: RecordsViewModel,
 navController: NavHostController) {
-    LaunchedEffect(Unit) {
-        recordsViewModel.fetchRecords()
-    }
+    val recordList by recordsViewModel.recordWithCategoryAndAccountList.collectAsState(emptyList())
 
-    List(recordsViewModel, padding, handleDrawer)
+    var selectedRecord by remember { mutableStateOf(RecordWithCategoryAndAccount()) }
+    val dataMap: MutableMap<String, String> = mutableMapOf(
+        "EXPENSE" to "1500.00",
+        "INCOME" to "1200.00",
+        "TOTAL" to "-300.00"
+    )
+    List(recordList,
+        padding,
+        handleDrawer,
+        { FinanceHeader(dataMap)}
+    ){
+        index -> selectedRecord = recordList[index]
+    }
 
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun List(recordsViewModel: RecordsViewModel, padding: PaddingValues, handleDrawer: () -> Unit){
-    val recordList by recordsViewModel.recordWithCategoryAndAccountList.collectAsState()
-    var selectedRecord by remember {
-        mutableStateOf(
-            RecordWithCategoryAndAccount()
-        )
-    }
+fun List(recordList: List<RecordWithCategoryAndAccount>,
+         padding: PaddingValues,
+         handleDrawer: () -> Unit,
+         header : @Composable () -> Unit,
+         onItemClick : (Int) -> Unit){
 
-
-    var selectedIndex by remember {
-        mutableIntStateOf(0)
-    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -75,8 +80,7 @@ fun List(recordsViewModel: RecordsViewModel, padding: PaddingValues, handleDrawe
             }
         }
         stickyHeader {
-            RecordHeader(padding = padding)
-            BottomShadow()
+            header()
         }
 
         items(recordList.size) { index ->
@@ -84,65 +88,13 @@ fun List(recordsViewModel: RecordsViewModel, padding: PaddingValues, handleDrawe
                 iconWidth = DpSize(30.dp, 30.dp),
                 record = recordList[index],
                 onItemClick = {
-                    selectedIndex = index
-                    selectedRecord = recordList[index]
-
+                    onItemClick(index)
                 },
             )
         }
     }
 }
 
-@Composable
-fun RecordHeader(padding: PaddingValues) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(70.dp),
-        elevation = 0.dp,
-        backgroundColor = MainColor
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-        ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "EXPENSE", color = SecondaryColor)
-                Text("1500.00", color = SoftPinkColor)
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "INCOME", color = SecondaryColor)
-                Text(text = "1200.00", color = DarkForestGreenColor)
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "TOTAL", color = SecondaryColor)
-                Text(text = "-300.00", color = SoftPinkColor)
-            }
-        }
-
-        
-    }
-
-}
 
 
 

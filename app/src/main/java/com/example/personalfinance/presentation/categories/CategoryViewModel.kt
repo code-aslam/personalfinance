@@ -42,6 +42,7 @@ class CategoryViewModel @Inject constructor(
     var showAdd = _showAdd.asStateFlow()
 
     init {
+        fetchCategories()
         addCategoryIcon()
     }
 
