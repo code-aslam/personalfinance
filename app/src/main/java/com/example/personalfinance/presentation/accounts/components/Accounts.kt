@@ -1,6 +1,5 @@
 package com.example.personalfinance.presentation.accounts.components
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,32 +10,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,29 +39,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.R
-import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.accounts.entity.Account
-import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.accounts.AccountViewModel
-import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.ui.components.Dialog
-import com.example.personalfinance.ui.Toolbar
-import com.example.personalfinance.ui.theme.Beige
 import com.example.personalfinance.ui.BottomShadow
 import com.example.personalfinance.ui.ListItemAccount
-import com.example.personalfinance.ui.ListItemCategory
 import com.example.personalfinance.ui.ListItemHeaderAccount
-import com.example.personalfinance.ui.theme.CharcoalGrey
+import com.example.personalfinance.ui.Toolbar
 import com.example.personalfinance.ui.theme.DarkForestGreenColor
-import com.example.personalfinance.ui.theme.DeepBurgundy
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
@@ -80,6 +62,10 @@ fun Accounts(
     padding: PaddingValues,
     handleDrawer : () -> Unit,
     accountViewModel: AccountViewModel){
+
+    LaunchedEffect(Unit) {
+        accountViewModel.fetchAccounts()
+    }
     
     val accountList by accountViewModel.accountList.collectAsState()
 
@@ -253,9 +239,13 @@ fun Accounts(
                                                 painter = painterResource(id = item),
                                                 contentDescription = "",
                                                 modifier = Modifier
-                                                    .size(if(selectedIcon == item) 52.dp else 50.dp)
+                                                    .size(if (selectedIcon == item) 52.dp else 50.dp)
                                                     .clip(RoundedCornerShape(5.dp))
-                                                    .border(2.dp, if(selectedIcon == item) DarkForestGreenColor else Color.White, RoundedCornerShape(5.dp))
+                                                    .border(
+                                                        2.dp,
+                                                        if (selectedIcon == item) DarkForestGreenColor else Color.White,
+                                                        RoundedCornerShape(5.dp)
+                                                    )
                                                     .clickable {
                                                         selectedIcon = item
                                                     }
@@ -350,9 +340,13 @@ fun Accounts(
                                                 painter = painterResource(id = item),
                                                 contentDescription = "",
                                                 modifier = Modifier
-                                                    .size(if(selectedIcon == item) 52.dp else 50.dp)
+                                                    .size(if (selectedIcon == item) 52.dp else 50.dp)
                                                     .clip(RoundedCornerShape(5.dp))
-                                                    .border(2.dp, if(selectedIcon == item) DarkForestGreenColor else Color.White, RoundedCornerShape(5.dp))
+                                                    .border(
+                                                        2.dp,
+                                                        if (selectedIcon == item) DarkForestGreenColor else Color.White,
+                                                        RoundedCornerShape(5.dp)
+                                                    )
                                                     .clickable {
                                                         selectedIcon = item
                                                     }

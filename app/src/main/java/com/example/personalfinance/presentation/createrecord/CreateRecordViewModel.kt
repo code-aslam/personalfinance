@@ -1,12 +1,7 @@
 package com.example.personalfinance.presentation.createrecord
 
-import androidx.compose.material3.DatePickerState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
-import com.example.personalfinance.common.toRequireFormat
 import com.example.personalfinance.common.toRequiredFormat
 import com.example.personalfinance.common.toRequiredTimeFormat
 import com.example.personalfinance.data.accounts.entity.Account
@@ -17,10 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Date
-import java.util.Stack
 import javax.inject.Inject
 
 @HiltViewModel

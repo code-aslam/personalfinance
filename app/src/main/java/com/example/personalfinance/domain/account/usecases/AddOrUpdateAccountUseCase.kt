@@ -11,4 +11,8 @@ class AddOrUpdateAccountUseCase @Inject constructor(
     override suspend fun executeInBackground(request: Account): Long {
         return accountRepository.addOrUpdateAccount(request)
     }
+
+    suspend fun test(request: Account):Long{
+        return accountRepository.addOrUpdateAccount(request)
+    }
 }

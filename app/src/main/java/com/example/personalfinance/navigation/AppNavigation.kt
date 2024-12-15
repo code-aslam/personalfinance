@@ -13,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.personalfinance.presentation.MainScreen
 import com.example.personalfinance.presentation.accounts.AccountViewModel
+import com.example.personalfinance.presentation.accounts.components.Accounts
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.createrecord.components.CreateRecordScreen
 import com.example.personalfinance.presentation.home.components.HomeScreen
@@ -24,6 +25,8 @@ fun AppNavigation(
     mainNavController : NavHostController,
     startDestination : String = Screens.HomeScreen.route
 ){
+    val currentBackStackEntry = mainNavController.currentBackStackEntryAsState().value
+
     NavHost(navController = mainNavController,
         startDestination = startDestination,
         enterTransition = { EnterTransition.None },
@@ -32,11 +35,14 @@ fun AppNavigation(
             HomeScreen(mainNavController = mainNavController)
         }
         composable(Screens.CreateRecordScreen.route) {
-            backstackEntry ->
-            CreateRecordScreen(mainNavController,
-                accountViewModel = hiltViewModel(backstackEntry),
-                recordsViewModel = hiltViewModel(backstackEntry),
-                categoryViewModel = hiltViewModel(backstackEntry))
+            currentBackStackEntry?.let {
+                CreateRecordScreen(mainNavController,
+                    accountViewModel = hiltViewModel(it),
+                    recordsViewModel = hiltViewModel(it),
+                    categoryViewModel = hiltViewModel(it),
+                    createRecordViewModel = hiltViewModel(it))
+            }
+
         }
     }
 }

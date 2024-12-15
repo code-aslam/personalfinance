@@ -12,4 +12,8 @@ class GetAccountsUseCase @Inject constructor(
     override suspend fun executeInBackground(request: Unit): Flow<List<Account>> {
         return accountRepository.fetchAccounts()
     }
+
+    suspend fun test():Flow<List<Account>>{
+        return accountRepository.fetchAccounts()
+    }
 }

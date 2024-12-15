@@ -10,7 +10,6 @@ import com.example.personalfinance.domain.category.usecases.GetCategoriesUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -43,7 +42,6 @@ class CategoryViewModel @Inject constructor(
     var showAdd = _showAdd.asStateFlow()
 
     init {
-        updateCategories()
         addCategoryIcon()
     }
 
@@ -59,73 +57,49 @@ class CategoryViewModel @Inject constructor(
             ).toMutableList())
     }
 
-    private fun updateCategories(){
-        useCaseExecutor.execute(
-            getCategoriesUseCase,
-            Unit,
-            ::handleCategories
-        )
-    }
 
-    private fun handleCategories(records: Flow<List<Category>>) {
-        val incomeList = _incomeCategoryList.value
-        val expenseList = _expanseCategoryList.value
+
+    fun fetchCategories(){
         viewModelScope.launch {
-            records.collect { list ->
-                list.forEach {cat->
-                    when(cat.type){
-                        CategoryType.INCOME -> incomeList.add(cat)
-                        else -> expenseList.add(cat)
+            useCaseExecutor.execute(
+                getCategoriesUseCase,
+                Unit
+            ){
+                categories ->
+                viewModelScope.launch {
+                    categories.collect { list ->
+                        val (income, expanse) = list.partition { it.type == CategoryType.INCOME }
+                        _incomeCategoryList.value = income.toMutableList()
+                        _expanseCategoryList.value = expanse.toMutableList()
                     }
                 }
             }
-            _incomeCategoryList.value = incomeList
-            _expanseCategoryList.value = expenseList
         }
+
     }
 
 
     private fun addNewCategory(category: Category) {
-        val incomeList = _incomeCategoryList.value.toMutableList()
-        val expenseList = _expanseCategoryList.value.toMutableList()
-        useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){
-            category.id = it
-            if(category.type == CategoryType.INCOME)
-                incomeList.add(category)
-            else
-                expenseList.add(category)
-            _incomeCategoryList.value = incomeList
-            _expanseCategoryList.value = expenseList
+        viewModelScope.launch {
+            useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){}
         }
+
     }
 
     private fun updateCategory(category: Category, index: Int){
-        val incomeList = _incomeCategoryList.value.toMutableList()
-        val expenseList = _expanseCategoryList.value.toMutableList()
-        useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){
-            category.id = it
-            if(category.type == CategoryType.INCOME)
-                incomeList[index] = category
-            else
-                expenseList[index] = category
-            _incomeCategoryList.value = incomeList
-            _expanseCategoryList.value = expenseList
+        viewModelScope.launch {
+            useCaseExecutor.execute(addOrUpdateCategoryUseCase, category){}
         }
+
     }
 
 
 
     private fun removeCategory(category: Category) {
-        val incomeList = _incomeCategoryList.value.toMutableList()
-        val expenseList = _expanseCategoryList.value.toMutableList()
-        useCaseExecutor.execute(deleteCategoryUseCase, category){
-            if(category.type == CategoryType.INCOME)
-                incomeList.remove(category)
-            else
-                expenseList.remove(category)
-            _incomeCategoryList.value = incomeList
-            _expanseCategoryList.value = expenseList
+        viewModelScope.launch {
+            useCaseExecutor.execute(deleteCategoryUseCase, category){}
         }
+
     }
 
     fun addNewCategoryAction(category: Category) {

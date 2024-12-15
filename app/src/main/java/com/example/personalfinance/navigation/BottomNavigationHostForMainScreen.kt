@@ -30,10 +30,12 @@ fun BottomNavigationHostForMainScreen(navController: NavHostController,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None}){
         composable(BottomNavItem.Records.route) {
-            backstackEntry->  Records(padding,
-            handleDrawer,
-            recordsViewModel = hiltViewModel(backstackEntry),
-            navController)
+            currentBackStackEntry?.let {
+                Records(padding,
+                    handleDrawer,
+                    recordsViewModel = hiltViewModel(),
+                    navController)
+            }
         }
         composable(BottomNavItem.Budgets.route) {
             Budgets(padding, handleDrawer)
