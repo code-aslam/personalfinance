@@ -1,5 +1,7 @@
 package com.example.personalfinance.presentation.records
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
@@ -13,8 +15,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
+@RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class RecordsViewModel @Inject constructor(
     private val getRecordsUseCase: GetRecordsUseCase,
@@ -23,14 +29,16 @@ class RecordsViewModel @Inject constructor(
 ) : BaseViewModel(useCaseExecutor) {
 
 
-    private val _recordWithCategoryAndAccountList = MutableStateFlow(mutableListOf<RecordWithCategoryAndAccount>())
-    val recordWithCategoryAndAccountList = _recordWithCategoryAndAccountList.asStateFlow()
+    private val _dateSortedRecords = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
+    val dateSortedRecords = _dateSortedRecords.asStateFlow()
+
 
     init {
         fetchRecords()
     }
 
-    fun fetchRecords(){
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun fetchRecords(){
         viewModelScope.launch {
             useCaseExecutor.execute(
                 getRecordsUseCase,
@@ -39,12 +47,20 @@ class RecordsViewModel @Inject constructor(
                 records ->
                 viewModelScope.launch {
                     records.collect { list ->
-                        _recordWithCategoryAndAccountList.value = list.toMutableList()
+                        _dateSortedRecords.value = groupDataByDaySorted(list).toMutableMap()
                     }
                 }
             }
         }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun groupDataByDaySorted(dataList: List<RecordWithCategoryAndAccount>): Map<LocalDate, List<RecordWithCategoryAndAccount>> {
+        return dataList.groupBy {
+            val instant = Instant.ofEpochMilli(it.date)
+            instant.atZone(ZoneId.systemDefault()).toLocalDate()
+        }.toSortedMap { date1, date2 -> date2.compareTo(date1) }
     }
 
 

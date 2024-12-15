@@ -1,14 +1,23 @@
 package com.example.personalfinance.common
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
 fun Date.toRequiredFormat() : String{
     return SimpleDateFormat("dd MMM yyyy", Locale.US).format(this)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun LocalDate.toRequiredFormat() : String{
+    return format(DateTimeFormatter.ofPattern("dd MMM yyyy")).format(this)
 }
 
 fun Date.toRequiredTimeFormat() : String{
@@ -36,4 +45,12 @@ fun DatePickerState.toRequireFormat(): String {
 
 fun Date.getCurrentDateInRequireFormat():String{
     return SimpleDateFormat("dd MMM yyyy", Locale.US).format(this)
+}
+
+fun String.toTitleCase():String{
+    return this.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(
+            Locale.ROOT
+        ) else it.toString()
+    }
 }

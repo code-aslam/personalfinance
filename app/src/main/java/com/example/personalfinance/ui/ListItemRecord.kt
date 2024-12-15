@@ -26,12 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.example.personalfinance.R
+import com.example.personalfinance.common.toTitleCase
 import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.ui.theme.Beige
+import java.util.Locale
 
 @Composable
 fun ListItemRecord(
@@ -63,9 +66,21 @@ fun ListItemRecord(
             Column(
                 modifier = Modifier.weight(4f)
             ) {
-                Text(text = record.categoryTitle)
-                Text(text = record.amount.toString())
+                Text(text = record.categoryTitle.toTitleCase())
+                Row{
+                    Image(
+                        painter = painterResource(id = record.accountIcon),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(25.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .border(1.dp, Color.White, RoundedCornerShape(4.dp))
+                    )
+                    Text(text = record.accountName)
+                }
             }
+
+            Text(text = "₹${record.amount}")
 
         }
     }
