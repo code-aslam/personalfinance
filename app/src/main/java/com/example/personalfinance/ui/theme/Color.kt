@@ -17,6 +17,7 @@ val CharcoalGrey = Color(54, 69, 79)
 
 val MainColor = Color(0xFFF5F5DC)
 val SecondaryColor = Color(0xFF6E4C1E)
+val OpaqueSecondaryColor = Color(0x226E4C1E)
 val AccentColor = Color(0xFF39AFEA)
 val SoftPinkColor = Color(0xFFC2185B)
 val DarkForestGreenColor = Color(0xFF556B2F)
