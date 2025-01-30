@@ -32,4 +32,7 @@ interface AccountDao {
 
     @Query("SELECT * FROM account")
     fun getAllAccounts() : Flow<List<Account>>
+
+    @Query("UPDATE account SET balance = :balance WHERE id = :id")
+    suspend fun updateAccountBalance(id: Long, balance: Int)
 }

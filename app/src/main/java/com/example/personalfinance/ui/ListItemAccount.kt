@@ -83,7 +83,7 @@ fun ListItemAccount(
                     modifier = Modifier.weight(4f)
                 ) {
                     Text(text = account.name)
-                    Text(text = account.initialAmount.toString())
+                    Text(text = (account.initialAmount + account.balance).toString())
                 }
 
                 Box(

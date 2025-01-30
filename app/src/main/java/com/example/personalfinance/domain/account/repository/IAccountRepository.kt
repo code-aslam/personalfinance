@@ -9,4 +9,5 @@ interface IAccountRepository {
     suspend fun removeAccount(account: Account)
 
     fun fetchAccounts() : Flow<List<Account>>
+
 }

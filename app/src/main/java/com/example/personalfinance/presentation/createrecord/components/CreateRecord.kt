@@ -175,7 +175,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                         time = selectedTime,
                         amount = result.toDouble(),
                         notes = textNotes
-                    )
+                    ),
+                    selectedAccount
                 )
                 mainNavController.popBackStack()
             }, modifier = Modifier.weight(1f)) {

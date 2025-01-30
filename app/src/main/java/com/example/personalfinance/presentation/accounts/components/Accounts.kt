@@ -265,7 +265,7 @@ fun Accounts(
                     selectedAccount.copy(
                         name = textNameValue,
                         icon = selectedIcon,
-                        initialAmount = if(textInitialAmountValue.toIntOrNull() != null) textInitialAmountValue.toInt() else 0),
+                        initialAmount = if(textInitialAmountValue.toDoubleOrNull() != null) textInitialAmountValue.toDouble() else 0.0),
                     selectedIndex)
             },
             dismissText = "NO",
@@ -364,7 +364,7 @@ fun Accounts(
             onConfirm = { accountViewModel.addNewAccountAction(Account(
                     name = textNameValue,
                     icon = selectedIcon,
-                    initialAmount = textInitialAmountValue.toInt()
+                    initialAmount = textInitialAmountValue.toDouble()
                 )
             )},
             dismissText = "CANCEL",

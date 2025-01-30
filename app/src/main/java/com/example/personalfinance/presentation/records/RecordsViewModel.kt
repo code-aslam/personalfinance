@@ -3,8 +3,11 @@ package com.example.personalfinance.presentation.records
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
+import com.example.personalfinance.common.TransactionType
+import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.record.entity.Record
 import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
+import com.example.personalfinance.domain.account.usecases.AddOrUpdateAccountUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.example.personalfinance.domain.record.usecases.AddOrUpdateRecordUseCase
 import com.example.personalfinance.domain.record.usecases.GetRecordsUseCase
@@ -25,7 +28,8 @@ import javax.inject.Inject
 class RecordsViewModel @Inject constructor(
     private val getRecordsUseCase: GetRecordsUseCase,
     useCaseExecutor: UseCaseExecutor,
-    private val addOrUpdateRecordUseCase: AddOrUpdateRecordUseCase
+    private val addOrUpdateRecordUseCase: AddOrUpdateRecordUseCase,
+    private val addOrUpdateAccountUseCase: AddOrUpdateAccountUseCase
 ) : BaseViewModel(useCaseExecutor) {
 
 
@@ -64,16 +68,35 @@ class RecordsViewModel @Inject constructor(
     }
 
 
-    private fun addNewRecordAction(record: Record) {
+    private fun addNewRecordAction(record: Record, firstAccount: Account, secondAccount: Account ? = null) {
         viewModelScope.launch {
-            useCaseExecutor.execute(addOrUpdateRecordUseCase, record){
+                useCaseExecutor.execute(addOrUpdateRecordUseCase, record){
+                    when(record.transactionType){
+                        TransactionType.INCOME -> {
+                            firstAccount.balance += record.amount
+                            updateAccount(firstAccount)
+                        }
+                        TransactionType.EXPANSE -> {
+                            firstAccount.balance -= record.amount
+                            updateAccount(firstAccount)
+                        }
+                        TransactionType.TRANSFER -> {}
+                    }
+                }
+        }
+
+    }
+
+    private fun updateAccount(account: Account){
+        viewModelScope.launch {
+            useCaseExecutor.execute(addOrUpdateAccountUseCase, account){
             }
         }
 
     }
 
-    fun addNewRecord(record: Record){
-        addNewRecordAction(record)
+    fun addNewRecord(record: Record,firstAccount: Account, secondAccount: Account ? = null){
+        addNewRecordAction(record, firstAccount, secondAccount)
     }
 
 

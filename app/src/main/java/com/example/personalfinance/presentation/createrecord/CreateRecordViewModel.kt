@@ -29,14 +29,14 @@ class CreateRecordViewModel @Inject constructor(
     private val _selectedAccount = MutableStateFlow(Account(
         name = "Account",
         icon = R.drawable.walletbig,
-        initialAmount = 0
+        initialAmount = 0.0
     ))
     val selectedAccount = _selectedAccount.asStateFlow()
 
     private val _selectedAccountForCategory = MutableStateFlow(Account(
         name = "Account",
         icon = R.drawable.walletbig,
-        initialAmount = 0
+        initialAmount = 0.0
     ))
     val selectedAccountForCategory = _selectedAccountForCategory.asStateFlow()
 
