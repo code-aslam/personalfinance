@@ -5,14 +5,29 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import androidx.room.Upsert
+import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.data.category.entity.Category
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOrUpdateCategory(category: Category) : Long
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertCategory(category: Category): Long
+
+    @Update
+    suspend fun updateExistingCategory(category: Category)
+
+    @Transaction
+    suspend fun insertOrUpdateCategory(category: Category) : Long{
+        val id = insertCategory(category)
+        if (id == -1L) {
+            updateExistingCategory(category)
+        }
+        return id
+    }
 
     @Delete
     suspend fun deleteCategory(category: Category)

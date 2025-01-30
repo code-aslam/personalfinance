@@ -1,5 +1,7 @@
 package com.example.personalfinance.presentation.createrecord.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -78,6 +80,7 @@ import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SharpMainColor
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateRecordScreen(
     mainNavController: NavHostController,
@@ -98,6 +101,7 @@ fun CreateRecordScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel,createRecordViewModel: CreateRecordViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
@@ -171,7 +175,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                         time = selectedTime,
                         amount = result.toDouble(),
                         notes = textNotes
-                    )
+                    ),
+                    selectedAccount
                 )
                 mainNavController.popBackStack()
             }, modifier = Modifier.weight(1f)) {
