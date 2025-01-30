@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.personalfinance.common.TransactionType
 import com.example.personalfinance.common.toRequiredFormat
 import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.presentation.records.RecordsViewModel
@@ -46,15 +49,31 @@ fun Records(padding: PaddingValues,
 navController: NavHostController) {
     val recordList by recordsViewModel.dateSortedRecords.collectAsState()
     var selectedRecord by remember { mutableStateOf(RecordWithCategoryAndAccount()) }
-    val dataMap: MutableMap<String, String> = mutableMapOf(
-        "EXPENSE" to "1500.00",
-        "INCOME" to "1200.00",
-        "TOTAL" to "-300.00"
-    )
+    var isCalculationCompleted by remember { mutableStateOf(false) }
+    val dataMap = remember {
+        mutableStateMapOf(
+        "EXPENSE" to "calculating...",
+        "INCOME" to "calculating...",
+        "TOTAL" to "calculating...")
+    }
+    LaunchedEffect(recordList) {
+        isCalculationCompleted = false
+        var income = 0.0
+        var expense = 0.0
+        for (record in recordList.values) {
+            income += record.filter { it.transactionType == TransactionType.INCOME }.sumOf { it.amount }
+            expense += record.filter { it.transactionType == TransactionType.EXPANSE }.sumOf { it.amount }
+        }
+        dataMap["EXPENSE"] = expense.toString()
+        dataMap["INCOME"] = income.toString()
+        dataMap["TOTAL"] = (income - expense).toString()
+        isCalculationCompleted = true
+    }
+
     List(recordList,
         padding,
         handleDrawer,
-        { FinanceHeader(dataMap)}
+        { FinanceHeader(dataMap, isCalculationCompleted)}
     ){
         record -> selectedRecord = record
     }

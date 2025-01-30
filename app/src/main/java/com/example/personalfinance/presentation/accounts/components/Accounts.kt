@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.R
+import com.example.personalfinance.common.TransactionType
 import com.example.personalfinance.data.accounts.entity.Account
 import com.example.personalfinance.presentation.accounts.AccountViewModel
 import com.example.personalfinance.presentation.ui.components.Dialog
@@ -63,11 +65,29 @@ fun Accounts(
     padding: PaddingValues,
     handleDrawer : () -> Unit,
     accountViewModel: AccountViewModel){
+    var isCalculationCompleted by remember { mutableStateOf(false) }
+    val recordList by accountViewModel.dataRecords.collectAsState()
+    val dataMap = remember {
+        mutableStateMapOf(
+            "INCOME SO FAR" to "calculating...",
+            "EXPENSE SO FAR" to "calculating..."
+        )
+    }
 
-    val dataMap: MutableMap<String, String> = mutableMapOf(
-        "TOTAL SPENT" to "1500.00",
-        "TOTAL BUDGET" to "1200.00"
-    )
+    LaunchedEffect(recordList) {
+        isCalculationCompleted = false
+        var income = 0.0
+        var expense = 0.0
+        for (record in recordList) {
+            if(record.transactionType == TransactionType.INCOME)
+                income += record.amount
+            if(record.transactionType == TransactionType.EXPANSE)
+                expense += record.amount
+        }
+        dataMap["INCOME SO FAR"] = income.toString()
+        dataMap["EXPENSE SO FAR"] = expense.toString()
+        isCalculationCompleted = true
+    }
     
     val accountList by accountViewModel.accountList.collectAsState()
 
@@ -100,7 +120,7 @@ fun Accounts(
             }
         }
         stickyHeader {
-            FinanceHeader(dataMap)
+            FinanceHeader(dataMap, isCalculationCompleted)
         }
         item {
             ListItemHeaderAccount(title = "Accounts")

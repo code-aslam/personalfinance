@@ -1,6 +1,7 @@
 package com.example.personalfinance.presentation.createrecord.components
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +27,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Snackbar
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -53,6 +55,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -105,6 +108,7 @@ fun CreateRecordScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel,createRecordViewModel: CreateRecordViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
+    val context = LocalContext.current
     val categoriesIncome by categoryViewModel.incomeCategoryList.collectAsState()
     val categoriesExpanse by categoryViewModel.expanseCategoryList.collectAsState()
     val bottomSheetStateAccount = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -149,7 +153,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
         Row(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         ) {
-            IconButton(onClick = { /*TODO*/ },
+            IconButton(onClick = {
+                mainNavController.popBackStack()
+            },
                 modifier = Modifier.weight(1f),
             ) {
                 Row(
@@ -166,19 +172,32 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
             }
 
             IconButton(onClick = {
-                recordsViewModel.addNewRecord(
-                    Record(
-                        transactionType = if(selectedType == "INCOME") TransactionType.INCOME else TransactionType.EXPANSE,
-                        categoryId = selectedCategory.id,
-                        accountId = selectedAccount.id,
-                        date = selectedDateMills,
-                        time = selectedTime,
-                        amount = result.toDouble(),
-                        notes = textNotes
-                    ),
-                    selectedAccount
-                )
-                mainNavController.popBackStack()
+                try {
+                    if(selectedAccount.id == 0L){
+                        Toast.makeText(context, "Please Select Account", Toast.LENGTH_SHORT).show()
+                    }else if(selectedCategory.id == 0L){
+                        Toast.makeText(context, "Please Select Category", Toast.LENGTH_SHORT).show()
+                    }else if(result.toDouble() == 0.0){
+                        Toast.makeText(context, "Please Enter Amount", Toast.LENGTH_SHORT).show()
+                    }else {
+                        recordsViewModel.addNewRecord(
+                            Record(
+                                transactionType = if (selectedType == "INCOME") TransactionType.INCOME else TransactionType.EXPANSE,
+                                categoryId = selectedCategory.id,
+                                accountId = selectedAccount.id,
+                                date = selectedDateMills,
+                                time = selectedTime,
+                                amount = result.toDouble(),
+                                notes = textNotes
+                            ),
+                            selectedAccount
+                        )
+                        mainNavController.popBackStack()
+                    }
+                }catch (e : Exception){
+                    Toast.makeText(context, "Error, Try again", Toast.LENGTH_SHORT).show()
+                }
+
             }, modifier = Modifier.weight(1f)) {
                 Row(
                     horizontalArrangement = Arrangement.End,
