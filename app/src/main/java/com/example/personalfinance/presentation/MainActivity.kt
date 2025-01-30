@@ -88,28 +88,25 @@ fun MainScreen(){
 
 @Composable
 fun SetupStatusBar(){
-    val statusBarLight = MainColor.toArgb()
-    val statusBarDark = MainColor.toArgb()
-    val navigationBarLight = Color.WHITE
-    val navigationBarDark = Color.BLACK
-    val isDarkMode = isSystemInDarkTheme()
-    val context = LocalContext.current as ComponentActivity
-
-    DisposableEffect(isDarkMode) {
-        context.enableEdgeToEdge(
-            statusBarStyle = when{!isDarkMode -> SystemBarStyle.light(statusBarLight, statusBarDark)
-                else -> SystemBarStyle.dark(statusBarDark)
-            },
-            navigationBarStyle = when{!isDarkMode -> SystemBarStyle.light(navigationBarLight, navigationBarDark)
-                else-> SystemBarStyle.dark(navigationBarDark)
-            }
-        )
-
-        onDispose { }
-    }
-
-
-
+//    val statusBarLight = MainColor.toArgb()
+//    val statusBarDark = MainColor.toArgb()
+//    val navigationBarLight = Color.WHITE
+//    val navigationBarDark = Color.BLACK
+//    val isDarkMode = isSystemInDarkTheme()
+//    val context = LocalContext.current as ComponentActivity
+//
+//    DisposableEffect(isDarkMode) {
+//        context.enableEdgeToEdge(
+//            statusBarStyle = when{!isDarkMode -> SystemBarStyle.light(statusBarLight, statusBarDark)
+//                else -> SystemBarStyle.dark(statusBarDark)
+//            },
+//            navigationBarStyle = when{!isDarkMode -> SystemBarStyle.light(navigationBarLight, navigationBarDark)
+//                else-> SystemBarStyle.dark(navigationBarDark)
+//            }
+//        )
+//
+//        onDispose { }
+//    }
 }
 
 
