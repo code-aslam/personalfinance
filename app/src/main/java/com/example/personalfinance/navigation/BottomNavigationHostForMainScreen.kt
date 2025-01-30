@@ -39,7 +39,6 @@ fun BottomNavigationHostForMainScreen(navController: NavHostController,
         }
         composable(BottomNavItem.Budgets.route) {
             Budgets(padding, handleDrawer)
-
         }
         composable(BottomNavItem.Accounts.route) {
             currentBackStackEntry?.let {
