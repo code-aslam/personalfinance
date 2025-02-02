@@ -26,5 +26,5 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: PersonalFinance.apk
+          name: SpendWise.apk
           path: app/build/outputs/apk/app-debug.apk

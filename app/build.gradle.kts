@@ -9,11 +9,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.personalfinance"
+    namespace = "com.hotdogcode.spendwise"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.personalfinance"
+        applicationId = "com.hotdogcode.spendwise"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
