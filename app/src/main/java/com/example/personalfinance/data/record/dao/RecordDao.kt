@@ -40,5 +40,9 @@ interface RecordDao {
             Category ON Record.categoryId = Category.id
     """)
     fun getRecordList() : Flow<List<RecordWithCategoryAndAccount>>
+
+
+    @Query("DELETE FROM account")
+    suspend fun clearTable() // will delete all table data. DO NOT delete table
 }
 

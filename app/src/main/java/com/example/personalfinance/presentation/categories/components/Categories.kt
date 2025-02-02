@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.personalfinance.common.CategoryType
+import com.example.personalfinance.common.TransactionType
 import com.example.personalfinance.data.category.entity.Category
 import com.example.personalfinance.presentation.categories.CategoryViewModel
 import com.example.personalfinance.presentation.ui.components.Dialog
@@ -75,6 +77,28 @@ fun Categories(
     val incomeCategories by viewModel.incomeCategoryList.collectAsState()
     val expanseCategories by viewModel.expanseCategoryList.collectAsState()
 
+    var isCalculationCompleted by remember { mutableStateOf(false) }
+    val recordList by viewModel.dataRecords.collectAsState()
+    val dataMap = remember {
+        mutableStateMapOf(
+            "INCOME SO FAR" to "calculating...",
+            "EXPENSE SO FAR" to "calculating..."
+        )
+    }
+    LaunchedEffect(recordList) {
+        isCalculationCompleted = false
+        var income = 0.0
+        var expense = 0.0
+        for (record in recordList) {
+            if(record.transactionType == TransactionType.INCOME)
+                income += record.amount
+            if(record.transactionType == TransactionType.EXPANSE)
+                expense += record.amount
+        }
+        dataMap["INCOME SO FAR"] = income.toString()
+        dataMap["EXPENSE SO FAR"] = expense.toString()
+        isCalculationCompleted = true
+    }
 
     var selectedCategory by remember {
         mutableStateOf(
@@ -85,18 +109,14 @@ fun Categories(
             )
         )
     }
-
-    val dataMap: MutableMap<String, String> = mutableMapOf(
-        "TOTAL SPENT" to "1500.00",
-        "TOTAL BUDGET" to "1200.00"
-    )
-
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     val showDelete by viewModel.showDelete.collectAsState()
     val showEdit by viewModel.showEdit.collectAsState()
     val showAdd by viewModel.showAdd.collectAsState()
     val categoryIconList by viewModel.categoryIconList.collectAsState()
+
+
 
     LazyColumn(
         modifier = Modifier
@@ -110,7 +130,7 @@ fun Categories(
             }
         }
         stickyHeader {
-            FinanceHeader(dataMap)
+            FinanceHeader(dataMap, isCalculationCompleted)
         }
         item {
             ListItemHeader(title = "Income Categories")

@@ -3,27 +3,34 @@ package com.example.personalfinance.presentation.accounts
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.R
 import com.example.personalfinance.data.accounts.entity.Account
+import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.domain.account.usecases.AddOrUpdateAccountUseCase
 import com.example.personalfinance.domain.account.usecases.DeleteAccountUseCase
 import com.example.personalfinance.domain.account.usecases.GetAccountsUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
+import com.example.personalfinance.domain.record.usecases.GetRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     useCaseExecutor: UseCaseExecutor,
+    private val getRecordsUseCase: GetRecordsUseCase,
     private val getAllAccountsUseCase: GetAccountsUseCase,
     private val addOrUpdateAccountUseCase: AddOrUpdateAccountUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase
 ) : BaseViewModel(useCaseExecutor) {
 
     var text = "Hello"
+
+    private val _dataRecords = MutableStateFlow(mutableListOf<RecordWithCategoryAndAccount>())
+    val dataRecords = _dataRecords.asStateFlow()
 
     private val _accountList = MutableStateFlow(mutableListOf<Account>())
     val accountList = _accountList.asStateFlow()
@@ -44,6 +51,7 @@ class AccountViewModel @Inject constructor(
     init {
         fetchAccounts()
         addAccountIcon()
+        fetchRecords()
     }
 
 
@@ -56,6 +64,26 @@ class AccountViewModel @Inject constructor(
                 R.drawable.savingsicon
             ).toMutableList()
         )
+    }
+
+    private fun fetchRecords() {
+        try {
+            viewModelScope.launch {
+                useCaseExecutor.execute(
+                    getRecordsUseCase,
+                    Unit
+                ) { records ->
+                    viewModelScope.launch {
+                        records.collect { list ->
+                            _dataRecords.value = list.toMutableList()
+                        }
+                    }
+                }
+
+            }
+        } catch (ignore: CancellationException) {
+        } catch (_: Throwable) {
+        }
     }
 
     fun fetchAccounts() {
@@ -85,8 +113,9 @@ class AccountViewModel @Inject constructor(
             viewModelScope.launch {
                 useCaseExecutor.execute(addOrUpdateAccountUseCase, account) {}
             }
-        }catch (ignore : CancellationException){}
-        catch (_:Throwable){}
+        } catch (ignore: CancellationException) {
+        } catch (_: Throwable) {
+        }
     }
 
     private fun removeAccount(account: Account) {

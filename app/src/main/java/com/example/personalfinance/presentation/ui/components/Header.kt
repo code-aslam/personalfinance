@@ -13,13 +13,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.personalfinance.ui.BottomShadow
+import com.example.personalfinance.ui.theme.DarkForestGreenColor
 import com.example.personalfinance.ui.theme.MainColor
 import com.example.personalfinance.ui.theme.SecondaryColor
 import com.example.personalfinance.ui.theme.SoftPinkColor
 
 @Composable
 fun FinanceHeader(
-    dataMap: Map<String, String> = mapOf()
+    dataMap: Map<String, String> = mapOf(),
+    isCalculationCompleted: Boolean = false
 ) {
     Card(
         modifier = Modifier
@@ -41,8 +43,22 @@ fun FinanceHeader(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    var color = DarkForestGreenColor
                     Text(text = title, color = SecondaryColor)
-                    Text(value, color = SoftPinkColor)
+                    if(title == "INCOME" || title == "INCOME SO FAR" ){
+                        color = DarkForestGreenColor
+                    }else if(title == "EXPENSE" || title == "EXPENSE SO FAR"){
+                        color = SoftPinkColor
+                    }else {
+                        if(isCalculationCompleted){
+                            color = if(value.toDouble() < 0){
+                                SoftPinkColor
+                            }else{
+                                DarkForestGreenColor
+                            }
+                        }
+                    }
+                    Text(value, color = color)
                 }
             }
         }

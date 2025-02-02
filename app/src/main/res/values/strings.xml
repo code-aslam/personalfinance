@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">PersonalFinance</string>
+    <string name="app_name">SpendWise</string>
     <string name="title_activity_records_creating">RecordsCreatingActivity</string>
 </resources>

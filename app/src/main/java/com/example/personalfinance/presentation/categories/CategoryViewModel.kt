@@ -4,24 +4,31 @@ import androidx.lifecycle.viewModelScope
 import com.example.personalfinance.R
 import com.example.personalfinance.common.CategoryType
 import com.example.personalfinance.data.category.entity.Category
+import com.example.personalfinance.data.record.entity.RecordWithCategoryAndAccount
 import com.example.personalfinance.domain.category.usecases.AddOrUpdateCategoryUseCase
 import com.example.personalfinance.domain.category.usecases.DeleteCategoryUseCase
 import com.example.personalfinance.domain.category.usecases.GetCategoriesUseCase
 import com.example.personalfinance.domain.cleanarchitecture.usecase.UseCaseExecutor
+import com.example.personalfinance.domain.record.usecases.GetRecordsUseCase
 import com.example.personalfinance.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     private val addOrUpdateCategoryUseCase: AddOrUpdateCategoryUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
+    private val getRecordsUseCase: GetRecordsUseCase,
     useCaseExecutor: UseCaseExecutor
 ) : BaseViewModel(useCaseExecutor) {
+
+    private val _dataRecords = MutableStateFlow(mutableListOf<RecordWithCategoryAndAccount>())
+    val dataRecords = _dataRecords.asStateFlow()
 
     private val _incomeCategoryList = MutableStateFlow(mutableListOf<Category>())
     val incomeCategoryList = _incomeCategoryList.asStateFlow()
@@ -44,6 +51,7 @@ class CategoryViewModel @Inject constructor(
     init {
         fetchCategories()
         addCategoryIcon()
+        fetchRecords()
     }
 
     private fun addCategoryIcon(){
@@ -56,6 +64,26 @@ class CategoryViewModel @Inject constructor(
                 R.drawable.refundicon,
                 R.drawable.walleticon
             ).toMutableList())
+    }
+
+    private fun fetchRecords() {
+        try {
+            viewModelScope.launch {
+                useCaseExecutor.execute(
+                    getRecordsUseCase,
+                    Unit
+                ) { records ->
+                    viewModelScope.launch {
+                        records.collect { list ->
+                            _dataRecords.value = list.toMutableList()
+                        }
+                    }
+                }
+
+            }
+        } catch (ignore: CancellationException) {
+        } catch (_: Throwable) {
+        }
     }
 
 
