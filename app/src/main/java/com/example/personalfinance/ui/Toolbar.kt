@@ -49,7 +49,7 @@ fun Toolbar(handleDrawer : () -> Unit){
             }
         }
         Column(modifier = Modifier.weight(3f), horizontalAlignment = Alignment.Start) {
-            Text(text = "Personal Finance", fontFamily = PBGFont, fontWeight = FontWeight.Bold, color = SecondaryColor)
+            Text(text = "SpendWise", fontFamily = PBGFont, fontWeight = FontWeight.Bold, color = SecondaryColor)
         }
     }
 //    CenterAlignedTopAppBar(

@@ -34,4 +34,7 @@ interface CategoryDao {
 
     @Query("SELECT * FROM category")
     fun getAllCategories() : Flow<List<Category>>
+
+    @Query("DELETE FROM category")
+    suspend fun clearTable() // will delete all table data. DO NOT delete table
 }

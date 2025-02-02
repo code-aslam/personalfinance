@@ -72,7 +72,7 @@ fun ListItemCreateRecordAccount(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(text = account.name, modifier = Modifier.weight(4f))
-            Text(text = account.initialAmount.toString(), modifier = Modifier.weight(2f))
+            Text(text = (account.balance + account.initialAmount).toString(), modifier = Modifier.weight(2f))
 
         }
     }
