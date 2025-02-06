@@ -80,7 +80,7 @@ fun HomeScreen(mainNavController: NavHostController,
                 Column(modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth(0.8f)
-                    .background(Color.White)
+                    .background(MainColor)
                     .padding(innerPadding)) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),

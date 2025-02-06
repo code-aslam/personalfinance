@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
+import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 
 @Composable
 fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
@@ -23,8 +25,12 @@ fun DrawerItem(title: String, icon: ImageVector, onClick: () -> Unit) {
             .clickable { onClick() }
             .padding(16.dp)
     ) {
-        Icon(imageVector = icon, contentDescription = title, modifier = Modifier.size(24.dp))
+        Icon(imageVector = icon,
+            contentDescription = title,
+            modifier = Modifier.size(24.dp),
+            tint = SecondaryColor
+        )
         Spacer(modifier = Modifier.width(16.dp))
-        Text(text = title, fontSize = 18.sp)
+        Text(text = title, fontSize = 18.sp, color = SecondaryColor)
     }
 }
