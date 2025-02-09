@@ -85,6 +85,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.constraintlayout.compose)
     implementation (libs.androidx.lifecycle.viewmodel.compose)
+    implementation (libs.androidx.animation.v140)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
