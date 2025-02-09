@@ -2,6 +2,8 @@ package com.hotdogcode.spendwise.presentation.home.components
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

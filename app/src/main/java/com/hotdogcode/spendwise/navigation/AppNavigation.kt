@@ -1,7 +1,17 @@
 package com.hotdogcode.spendwise.navigation
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -12,13 +22,15 @@ import com.hotdogcode.spendwise.presentation.createrecord.components.CreateRecor
 import com.hotdogcode.spendwise.presentation.home.components.HomeScreen
 
 
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Composable
 fun AppNavigation(
     mainNavController : NavHostController,
     startDestination : String = Screens.HomeScreen.route
 ){
     val currentBackStackEntry = mainNavController.currentBackStackEntryAsState().value
-
+    val slideInTransition = slideInHorizontally { it * 2 }
+    val slideOutTransition = slideOutHorizontally { -it * 2 }
     NavHost(navController = mainNavController,
         startDestination = startDestination,
         enterTransition = { EnterTransition.None },
@@ -27,12 +39,22 @@ fun AppNavigation(
             HomeScreen(mainNavController = mainNavController)
         }
         composable(Screens.CreateRecordScreen.route) {
-            currentBackStackEntry?.let {
-                CreateRecordScreen(mainNavController,
-                    accountViewModel = hiltViewModel(it),
-                    recordsViewModel = hiltViewModel(it),
-                    categoryViewModel = hiltViewModel(it),
-                    createRecordViewModel = hiltViewModel(it))
+            AnimatedContent(
+                targetState = Screens.CreateRecordScreen.route,
+                transitionSpec = {
+                    scaleIn(animationSpec = tween(durationMillis = 500)) togetherWith
+                            scaleOut(animationSpec = tween(durationMillis = 500))
+                }
+            ) {
+                currentBackStackEntry?.let {
+                        entry ->
+                    CreateRecordScreen(mainNavController,
+                        accountViewModel = hiltViewModel(entry),
+                        recordsViewModel = hiltViewModel(entry),
+                        categoryViewModel = hiltViewModel(entry),
+                        createRecordViewModel = hiltViewModel(entry))
+                }
+
             }
 
         }
