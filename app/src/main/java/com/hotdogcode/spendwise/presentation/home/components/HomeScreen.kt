@@ -1,6 +1,8 @@
 package com.hotdogcode.spendwise.presentation.home.components
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Bundle
 import android.widget.Toast
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -19,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.ModalNavigationDrawer
@@ -43,9 +46,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.navigation.AppNavigation
 import com.hotdogcode.spendwise.navigation.BottomNavigationHostForMainScreen
 import com.hotdogcode.spendwise.navigation.Screens
 import com.hotdogcode.spendwise.presentation.home.HomeViewModel
+import com.hotdogcode.spendwise.presentation.smartpurchase.SmartPurchaseActivity
 import com.hotdogcode.spendwise.ui.BottomNavigationBar
 import com.hotdogcode.spendwise.ui.DrawerItem
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
@@ -62,6 +67,7 @@ fun HomeScreen(mainNavController: NavHostController,
 ) {
     val context = LocalContext.current
 
+
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -76,6 +82,7 @@ fun HomeScreen(mainNavController: NavHostController,
 
     Scaffold()
     { innerPadding ->
+
         ModalNavigationDrawer(
             drawerState = drawerState,
             drawerContent = {
@@ -119,9 +126,12 @@ fun HomeScreen(mainNavController: NavHostController,
                     )
 
                     Divider()
-                    DrawerItem("Clear Data", Icons.Default.Delete){
-                        homeViewModel.clearAllTables()
+                    DrawerItem("Smart Purchase Advisor", R.drawable.smart_purchase_suggestion_icon){
+                        context.startActivity(Intent(context,SmartPurchaseActivity::class.java))
                     }
+//                    DrawerItem("Clear Data", Icons.Default.Delete){
+//                        homeViewModel.clearAllTables()
+//                    }
                 }
 
             },

@@ -12,6 +12,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -20,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hotdogcode.spendwise.presentation.createrecord.components.CreateRecordScreen
 import com.hotdogcode.spendwise.presentation.home.components.HomeScreen
+import com.hotdogcode.spendwise.presentation.smartpurchase.components.SmartPurchaseScreen
 
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
