@@ -106,6 +106,7 @@ fun SmartPurchase(
             OutlinedTextField(
                 value = itemNameValue,
                 onValueChange = { itemNameValue = it },
+                placeholder = {Text("Optional", color = Color.LightGray)},
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(SecondaryColor, RoundedCornerShape(5.dp)),
@@ -120,7 +121,29 @@ fun SmartPurchase(
             horizontalAlignment = Alignment.Start
         ) {
             Text(text = "Category", color = SecondaryColor)
-            Dropdown(options = listOf("Grocery", "Luxury", "Bills")){
+            Dropdown(options = mapOf(
+                "\uD83C\uDFE0 Essentials" to listOf("• Grocery",
+                    "• Rent/Mortgage",
+                    "• Utilities (Electricity, Water, Internet)",
+                    "• Transportation (Fuel, Public Transport, Ride-Sharing)",
+                    "• Healthcare (Medicines, Doctor Visits, Insurance Premiums)"),
+                "\uD83C\uDF7D\uFE0F Food & Dining" to listOf("• Restaurants & Cafes",
+                    "• Fast Food", "• Takeout & Delivery", "• Coffee Shops"),
+                "\uD83D\uDCB0 Financial & Investments" to listOf("• Restaurants & Cafes",
+                    "• Fast Food", "• Takeout & Delivery", "• Coffee Shops"),
+                "\uD83D\uDECD\uFE0F Shopping" to listOf("• Clothing & Accessories",
+                    "• Electronics & Gadgets", "• Luxury & High-End Purchases", "• Home & Furniture"),
+                "\uD83C\uDF89 Entertainment & Leisure" to listOf("• Streaming Subscriptions (Netflix, Spotify, etc.)",
+                    "• Gaming (Consoles, PC Games, Mobile Games)", "• Events & Concerts", "• Books & Magazines"),
+                "✈\uFE0F Travel & Vacations" to listOf("• Flight Tickets",
+                    "• Hotels & Accommodations", "• Car Rentals", "• Tourist Activities"),
+                "\uD83D\uDCDA Education & Learning" to listOf("• Online Courses",
+                    "• School & College Fees", "• Books & Study Materials", "• Skill Development (Coding Bootcamps, Music Lessons, etc.)"),
+                "\uD83C\uDF81 Gifting & Donations" to listOf("• Gifts for Family & Friends",
+                    "• Charity & Donations"),
+                "\uD83D\uDE97 Vehicle Expenses" to listOf("• Car Repairs & Maintenance",
+                    "• Bike & Scooter Expenses", "• Parking & Tolls"),
+            )){
                 selectedOption -> {}
             }
         }
@@ -148,8 +171,13 @@ fun SmartPurchase(
             horizontalAlignment = Alignment.Start
         ) {
             Text(text = "Account", color = SecondaryColor)
-            Dropdown(options = listOf("Savings", "Credit Card")){
-                selectedOption -> {}
+            Dropdown(options = mapOf(
+                "\uD83D\uDCB3 Card Payments" to listOf("• Credit Card"),
+                "\uD83C\uDFE6 Bank & Digital Payments" to listOf("• Savings Account",
+                    "• Checking/Current Account"),
+                "\uD83D\uDCB0 Cash & Store Credit" to listOf("• Cash")
+            )){
+                    selectedOption -> {}
             }
         }
 
