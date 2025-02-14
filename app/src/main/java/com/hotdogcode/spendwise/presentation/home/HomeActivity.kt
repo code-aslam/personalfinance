@@ -23,14 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //testTensorFlowSetup()
-        val mlModel = SpendWiseML.getInstance(this,MLTask.SMART_PURCHASE_ADVISER)
-        val result = mlModel.getPurchaseAdvise()
-        if (result.isGoodPurchase()) {
-            println("Good Purchase ✅")
-        } else {
-            println("Bad Purchase ❌")
-        }
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(MainColor.toArgb(),Color.BLACK)
         )

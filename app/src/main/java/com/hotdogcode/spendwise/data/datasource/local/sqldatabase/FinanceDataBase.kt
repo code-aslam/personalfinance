@@ -11,7 +11,7 @@ import com.hotdogcode.spendwise.data.record.entity.Record
 
 @Database(
     entities = [Record::class, Category::class, Account::class],
-    version = 13
+    version = 1
 )
 abstract class FinanceDataBase : RoomDatabase() {
     abstract val recordDao : RecordDao

@@ -56,6 +56,8 @@ import com.hotdogcode.spendwise.ui.theme.PBGFont
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
 import com.hotdogcode.spendwise.ui.theme.SoftPinkColor
+import com.hotdogcode.spendwise_ml.MLTask
+import com.hotdogcode.spendwise_ml.SpendWiseML
 
 @Composable
 fun SmartPurchaseScreen(
@@ -209,7 +211,9 @@ fun SmartPurchase(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
                     .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
-                    .clickable {  }
+                    .clickable {
+
+                    }
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.Center
             ) {

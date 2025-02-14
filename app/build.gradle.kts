@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(project(":spendwise_ml"))
+    implementation(libs.tensorflow.lite.v290)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime.v261)
     annotationProcessor(libs.androidx.room.compiler.v261)

@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.AccountType
 
 @Entity
 data class Account(
@@ -13,7 +14,8 @@ data class Account(
     var name : String,
     var balance : Double = 0.0,
     @DrawableRes
-    var icon : Int
+    var icon : Int,
+    var type : AccountType = AccountType.BANK_ACCOUNT
 ){
     companion object{
         fun testData() = Account(

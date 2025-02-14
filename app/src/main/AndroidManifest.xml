@@ -18,11 +18,7 @@
             android:exported="true"
             android:label="@string/title_activity_smart_purchase"
             android:theme="@style/Theme.PersonalFinance">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".presentation.login.MainActivity"
@@ -34,7 +30,13 @@
         <activity
             android:name=".presentation.home.HomeActivity"
             android:exported="true"
-            android:theme="@style/Theme.PersonalFinance"></activity>
+            android:theme="@style/Theme.PersonalFinance">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
