@@ -58,6 +58,7 @@ import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.PBGFont
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SoftPinkColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -148,7 +149,7 @@ fun HomeScreen(mainNavController: NavHostController,
                             containerColor = MainColor,
                             shape = CircleShape
                         ) {
-                            Icon(Icons.Default.Add, contentDescription = "", tint = SecondaryColor)
+                            Icon(Icons.Default.Add, contentDescription = "", tint = brightGreen)
                         }
                     },
                     bottomBar = {

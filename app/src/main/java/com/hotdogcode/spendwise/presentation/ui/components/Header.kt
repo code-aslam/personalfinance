@@ -6,17 +6,32 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.ui.BottomShadow
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SoftPinkColor
+import com.hotdogcode.spendwise.ui.theme.SurfaceColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
+import com.hotdogcode.spendwise.ui.theme.gold
+import com.hotdogcode.spendwise.ui.theme.googleblue
+import com.hotdogcode.spendwise.ui.theme.googlelightgray
+import com.hotdogcode.spendwise.ui.theme.googleprimarytext
+import com.hotdogcode.spendwise.ui.theme.primary
+import com.hotdogcode.spendwise.ui.theme.red
+import com.hotdogcode.spendwise.ui.theme.secondary
 
 @Composable
 fun FinanceHeader(
@@ -28,7 +43,8 @@ fun FinanceHeader(
             .fillMaxWidth()
             .height(70.dp),
         elevation = 0.dp,
-        backgroundColor = MainColor
+        shape = RectangleShape,
+        backgroundColor = Color.White
     ) {
         Row(
             modifier = Modifier
@@ -44,21 +60,25 @@ fun FinanceHeader(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     var color = DarkForestGreenColor
-                    Text(text = title, color = SecondaryColor)
+
                     if(title == "INCOME" || title == "INCOME SO FAR" ){
-                        color = DarkForestGreenColor
+                        Text(text = title, color = googleprimarytext, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 10.dp))
+                        color = brightGreen
                     }else if(title == "EXPENSE" || title == "EXPENSE SO FAR"){
-                        color = SoftPinkColor
+                        Text(text = title, color = googleprimarytext, fontWeight = FontWeight.Bold,modifier = Modifier.padding(bottom = 10.dp))
+                        color = red
                     }else {
+                        Text(text = title, color = googleprimarytext, fontWeight = FontWeight.Bold,modifier = Modifier.padding(bottom = 10.dp))
                         if(isCalculationCompleted){
                             color = if(value.toDouble() < 0){
-                                SoftPinkColor
+                                red
                             }else{
-                                DarkForestGreenColor
+                                brightGreen
                             }
                         }
                     }
-                    Text(value, color = color)
+
+                    Text(value.formatMoney(), fontWeight = FontWeight.Bold,color = color, fontSize = 16.sp)
                 }
             }
         }

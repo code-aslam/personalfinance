@@ -10,4 +10,9 @@ interface IRecordRepository {
     suspend fun addOrUpdateRecord(record: Record):Long
 
     suspend fun removeRecord(record: Record)
+
+    fun fetchRecordForAccount(accountId: Long) : Flow<List<RecordWithCategoryAndAccount>>
+
+    fun fetchRecordForCategory(categoryId: Long) : Flow<List<RecordWithCategoryAndAccount>>
+
 }

@@ -43,8 +43,13 @@ class AccountViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
+    private val _showDetails = MutableStateFlow(false)
+    var showDetails = _showDetails.asStateFlow()
+
     private val _accountIconList = MutableStateFlow(mutableListOf<Int>())
     val accountIconList = _accountIconList.asStateFlow()
+
+
 
 
     init {
@@ -165,6 +170,14 @@ class AccountViewModel @Inject constructor(
 
     fun hideAddAction() {
         _showAdd.value = false
+    }
+
+    fun showDetailsAction() {
+        _showDetails.value = true
+    }
+
+    fun hideDetailsAction() {
+        _showDetails.value = false
     }
 
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,22 +43,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hotdogcode.spendwise.common.CategoryType
 import com.hotdogcode.spendwise.common.TransactionType
+import com.hotdogcode.spendwise.common.formatMoney
+import com.hotdogcode.spendwise.common.toRequiredFormat
+import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.category.entity.Category
+import com.hotdogcode.spendwise.presentation.accounts.components.AccountDetails
 import com.hotdogcode.spendwise.presentation.categories.CategoryViewModel
+import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
+import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
+import com.hotdogcode.spendwise.presentation.ui.components.DetailHeader
 import com.hotdogcode.spendwise.presentation.ui.components.Dialog
 import com.hotdogcode.spendwise.presentation.ui.components.FinanceHeader
+import com.hotdogcode.spendwise.presentation.ui.components.ItemWithIconTitleSubTitle
 import com.hotdogcode.spendwise.ui.ListItemCategory
 import com.hotdogcode.spendwise.ui.ListItemHeader
+import com.hotdogcode.spendwise.ui.ListItemRecord
 import com.hotdogcode.spendwise.ui.Toolbar
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
+import com.hotdogcode.spendwise.ui.theme.onPrimary
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -67,8 +81,13 @@ fun Categories(
     viewModel: CategoryViewModel
 ) {
 
+
+    val recordsViewModel : RecordsViewModel = hiltViewModel()
     val incomeCategories by viewModel.incomeCategoryList.collectAsState()
     val expanseCategories by viewModel.expanseCategoryList.collectAsState()
+
+    val showDetails by viewModel.showDetails.collectAsState()
+
 
     var isCalculationCompleted by remember { mutableStateOf(false) }
     val recordList by viewModel.dataRecords.collectAsState()
@@ -148,7 +167,7 @@ fun Categories(
                     }
                 },
                 onItemClick = {
-
+                    viewModel.showDetailsAction()
                 }
             )
         }
@@ -170,7 +189,7 @@ fun Categories(
                     }
                 },
                 onItemClick = {
-                    //
+                    viewModel.showDetailsAction()
                 }
             )
         }
@@ -186,7 +205,7 @@ fun Categories(
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                        .border(1.dp, onPrimary, RoundedCornerShape(5.dp))
                         .clickable { viewModel.showAddAction() }
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.Center
@@ -194,9 +213,9 @@ fun Categories(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add new category",
-                        tint = SecondaryColor
+                        tint = brightGreen
                     )
-                    Text(text = "Add New Category", color = SecondaryColor)
+                    Text(text = "Add New Category", color = Color.Black, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -316,13 +335,13 @@ fun Categories(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(text = "Type", color = SecondaryColor)
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(2.dp))
                         types.forEach {
                                 type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
                             selectedType = if(it) type else ""
                         })
                             Text(text = type, color = SecondaryColor)
-                            Spacer(modifier = Modifier.width(2.dp))
+                            Spacer(modifier = Modifier.width(1.dp))
                         }
 
                     }
@@ -404,5 +423,87 @@ fun Categories(
             onDismiss = { viewModel.hideAddAction()  }
         )
     }
+
+    BlankDialog(
+        showDialog = showDetails,
+        onDismiss = {  }
+    ) {
+        CategoryDetails(selectedCategory,
+            recordsViewModel,
+            onDismiss = {
+                viewModel.hideDetailsAction()
+            })
+    }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun CategoryDetails(selectedCategory: Category,
+                   recordsViewModel: RecordsViewModel,
+                   onDismiss: () -> Unit)
+{
+
+    LaunchedEffect(selectedCategory) {
+        recordsViewModel.getRecordsForCategory(selectedCategory.id)
+    }
+    val recordList by recordsViewModel.dateSortedRecordsForAccount.collectAsState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MainColor),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            stickyHeader {
+                DetailHeader("Category details"){
+                    onDismiss()
+                }
+            }
+            item {
+//                ItemWithIconTitleSubTitle(
+//                    icon = selectedAccount.icon,
+//                    title = selectedAccount.name,
+//                    subTitle = "Account Balance ₹ ${(selectedAccount.initialAmount + selectedAccount.balance).toString().formatMoney()}",
+//                    smallTitle = if(selectedAccount.initialAmount != 0.0) "Initially : ₹ ${selectedAccount.initialAmount.toString().formatMoney()}" else null
+//                )
+            }
+
+            recordList.forEach { (localDate, recordWithCategoryAndAccounts) ->
+                item {
+                    Column(
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        Text(text = localDate.toRequiredFormat())
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(
+                                DarkForestGreenColor
+                            ))
+                    }
+                }
+                items(recordWithCategoryAndAccounts.size) { index ->
+                    ListItemRecord(
+                        iconWidth = DpSize(30.dp, 30.dp),
+                        record = recordWithCategoryAndAccounts[index],
+                        onItemClick = {
+                            //onItemClick(recordWithCategoryAndAccounts[index])
+                        })
+                }
+                item{
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp))
+                }
+
+            }
+
+        }
+    }
+
+}
+
 

@@ -10,6 +10,8 @@ import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.domain.account.usecases.AddOrUpdateAccountUseCase
 import com.hotdogcode.spendwise.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.hotdogcode.spendwise.domain.record.usecases.AddOrUpdateRecordUseCase
+import com.hotdogcode.spendwise.domain.record.usecases.GetRecordForAccountUseCase
+import com.hotdogcode.spendwise.domain.record.usecases.GetRecordForCategoryUseCase
 import com.hotdogcode.spendwise.domain.record.usecases.GetRecordsUseCase
 import com.hotdogcode.spendwise.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,13 +29,20 @@ class RecordsViewModel @Inject constructor(
     private val getRecordsUseCase: GetRecordsUseCase,
     useCaseExecutor: UseCaseExecutor,
     private val addOrUpdateRecordUseCase: AddOrUpdateRecordUseCase,
-    private val addOrUpdateAccountUseCase: AddOrUpdateAccountUseCase
+    private val addOrUpdateAccountUseCase: AddOrUpdateAccountUseCase,
+    private val getRecordForAccountUseCase: GetRecordForAccountUseCase,
+    private val getRecordForCategoryUseCase: GetRecordForCategoryUseCase
 ) : BaseViewModel(useCaseExecutor) {
 
 
     private val _dateSortedRecords = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
     val dateSortedRecords = _dateSortedRecords.asStateFlow()
 
+    private val _dateSortedRecordsForAccount = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
+    val dateSortedRecordsForAccount = _dateSortedRecordsForAccount.asStateFlow()
+
+    private val _dateSortedRecordsForCategory = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
+    val dateSortedRecordsForCategory = _dateSortedRecordsForCategory.asStateFlow()
 
     init {
         fetchRecords()
@@ -65,6 +74,38 @@ class RecordsViewModel @Inject constructor(
         }.toSortedMap { date1, date2 -> date2.compareTo(date1) }
     }
 
+
+    fun getRecordsForAccount(accountId: Long){
+        viewModelScope.launch {
+            useCaseExecutor.execute(
+                getRecordForAccountUseCase,
+                accountId
+            ){
+                    records ->
+                viewModelScope.launch {
+                    records.collect { list ->
+                        _dateSortedRecordsForAccount.value = groupDataByDaySorted(list).toMutableMap()
+                    }
+                }
+            }
+        }
+    }
+
+    fun getRecordsForCategory(categoryId: Long){
+        viewModelScope.launch {
+            useCaseExecutor.execute(
+                getRecordForCategoryUseCase,
+                categoryId
+            ){
+                    records ->
+                viewModelScope.launch {
+                    records.collect { list ->
+                        _dateSortedRecordsForCategory.value = groupDataByDaySorted(list).toMutableMap()
+                    }
+                }
+            }
+        }
+    }
 
     private fun addNewRecordAction(record: Record, firstAccount: Account, secondAccount: Account ? = null) {
         viewModelScope.launch {

@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
@@ -80,6 +81,11 @@ import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.PBGFont
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
+import com.hotdogcode.spendwise.ui.theme.googlelightgray
+import com.hotdogcode.spendwise.ui.theme.googlelightgray2
+import com.hotdogcode.spendwise.ui.theme.onPrimary
+import com.hotdogcode.spendwise.ui.theme.red
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -116,7 +122,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val selectedCategory by createRecordViewModel.selectedCategory.collectAsState()
     val transferType by createRecordViewModel.transactionType.collectAsState()
     val scope = rememberCoroutineScope()
-    val types by remember { mutableStateOf(listOf("INCOME", "EXPENSE")) }
+    val types by remember { mutableStateOf(listOf("INCOME", "EXPENSE", "TRANSFER")) }
     var selectedType by remember { mutableStateOf(types[0]) }
     val result by createRecordViewModel.result.collectAsState()
     val symbol by createRecordViewModel.symbol.collectAsState()
@@ -164,9 +170,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = "Cancel",
-                        tint = SecondaryColor
+                        tint = Color.Black
                     )
-                    Text(text = "CANCEL", color = SecondaryColor)
+                    Text(text = "Cancel", color = Color.Black)
                 }
             }
 
@@ -205,9 +211,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Save",
-                        tint = SecondaryColor
+                        tint = brightGreen
                     )
-                    Text(text = "SAVE", color = SecondaryColor)
+                    Text(text = "Save", color = brightGreen)
                 }
             }
         }
@@ -230,9 +236,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             .padding(1.dp)
                             .size(30.dp),
                         colors = CheckboxDefaults.colors(
-                            checkmarkColor = MainColor,
-                            uncheckedColor = MainColor,
-                            checkedColor = SecondaryColor,
+                            checkmarkColor = Color.White,
+                            uncheckedColor = if(type == "INCOME") brightGreen else if(type =="EXPENSE") red else Color.Black,
+                            checkedColor = if(type == "INCOME") brightGreen else if(type =="EXPENSE") red else Color.Black,
                         ),
                         checked = (selectedType == type),
                         onCheckedChange = {
@@ -241,7 +247,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     )
                     Text(text = type,
                         fontSize = 14.sp,
-                        color = SecondaryColor,
+                        color = Color.Black,
                         modifier = Modifier.clickable {
                             selectedType = type
                             createRecordViewModel.updateCategory(Category.testData())
@@ -260,13 +266,13 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = recordFrom, color = SecondaryColor, fontSize = 14.sp, fontFamily = PBGFont, fontWeight = FontWeight.Normal, modifier = Modifier.padding(4.dp))
+                Text(text = recordFrom, color = Color.Black, fontSize = 14.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(4.dp))
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                        .border(1.dp, onPrimary, RoundedCornerShape(5.dp))
                         .clickable {
                             scope.launch {
                                 bottomSheetStateAccount.show()
@@ -280,14 +286,14 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Image(
                         painter = painterResource(id = selectedAccount.icon),
                         colorFilter = if(selectedAccount.icon == R.drawable.walletbig)
-                            ColorFilter.tint(SecondaryColor) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
+                            ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         contentDescription = selectedAccount.name,
                         modifier = Modifier
                             .size(35.dp)
                             .clip(RoundedCornerShape(4.dp))
                             .border(1.dp, Color.White, RoundedCornerShape(4.dp))
                     )
-                    Text(text = selectedAccount.name, color = SecondaryColor)
+                    Text(text = selectedAccount.name, color = Color.Black)
                 }
 
             }
@@ -297,13 +303,13 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = recordTo, fontSize = 14.sp, modifier = Modifier.padding(4.dp), color = SecondaryColor)
+                Text(text = recordTo, fontSize = 14.sp, modifier = Modifier.padding(4.dp), color = Color.Black, fontWeight = FontWeight.Bold)
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                        .border(1.dp, onPrimary, RoundedCornerShape(5.dp))
                         .clickable {
                             scope.launch {
                                 bottomSheetStateCategory.show()
@@ -318,13 +324,13 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                         painter = painterResource(id = selectedCategory.icon),
                         contentDescription = "Category",
                         colorFilter = if(selectedCategory.icon == R.drawable.price)
-                            ColorFilter.tint(SecondaryColor) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
+                            ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         modifier = Modifier
                             .size(35.dp)
                             .clip(CircleShape)
                             .border(2.dp, Color.White, CircleShape)
                     )
-                    Text(text = selectedCategory.title, color = SecondaryColor)
+                    Text(text = selectedCategory.title, color = Color.Black)
                 }
 
             }
@@ -348,10 +354,11 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     onValueChange = { textNotes = it },
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(SecondaryColor, RoundedCornerShape(5.dp)),
+                        .background(MainColor, RoundedCornerShape(5.dp))
+                        .border(1.dp, onPrimary, RoundedCornerShape(5.dp)),
                     colors = TextFieldDefaults.colors(
-                        focusedContainerColor = SharpMainColor,
-                        unfocusedContainerColor = SharpMainColor
+                        focusedContainerColor = googlelightgray,
+                        unfocusedContainerColor = googlelightgray
                     ),
                 )
             }
@@ -365,7 +372,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                         color = MainColor,
                         shape = RoundedCornerShape(4.dp)
                     )
-                    .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp))
+                    .border(1.dp, onPrimary, RoundedCornerShape(4.dp))
                     .weight(0.5f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -381,7 +388,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.backspace),
                         contentDescription = "Clear amount one at a time",
-                        tint = SecondaryColor
+                        tint = red
                     )
                 }
 
@@ -396,11 +403,12 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = SecondaryColor,
+                            color = onPrimary,
                             shape = RoundedCornerShape(4.dp)
-                        ),
+                        )
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "+", fontSize = 30.sp, color = MainColor)
+                    Text(text = "+", fontSize = 30.sp, color = brightGreen)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('7') },
@@ -410,9 +418,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "7", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "7", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('8') },
@@ -422,9 +430,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "8", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "8", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('9') },
@@ -434,9 +442,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "9", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "9", fontSize = 30.sp, color = Color.Black)
                 }
             }
             Spacer(modifier = Modifier
@@ -449,11 +457,12 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = SecondaryColor,
+                            color = onPrimary,
                             shape = RoundedCornerShape(4.dp)
-                        ),
+                        )
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "-", fontSize = 30.sp, color = MainColor)
+                    Text(text = "-", fontSize = 30.sp, color = brightGreen)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('4') },
@@ -463,10 +472,10 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                     shape = RoundedCornerShape(1.dp)
                 ) {
-                    Text(text = "4", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "4", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('5') },
@@ -476,10 +485,10 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                     shape = RoundedCornerShape(1.dp)
                 ) {
-                    Text(text = "5", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "5", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('6') },
@@ -489,11 +498,11 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
 
                     shape = RoundedCornerShape(1.dp)
                 ) {
-                    Text(text = "6", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "6", fontSize = 30.sp, color = Color.Black)
                 }
             }
             Spacer(modifier = Modifier
@@ -506,11 +515,12 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = SecondaryColor,
+                            color = onPrimary,
                             shape = RoundedCornerShape(4.dp)
-                        ),
+                        )
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "*", fontSize = 30.sp, color = MainColor)
+                    Text(text = "*", fontSize = 30.sp, color = brightGreen)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('1') },
@@ -520,9 +530,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "1", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "1", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('2') },
@@ -532,9 +542,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "2", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "2", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('3') },
@@ -544,9 +554,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "3", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "3", fontSize = 30.sp, color = Color.Black)
                 }
             }
             Spacer(modifier = Modifier
@@ -559,11 +569,12 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = SecondaryColor,
+                            color = onPrimary,
                             shape = RoundedCornerShape(4.dp)
-                        ),
+                        )
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "/", fontSize = 30.sp, color = MainColor)
+                    Text(text = "/", fontSize = 30.sp, color = brightGreen)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('0') },
@@ -573,9 +584,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = "0", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = "0", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('.') },
@@ -585,30 +596,31 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                             color = MainColor,
                             shape = RoundedCornerShape(4.dp)
                         )
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(4.dp)),
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp)),
                 ) {
-                    Text(text = ".", fontSize = 30.sp, color = SecondaryColor)
+                    Text(text = ".", fontSize = 30.sp, color = Color.Black)
                 }
                 Spacer(modifier = Modifier.width(1.dp))
                 TextButton(onClick = { createRecordViewModel.processCalculation('=') },
                     modifier = Modifier
                         .weight(1f)
                         .background(
-                            color = SecondaryColor,
+                            color = onPrimary,
                             shape = RoundedCornerShape(4.dp)
-                        ),
+                        )
+                        .border(1.dp, onPrimary, RoundedCornerShape(4.dp))
                 ) {
-                    Text(text = "=", fontSize = 30.sp, color = MainColor)
+                    Text(text = "=", fontSize = 30.sp, color = brightGreen)
                 }
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = { createRecordViewModel.setDatePicker(true) }, modifier = Modifier.weight(1f)) {
-                    Text(text = selectedDate, fontSize = 20.sp, color = SecondaryColor)
+                    Text(text = selectedDate, fontSize = 20.sp, color = Color.Black)
                 }
                 TextButton(onClick = { createRecordViewModel.setTimePicker(true) }, modifier = Modifier.weight(1f)) {
-                    Text(text = selectedTime, fontSize = 20.sp, color = SecondaryColor)
+                    Text(text = selectedTime, fontSize = 20.sp, color = Color.Black)
                 }
             }
         }

@@ -48,6 +48,9 @@ class CategoryViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
+    private val _showDetails = MutableStateFlow(false)
+    var showDetails = _showDetails.asStateFlow()
+
     init {
         fetchCategories()
         addCategoryIcon()
@@ -165,4 +168,14 @@ class CategoryViewModel @Inject constructor(
     fun hideAddAction(){
         _showAdd.value = false
     }
+
+
+    fun showDetailsAction() {
+        _showDetails.value = true
+    }
+
+    fun hideDetailsAction() {
+        _showDetails.value = false
+    }
+
 }

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -53,4 +54,11 @@ fun String.toTitleCase():String{
             Locale.ROOT
         ) else it.toString()
     }
+}
+
+fun String.formatMoney(): String {
+    val numberFormat = NumberFormat.getInstance(Locale("en", "IN")) // Indian locale
+    return if(this.toDoubleOrNull() != null)
+        numberFormat.format(this.toDouble())
+    else this
 }

@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -34,6 +35,7 @@ import com.hotdogcode.spendwise.ui.ListItemRecord
 import com.hotdogcode.spendwise.ui.Toolbar
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
 import com.hotdogcode.spendwise.ui.theme.MainColor
+import com.hotdogcode.spendwise.ui.theme.background
 import java.time.LocalDate
 
 
@@ -90,7 +92,7 @@ fun List(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .background(MainColor)
+            .background(Color.White)
     ) {
         item {
             Toolbar {

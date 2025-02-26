@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
@@ -32,7 +33,7 @@ import com.hotdogcode.spendwise.ui.theme.SharpMainColor
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Dropdown(
-    options: Map<String, List<String>>,
+    options: List<String>,
     onSelectedItemChange : (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -64,24 +65,16 @@ fun Dropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            options.forEach { (category, options) ->
-                DropdownMenuItem(
-                    text = { Text(category, fontWeight = FontWeight.Bold, fontSize = 20.sp) },
-                    onClick = {},
-                    //enabled = false
-                )
-                options.forEach{
+            options.forEach{
                     option->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            selectedOption = option
-                            expanded = false
-                            onSelectedItemChange(selectedOption)
-                        }
-                    )
-                }
-
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        selectedOption = option
+                        expanded = false
+                        onSelectedItemChange(selectedOption)
+                    }
+                )
             }
         }
     }

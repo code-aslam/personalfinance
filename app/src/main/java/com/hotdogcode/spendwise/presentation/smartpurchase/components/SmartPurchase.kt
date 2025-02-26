@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -74,8 +77,11 @@ fun SmartPurchase(
 ) {
     val context = LocalContext.current
     val smartPurchaseViewModel: SmartPurchaseViewModel = hiltViewModel()
+    val expanseCategories by smartPurchaseViewModel.expanseCategoryList.collectAsState()
+    val accountList by smartPurchaseViewModel.accountList.collectAsState()
     var itemNameValue by remember { mutableStateOf("") }
     var itemAmountValue by remember { mutableStateOf("") }
+    val purchaseSuggestion by smartPurchaseViewModel.purchaseSuggestion.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -123,30 +129,8 @@ fun SmartPurchase(
             horizontalAlignment = Alignment.Start
         ) {
             Text(text = "Category", color = SecondaryColor)
-            Dropdown(options = mapOf(
-                "\uD83C\uDFE0 Essentials" to listOf("• Grocery",
-                    "• Rent/Mortgage",
-                    "• Utilities (Electricity, Water, Internet)",
-                    "• Transportation (Fuel, Public Transport, Ride-Sharing)",
-                    "• Healthcare (Medicines, Doctor Visits, Insurance Premiums)"),
-                "\uD83C\uDF7D\uFE0F Food & Dining" to listOf("• Restaurants & Cafes",
-                    "• Fast Food", "• Takeout & Delivery", "• Coffee Shops"),
-                "\uD83D\uDCB0 Financial & Investments" to listOf("• Restaurants & Cafes",
-                    "• Fast Food", "• Takeout & Delivery", "• Coffee Shops"),
-                "\uD83D\uDECD\uFE0F Shopping" to listOf("• Clothing & Accessories",
-                    "• Electronics & Gadgets", "• Luxury & High-End Purchases", "• Home & Furniture"),
-                "\uD83C\uDF89 Entertainment & Leisure" to listOf("• Streaming Subscriptions (Netflix, Spotify, etc.)",
-                    "• Gaming (Consoles, PC Games, Mobile Games)", "• Events & Concerts", "• Books & Magazines"),
-                "✈\uFE0F Travel & Vacations" to listOf("• Flight Tickets",
-                    "• Hotels & Accommodations", "• Car Rentals", "• Tourist Activities"),
-                "\uD83D\uDCDA Education & Learning" to listOf("• Online Courses",
-                    "• School & College Fees", "• Books & Study Materials", "• Skill Development (Coding Bootcamps, Music Lessons, etc.)"),
-                "\uD83C\uDF81 Gifting & Donations" to listOf("• Gifts for Family & Friends",
-                    "• Charity & Donations"),
-                "\uD83D\uDE97 Vehicle Expenses" to listOf("• Car Repairs & Maintenance",
-                    "• Bike & Scooter Expenses", "• Parking & Tolls"),
-            )){
-                selectedOption -> {}
+            Dropdown(options = expanseCategories.map { it.title }){
+                selectedOption -> smartPurchaseViewModel.getCategorySpendingAcg(selectedOption)
             }
         }
 
@@ -165,6 +149,7 @@ fun SmartPurchase(
                     focusedContainerColor = SharpMainColor,
                     unfocusedContainerColor = SharpMainColor
                 ),
+                keyboardOptions = KeyboardOptions().copy(keyboardType = KeyboardType.Number)
             )
         }
 
@@ -173,13 +158,8 @@ fun SmartPurchase(
             horizontalAlignment = Alignment.Start
         ) {
             Text(text = "Account", color = SecondaryColor)
-            Dropdown(options = mapOf(
-                "\uD83D\uDCB3 Card Payments" to listOf("• Credit Card"),
-                "\uD83C\uDFE6 Bank & Digital Payments" to listOf("• Savings Account",
-                    "• Checking/Current Account"),
-                "\uD83D\uDCB0 Cash & Store Credit" to listOf("• Cash")
-            )){
-                    selectedOption -> {}
+            Dropdown(options = accountList.map { it.name }){
+                    selectedOption -> smartPurchaseViewModel.getAccountBalance(selectedOption)
             }
         }
 
@@ -212,7 +192,7 @@ fun SmartPurchase(
                     .clip(RoundedCornerShape(5.dp))
                     .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
                     .clickable {
-
+                        smartPurchaseViewModel.buildPurchaseTransaction(itemAmountValue.toInt())
                     }
                     .padding(10.dp),
                 horizontalArrangement = Arrangement.Center
@@ -221,6 +201,8 @@ fun SmartPurchase(
                 Text(text = "Suggest", color = SecondaryColor)
             }
         }
+
+        Text(text = purchaseSuggestion.reason)
 
 
     }

@@ -41,6 +41,57 @@ interface RecordDao {
     """)
     fun getRecordList() : Flow<List<RecordWithCategoryAndAccount>>
 
+    @Query("""
+        SELECT 
+            Record.id AS recordId,
+            Record.amount,
+            Record.date,
+            Record.time,
+            Record.notes,
+            Record.transactionType,
+            Record.accountId,
+            Account.initialAmount AS accountInitialAmount,
+            Account.icon AS accountIcon,
+            Account.name AS accountName,
+            Record.categoryId,
+            Category.title AS categoryTitle,
+            Category.type AS categoryType,
+            Category.icon AS categoryIcon
+        FROM 
+            Record
+        INNER JOIN 
+            Account ON Record.accountId = Account.id
+        INNER JOIN 
+            Category ON Record.categoryId = Category.id
+        WHERE Record.accountId = :accountId
+    """)
+    fun getRecordListForAccount(accountId: Long) : Flow<List<RecordWithCategoryAndAccount>>
+
+    @Query("""
+        SELECT 
+            Record.id AS recordId,
+            Record.amount,
+            Record.date,
+            Record.time,
+            Record.notes,
+            Record.transactionType,
+            Record.accountId,
+            Account.initialAmount AS accountInitialAmount,
+            Account.icon AS accountIcon,
+            Account.name AS accountName,
+            Record.categoryId,
+            Category.title AS categoryTitle,
+            Category.type AS categoryType,
+            Category.icon AS categoryIcon
+        FROM 
+            Record
+        INNER JOIN 
+            Account ON Record.accountId = Account.id
+        INNER JOIN 
+            Category ON Record.categoryId = Category.id
+        WHERE Record.categoryId = :categoryId
+    """)
+    fun getRecordListForCategory(categoryId: Long) : Flow<List<RecordWithCategoryAndAccount>>
 
     @Query("DELETE FROM account")
     suspend fun clearTable() // will delete all table data. DO NOT delete table

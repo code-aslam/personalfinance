@@ -10,16 +10,25 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,28 +41,47 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.AccountType
+import com.hotdogcode.spendwise.common.CategoryType
 import com.hotdogcode.spendwise.common.TransactionType
+import com.hotdogcode.spendwise.common.formatMoney
+import com.hotdogcode.spendwise.common.toRequiredFormat
 import com.hotdogcode.spendwise.data.accounts.entity.Account
+import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.presentation.accounts.AccountViewModel
+import com.hotdogcode.spendwise.presentation.createrecord.CreateRecordViewModel
+import com.hotdogcode.spendwise.presentation.createrecord.components.BottomSheetContentAccount
+import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
+import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
+import com.hotdogcode.spendwise.presentation.ui.components.DetailHeader
 import com.hotdogcode.spendwise.presentation.ui.components.Dialog
 import com.hotdogcode.spendwise.presentation.ui.components.FinanceHeader
+import com.hotdogcode.spendwise.presentation.ui.components.ItemWithIconTitleSubTitle
 import com.hotdogcode.spendwise.ui.ListItemAccount
+import com.hotdogcode.spendwise.ui.ListItemCreateRecordCategory
 import com.hotdogcode.spendwise.ui.ListItemHeaderAccount
+import com.hotdogcode.spendwise.ui.ListItemRecord
 import com.hotdogcode.spendwise.ui.Toolbar
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
+import com.hotdogcode.spendwise.ui.theme.onPrimary
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,6 +89,7 @@ fun Accounts(
     padding: PaddingValues,
     handleDrawer : () -> Unit,
     accountViewModel: AccountViewModel){
+    val recordsViewModel : RecordsViewModel = hiltViewModel()
     var isCalculationCompleted by remember { mutableStateOf(false) }
     val recordList by accountViewModel.dataRecords.collectAsState()
     val dataMap = remember {
@@ -69,6 +98,9 @@ fun Accounts(
             "EXPENSE SO FAR" to "calculating..."
         )
     }
+
+
+
 
     LaunchedEffect(recordList) {
         isCalculationCompleted = false
@@ -103,6 +135,9 @@ fun Accounts(
     val showEdit by accountViewModel.showEdit.collectAsState()
     val accountIconList by accountViewModel.accountIconList.collectAsState()
     val showAdd by accountViewModel.showAdd.collectAsState()
+    val showDetails by accountViewModel.showDetails.collectAsState()
+    val bottomSheetStateAccountDetails = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
 
 
     LazyColumn(
@@ -140,7 +175,9 @@ fun Accounts(
                     }
                 },
                 onItemClick = {
-                    //
+                    selectedIndex = index
+                    selectedAccount = accountList[index]
+                    accountViewModel.showDetailsAction()
                 }
             )
         }
@@ -155,7 +192,7 @@ fun Accounts(
                 Row(
                     modifier = Modifier
                         .clip(RoundedCornerShape(5.dp))
-                        .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                        .border(1.dp, onPrimary, RoundedCornerShape(5.dp))
                         .clickable { accountViewModel.showAddAction() }
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.Center
@@ -163,9 +200,9 @@ fun Accounts(
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add new account",
-                        tint = SecondaryColor
+                        tint = brightGreen
                     )
-                    Text(text = "Add New Account", color = SecondaryColor)
+                    Text(text = "Add New Account", color = Color.Black, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -293,10 +330,34 @@ fun Accounts(
         var textNameValue by remember { mutableStateOf("") }
         var textInitialAmountValue by remember { mutableStateOf("") }
         var selectedIcon by remember { mutableIntStateOf(accountIconList[0]) }
+        val types by remember {
+            mutableStateOf(listOf(
+                AccountType.CREDIT_CARD.name,
+                AccountType.BANK_ACCOUNT.name))
+        }
+        var selectedType by remember {
+            mutableStateOf(types[0])
+        }
         Dialog(
             title = "Add new account",
             content = {
                 Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "Type", color = SecondaryColor)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        types.forEach {
+                                type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
+                            selectedType = if(it) type else ""
+                        })
+                            Text(text = type, color = SecondaryColor)
+                            Spacer(modifier = Modifier.width(2.dp))
+                        }
+
+                    }
+
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -378,14 +439,103 @@ fun Accounts(
             },
             confirmText = "SAVE",
             onConfirm = { accountViewModel.addNewAccountAction(Account(
+                type = when(selectedType){
+                    AccountType.CREDIT_CARD.name -> AccountType.CREDIT_CARD
+                    else -> AccountType.BANK_ACCOUNT
+                },
                     name = textNameValue,
                     icon = selectedIcon,
-                    initialAmount = textInitialAmountValue.toDouble()
+                    initialAmount = textInitialAmountValue.toDouble(),
                 )
             )},
             dismissText = "CANCEL",
             onDismiss = { accountViewModel.hideAddAction() }
         )
     }
+
+    BlankDialog(
+        showDialog = showDetails,
+        onDismiss = {  }
+    ) {
+        AccountDetails (selectedAccount,
+            recordsViewModel,
+            onDismiss = {
+                accountViewModel.hideDetailsAction()
+            })
+    }
+
+
+
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AccountDetails(selectedAccount : Account,
+                                     recordsViewModel: RecordsViewModel,
+                                     onDismiss: () -> Unit)
+{
+
+    LaunchedEffect(selectedAccount) {
+        recordsViewModel.getRecordsForAccount(selectedAccount.id)
+    }
+    val recordList by recordsViewModel.dateSortedRecordsForAccount.collectAsState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MainColor),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            stickyHeader {
+                DetailHeader("Account details"){
+                    onDismiss()
+                }
+            }
+            item {
+                ItemWithIconTitleSubTitle(
+                    icon = selectedAccount.icon,
+                    title = selectedAccount.name,
+                    subTitle = "Account Balance ₹ ${(selectedAccount.initialAmount + selectedAccount.balance).toString().formatMoney()}",
+                    smallTitle = if(selectedAccount.initialAmount != 0.0) "Initially : ₹ ${selectedAccount.initialAmount.toString().formatMoney()}" else null
+                )
+            }
+
+            recordList.forEach { (localDate, recordWithCategoryAndAccounts) ->
+                item {
+                    Column(
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+                    ) {
+                        Text(text = localDate.toRequiredFormat())
+                        Spacer(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(
+                                DarkForestGreenColor
+                            ))
+                    }
+                }
+                items(recordWithCategoryAndAccounts.size) { index ->
+                    ListItemRecord(
+                        iconWidth = DpSize(30.dp, 30.dp),
+                        record = recordWithCategoryAndAccounts[index],
+                        onItemClick = {
+                            //onItemClick(recordWithCategoryAndAccounts[index])
+                        })
+                }
+                item{
+                    Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(10.dp))
+                }
+
+            }
+
+        }
+    }
+
 }
 

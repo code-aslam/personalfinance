@@ -10,13 +10,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.navigation.compose.rememberNavController
 import com.hotdogcode.spendwise.navigation.AppNavigation
 import com.hotdogcode.spendwise.presentation.home.ui.theme.PersonalFinanceTheme
-import com.hotdogcode.spendwise.ui.theme.MainColor
-import com.hotdogcode.spendwise_ml.MLTask
-import com.hotdogcode.spendwise_ml.SpendWiseML
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +20,7 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(MainColor.toArgb(),Color.BLACK)
+            statusBarStyle = SystemBarStyle.light(Color.WHITE, Color.BLACK)
         )
         setContent {
             PersonalFinanceTheme {
@@ -108,6 +104,7 @@ fun MainScreen(innerPaddingValues: PaddingValues){
 //    val mainNavController = rememberNavController()
 //    AppNavigation(mainNavController = mainNavController, innerPaddingValues = innerPaddingValues)
 }
+
 
 
 @Composable

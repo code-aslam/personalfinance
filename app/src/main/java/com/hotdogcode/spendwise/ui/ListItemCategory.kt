@@ -84,7 +84,7 @@ fun ListItemCategory(
                 painter = painterResource(id = R.drawable.dots),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(DpSize(25.dp, 25.dp))
+                    .size(DpSize(25.dp, 18.dp))
                     .clickable { expanded = true }
             )
             DropdownMenu(

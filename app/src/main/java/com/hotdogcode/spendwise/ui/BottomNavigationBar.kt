@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -23,12 +24,22 @@ import com.hotdogcode.spendwise.navigation.BottomNavItem
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SoftPinkColor
+import com.hotdogcode.spendwise.ui.theme.brightGreen
+import com.hotdogcode.spendwise.ui.theme.gold
+import com.hotdogcode.spendwise.ui.theme.googleDarkblue
+import com.hotdogcode.spendwise.ui.theme.googleblue
+import com.hotdogcode.spendwise.ui.theme.googlelightgray
+import com.hotdogcode.spendwise.ui.theme.googleprimarytext
+import com.hotdogcode.spendwise.ui.theme.googleyellow
+import com.hotdogcode.spendwise.ui.theme.orange
+import com.hotdogcode.spendwise.ui.theme.red
+import com.hotdogcode.spendwise.ui.theme.secondary
 
 @Composable
 fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
     BottomNavigation(
         modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
-        backgroundColor = MainColor
+        backgroundColor = Color.White
     ) {
         val context = LocalContext.current
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -59,19 +70,20 @@ fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
                         Image(
                             painter = painterResource(id = item.image), // Custom image for Home
                             contentDescription = item.label,
-                            modifier = Modifier.size(if(currentRoute == item.route) 30.dp else 24.dp),
+                            modifier = Modifier.size(if(currentRoute == item.route) 24.dp else 24.dp),
                             )
                     }else{
                     Image(
                     painter = painterResource(id = item.image), // Custom image for Home
                     contentDescription = item.label,
-                    modifier = Modifier.size(if(currentRoute == item.route) 30.dp else 24.dp),
+                    modifier = Modifier.size(if(currentRoute == item.route) 24.dp else 24.dp),
                     colorFilter = ColorFilter.tint(
-                        if(currentRoute == item.route) SoftPinkColor else SecondaryColor
+                        if(currentRoute == item.route) brightGreen else googleprimarytext
                     )
                 )}},
                 label = {
-                    Text(item.label, fontSize = 8.sp, fontWeight = if(currentRoute == item.route) FontWeight.Bold else FontWeight.SemiBold, color = SecondaryColor)
+                    Text(item.label, fontSize = 12.sp, fontWeight = if(currentRoute == item.route) FontWeight.ExtraBold else FontWeight.SemiBold,
+                        color = googleprimarytext)
                 }
             )
         }

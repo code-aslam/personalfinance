@@ -15,6 +15,6 @@ sealed class BottomNavItem(
     data object Categories : BottomNavItem("categories", R.drawable.category, "Categories")
 
     companion object{
-        val all = listOf(Records, Budgets, Analysis, Accounts, Categories)
+        val all = listOf(Records, Budgets, Accounts, Categories)
     }
 }
