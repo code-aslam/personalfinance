@@ -167,6 +167,8 @@ fun Categories(
                     }
                 },
                 onItemClick = {
+                    selectedIndex = index
+                    selectedCategory = incomeCategories[index]
                     viewModel.showDetailsAction()
                 }
             )
@@ -189,6 +191,8 @@ fun Categories(
                     }
                 },
                 onItemClick = {
+                    selectedIndex = index
+                    selectedCategory = expanseCategories[index]
                     viewModel.showDetailsAction()
                 }
             )
@@ -426,7 +430,9 @@ fun Categories(
 
     BlankDialog(
         showDialog = showDetails,
-        onDismiss = {  }
+        onDismiss = {
+            viewModel.hideDetailsAction()
+        }
     ) {
         CategoryDetails(selectedCategory,
             recordsViewModel,
@@ -446,7 +452,7 @@ fun CategoryDetails(selectedCategory: Category,
     LaunchedEffect(selectedCategory) {
         recordsViewModel.getRecordsForCategory(selectedCategory.id)
     }
-    val recordList by recordsViewModel.dateSortedRecordsForAccount.collectAsState()
+    val recordList by recordsViewModel.dateSortedRecordsForCategory.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -463,12 +469,11 @@ fun CategoryDetails(selectedCategory: Category,
                 }
             }
             item {
-//                ItemWithIconTitleSubTitle(
-//                    icon = selectedAccount.icon,
-//                    title = selectedAccount.name,
-//                    subTitle = "Account Balance ₹ ${(selectedAccount.initialAmount + selectedAccount.balance).toString().formatMoney()}",
-//                    smallTitle = if(selectedAccount.initialAmount != 0.0) "Initially : ₹ ${selectedAccount.initialAmount.toString().formatMoney()}" else null
-//                )
+                ItemWithIconTitleSubTitle(
+                    icon = selectedCategory.icon,
+                    title = selectedCategory.title,
+                    smallTitle = selectedCategory.type.typeName
+                )
             }
 
             recordList.forEach { (localDate, recordWithCategoryAndAccounts) ->

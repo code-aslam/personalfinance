@@ -26,7 +26,7 @@ import com.hotdogcode.spendwise.ui.theme.googlelightgray2
 fun ItemWithIconTitleSubTitle(
     icon: Int,
     title: String,
-    subTitle: String,
+    subTitle: String? = null,
     smallTitle : String? = null
 ) {
     Row(
@@ -43,7 +43,7 @@ fun ItemWithIconTitleSubTitle(
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(text = title, fontWeight = FontWeight.Bold)
-            Text(subTitle)
+            if(subTitle != null) Text(subTitle)
             if(smallTitle != null){
                 Text(smallTitle, color = googlelightgray2)
             }
