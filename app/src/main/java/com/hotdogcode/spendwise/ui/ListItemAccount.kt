@@ -96,9 +96,9 @@ fun ListItemAccount(
                     )
                     DropdownMenu(
                         modifier = Modifier
-                            .background(MainColor)
+                            .background(Color.White, RoundedCornerShape(2.dp))
                             .width(200.dp)
-                            .shadow(elevation = 2.dp),
+                            .shadow(elevation = 1.dp),
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
@@ -107,7 +107,7 @@ fun ListItemAccount(
                                 expanded = false
                                 menuAction(option)
                             }) {
-                                Text(text = option, color = SecondaryColor)
+                                Text(text = option, color = Color.Black)
                             }
                         }
                     }

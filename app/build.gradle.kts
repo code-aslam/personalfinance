@@ -89,6 +89,9 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.animation.v140)
 
+    implementation("io.github.ehsannarmani:compose-charts:0.1.2")
+
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)

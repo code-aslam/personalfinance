@@ -53,9 +53,6 @@ fun BottomNavigationBar(navController: NavController, padding : PaddingValues){
                         BottomNavItem.Budgets.route -> {
                             Toast.makeText(context, "AI Based Budget Coming Soon..", Toast.LENGTH_SHORT).show()
                         }
-                        BottomNavItem.Analysis.route -> {
-                            Toast.makeText(context, "AI Based Analysis Coming Soon..", Toast.LENGTH_SHORT).show()
-                        }
                         else -> {
                             navController.navigate(item.route) {
                                 popUpTo(navController.graph.startDestinationId)

@@ -3,6 +3,7 @@ package com.hotdogcode.spendwise.presentation.records
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.record.entity.Record
@@ -10,8 +11,10 @@ import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.domain.account.usecases.AddOrUpdateAccountUseCase
 import com.hotdogcode.spendwise.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.hotdogcode.spendwise.domain.record.usecases.AddOrUpdateRecordUseCase
+import com.hotdogcode.spendwise.domain.record.usecases.DeleteRecordWithIdUseCase
 import com.hotdogcode.spendwise.domain.record.usecases.GetRecordForAccountUseCase
 import com.hotdogcode.spendwise.domain.record.usecases.GetRecordForCategoryUseCase
+import com.hotdogcode.spendwise.domain.record.usecases.GetRecordUseCase
 import com.hotdogcode.spendwise.domain.record.usecases.GetRecordsUseCase
 import com.hotdogcode.spendwise.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RecordsViewModel @Inject constructor(
     private val getRecordsUseCase: GetRecordsUseCase,
+    private val getRecordUseCase : GetRecordUseCase,
+    private val deleteRecordWithIdUseCase: DeleteRecordWithIdUseCase,
     useCaseExecutor: UseCaseExecutor,
     private val addOrUpdateRecordUseCase: AddOrUpdateRecordUseCase,
     private val addOrUpdateAccountUseCase: AddOrUpdateAccountUseCase,
@@ -43,6 +48,15 @@ class RecordsViewModel @Inject constructor(
 
     private val _dateSortedRecordsForCategory = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
     val dateSortedRecordsForCategory = _dateSortedRecordsForCategory.asStateFlow()
+
+    private val _showDetails = MutableStateFlow(false)
+    var showDetails = _showDetails.asStateFlow()
+
+    private val _selectedRecordDetails = MutableStateFlow(RecordWithCategoryAndAccount())
+    var selectedRecordDetails = _selectedRecordDetails.asStateFlow()
+
+    private val _showDelete = MutableStateFlow(false)
+    var showDelete = _showDelete.asStateFlow()
 
     init {
         fetchRecords()
@@ -91,6 +105,22 @@ class RecordsViewModel @Inject constructor(
         }
     }
 
+    fun getRecord(recordId : Long){
+        viewModelScope.launch {
+            useCaseExecutor.execute(
+                getRecordUseCase,
+                recordId
+            ){
+                record ->
+                viewModelScope.launch {
+                    record.collect {
+                        _selectedRecordDetails.value = it
+                    }
+                }
+                }
+        }
+    }
+
     fun getRecordsForCategory(categoryId: Long){
         viewModelScope.launch {
             useCaseExecutor.execute(
@@ -134,10 +164,36 @@ class RecordsViewModel @Inject constructor(
 
     }
 
+    fun deleteRecordWithId(recordId: Long){
+        viewModelScope.launch {
+            useCaseExecutor.execute(
+                deleteRecordWithIdUseCase,
+                recordId
+            ){
+                //
+            }
+        }
+    }
+
     fun addNewRecord(record: Record,firstAccount: Account, secondAccount: Account ? = null){
         addNewRecordAction(record, firstAccount, secondAccount)
     }
 
+    fun showDetailsAction() {
+        _showDetails.value = true
+    }
+
+    fun hideDetailsAction() {
+        _showDetails.value = false
+    }
+
+    fun showDeleteAction() {
+        _showDelete.value = true
+    }
+
+    fun hideDeleteAction() {
+        _showDelete.value = false
+    }
 
 
 

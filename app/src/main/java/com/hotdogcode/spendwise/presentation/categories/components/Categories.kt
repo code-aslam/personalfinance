@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -72,6 +73,7 @@ import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
 import com.hotdogcode.spendwise.ui.theme.brightGreen
 import com.hotdogcode.spendwise.ui.theme.onPrimary
+import com.hotdogcode.spendwise.ui.theme.red
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -143,6 +145,11 @@ fun Categories(
         }
         stickyHeader {
             FinanceHeader(dataMap, isCalculationCompleted)
+        }
+        item{
+            Spacer(modifier = Modifier
+                .fillMaxWidth()
+                .height(20.dp))
         }
         item {
             ListItemHeader(title = "Income Categories")
@@ -231,7 +238,7 @@ fun Categories(
         Dialog(
             title = "Delete This Category",
             content = {
-                Text("Deleting this category will also delete all records and budgets for this category. Are you sure ?", color = SecondaryColor, fontSize = 18.sp)
+                Text("Deleting this category will also delete all records and budgets for this category. Are you sure ?", color = Color.Black, fontSize = 18.sp)
             },
             confirmText = "YES",
             onConfirm = { viewModel.removeCategoryAction(selectedCategory)},
@@ -251,16 +258,16 @@ fun Categories(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = Color.Black)
                         OutlinedTextField(
                             value = textValue,
                             onValueChange = { textValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
+                                .background(Color.White, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
-                                focusedContainerColor = SharpMainColor,
-                                unfocusedContainerColor = SharpMainColor
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White
                             ),
 
                             )
@@ -269,11 +276,11 @@ fun Categories(
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = SecondaryColor)
+                        Text(text = "Icon", color = Color.Black)
                         Box(
                             modifier = Modifier
-                                .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                                .background(Color.White, RoundedCornerShape(5.dp))
+                                .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -323,7 +330,7 @@ fun Categories(
     if(showAdd){
         var textValue by remember { mutableStateOf("") }
         val types by remember {
-            mutableStateOf(listOf("INCOME", "EXPENSE"))
+            mutableStateOf(listOf(CategoryType.INCOME.title, CategoryType.EXPENSE.title))
         }
         var selectedType by remember {
             mutableStateOf(types[0])
@@ -338,30 +345,33 @@ fun Categories(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(text = "Type", color = SecondaryColor)
-                        Spacer(modifier = Modifier.width(2.dp))
                         types.forEach {
-                                type -> Checkbox(checked = (selectedType == type), onCheckedChange = {
+                                type -> Checkbox(checked = (selectedType == type),
+                            colors = CheckboxDefaults.colors(
+                                checkmarkColor = Color.White,
+                                uncheckedColor = if(type == "Income") brightGreen else if(type =="Expense") red else Color.Black,
+                                checkedColor = if(type == "Income") brightGreen else if(type =="Expense") red else Color.Black,
+                            ),
+                            onCheckedChange = {
                             selectedType = if(it) type else ""
                         })
-                            Text(text = type, color = SecondaryColor)
-                            Spacer(modifier = Modifier.width(1.dp))
+                            Text(text = type, color = Color.Black)
                         }
 
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Name", modifier = Modifier.weight(1f),color = SecondaryColor)
+                        Text(text = "Name", modifier = Modifier.weight(1f),color = Color.Black)
                         OutlinedTextField(
                             value = textValue,
                             onValueChange = { textValue = it },
                             modifier = Modifier
                                 .weight(5f)
-                                .background(SecondaryColor, RoundedCornerShape(5.dp)),
+                                .background(Color.White, RoundedCornerShape(5.dp)),
                             colors = TextFieldDefaults.colors(
-                                focusedContainerColor = SharpMainColor,
-                                unfocusedContainerColor = SharpMainColor
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White
                             ),
 
                             )
@@ -370,11 +380,11 @@ fun Categories(
                     Column(
                         modifier = Modifier.padding(top = 10.dp)
                     ) {
-                        Text(text = "Icon", color = SecondaryColor)
+                        Text(text = "Icon", color = Color.Black)
                         Box(
                             modifier = Modifier
-                                .background(SharpMainColor, RoundedCornerShape(5.dp))
-                                .border(1.dp, SecondaryColor, RoundedCornerShape(5.dp))
+                                .background(Color.White, RoundedCornerShape(5.dp))
+                                .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
                                 .padding(10.dp)
                         ){
                             LazyRow(
@@ -396,7 +406,7 @@ fun Categories(
                                                     .clip(CircleShape)
                                                     .border(
                                                         2.dp,
-                                                        if (selectedIcon == item) DarkForestGreenColor else Color.White,
+                                                        if (selectedIcon == item) Color.Black else Color.White,
                                                         CircleShape
                                                     )
                                                     .clickable {

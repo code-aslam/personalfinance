@@ -26,8 +26,8 @@ val AccentColor = Color(0xFF39AFEA)
 val SoftPinkColor = Color(0xFFC2185B)
 val DarkForestGreenColor = Color(0xFF556B2F)
 val SharpMainColor = Color(0xFFEBEBC9)
-
-
+val dividerColor = Color(0xFFE0E0E0)
+val dividerColor50 = Color(0x80888888)
 
 
 val primary = Color(0xFF1E1E1E) // Dark Grey

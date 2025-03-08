@@ -29,6 +29,7 @@ import com.hotdogcode.spendwise.ui.theme.brightGreen
 import com.hotdogcode.spendwise.ui.theme.googleblue
 import com.hotdogcode.spendwise.ui.theme.onPrimary
 import com.hotdogcode.spendwise.ui.theme.primary
+import com.hotdogcode.spendwise.ui.theme.red
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +38,7 @@ fun Toolbar(handleDrawer : () -> Unit){
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(Color.White),
+            .background(brightGreen),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -47,12 +48,12 @@ fun Toolbar(handleDrawer : () -> Unit){
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "navigation drawer menu button",
-                    tint = Color.Black
+                    tint = Color.White
                 )
             }
         }
         Column(modifier = Modifier.weight(3f), horizontalAlignment = Alignment.Start) {
-            Text(text = "SpendWise", fontFamily = PBGFont, fontWeight = FontWeight.ExtraBold, color = brightGreen)
+            Text(text = "SpendWise", fontFamily = PBGFont, fontWeight = FontWeight.ExtraBold, color = Color.White)
         }
         Column(
             modifier = Modifier.weight(0.5f)
@@ -61,7 +62,7 @@ fun Toolbar(handleDrawer : () -> Unit){
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search button",
-                    tint = Color.Black
+                    tint = Color.White
                 )
             }
         }

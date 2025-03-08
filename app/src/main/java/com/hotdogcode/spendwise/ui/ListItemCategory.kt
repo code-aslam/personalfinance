@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.toTitleCase
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
@@ -74,7 +75,7 @@ fun ListItemCategory(
                 .border(2.dp, Color.White, CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = category.title, modifier = Modifier.weight(4f), fontSize = 18.sp, color = SecondaryColor)
+        Text(text = category.title.toTitleCase(), modifier = Modifier.weight(4f), fontSize = 18.sp, color = Color.Black)
 
         Box(
             modifier = Modifier.weight(1f),
@@ -91,7 +92,7 @@ fun ListItemCategory(
                 modifier = Modifier
                     .background(MainColor)
                     .width(200.dp)
-                    .shadow(elevation = 2.dp),
+                    .shadow(elevation = 1.dp),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
             ) {
@@ -100,7 +101,7 @@ fun ListItemCategory(
                         expanded = false
                         menuAction(option)
                     }) {
-                        Text(text = option, color = SecondaryColor)
+                        Text(text = option, color = Color.Black)
                     }
                 }
             }
