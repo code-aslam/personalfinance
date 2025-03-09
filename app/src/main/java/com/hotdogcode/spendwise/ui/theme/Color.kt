@@ -32,7 +32,6 @@ val dividerColor50 = Color(0x80888888)
 
 val primary = Color(0xFF1E1E1E) // Dark Grey
 val secondary = Color(0xFF252525) // Deep Charcoal
-val tertiary = Color(0xFFFF9800) // Vibrant Orange
 val background = Color(0xFF121212) // Pure Black
 val surface = Color(0xFF1E1E1E) // Same as primary for consistency
 val onPrimary = Color(0xFFE0E0E0) // Light Grey (Text)

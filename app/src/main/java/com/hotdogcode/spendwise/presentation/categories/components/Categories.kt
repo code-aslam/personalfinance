@@ -445,7 +445,6 @@ fun Categories(
         }
     ) {
         CategoryDetails(selectedCategory,
-            recordsViewModel,
             onDismiss = {
                 viewModel.hideDetailsAction()
             })
@@ -455,11 +454,11 @@ fun Categories(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryDetails(selectedCategory: Category,
-                   recordsViewModel: RecordsViewModel,
                    onDismiss: () -> Unit)
 {
 
-    LaunchedEffect(selectedCategory) {
+    val recordsViewModel : RecordsViewModel = hiltViewModel()
+    LaunchedEffect(Unit) {
         recordsViewModel.getRecordsForCategory(selectedCategory.id)
     }
     val recordList by recordsViewModel.dateSortedRecordsForCategory.collectAsState()

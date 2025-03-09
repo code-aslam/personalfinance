@@ -5,6 +5,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -30,9 +31,14 @@ import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.CategoryType
 import com.hotdogcode.spendwise.common.TransactionType
+import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.presentation.analysis.AnalysisViewModel
+import com.hotdogcode.spendwise.presentation.categories.components.CategoryDetails
 import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
+import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
 import com.hotdogcode.spendwise.presentation.ui.components.FinanceHeader
 import com.hotdogcode.spendwise.presentation.ui.components.HDCPieChart
 import com.hotdogcode.spendwise.ui.ListItemHeaderAccount
@@ -51,23 +57,21 @@ fun Analysis(
 ) {
     val recordsViewModel : RecordsViewModel = hiltViewModel()
     val recordList by recordsViewModel.dateSortedRecords.collectAsState()
-    var data by remember {
+    val barList by viewModel.barList.collectAsState()
+
+    val showDetails by viewModel.showDetails.collectAsState()
+    var isCalculationCompleted by remember { mutableStateOf(false) }
+
+    var selectedCategory by remember {
         mutableStateOf(
-            listOf(
-                Pie(label = "Android", data = 20.0, color = Color.Red),
-                Pie(label = "Windows", data = 45.0, color = Color.Cyan),
-                Pie(label = "Linux", data = 35.0, color = Color.Gray),
-                Pie(label = "Andrd", data = 20.0, color = Color.Red),
-                Pie(label = "Winows", data = 45.0, color = Color.Cyan),
-                Pie(label = "Linx", data = 35.0, color = Color.Gray),
-                Pie(label = "Andrid", data = 20.0, color = Color.Red),
-                Pie(label = "Wndows", data = 45.0, color = Color.Cyan),
-                Pie(label = "Liux", data = 35.0, color = Color.Gray),
+            Category(
+                title = "",
+                icon = 0,
+                type = CategoryType.INCOME
             )
         )
     }
 
-    var isCalculationCompleted by remember { mutableStateOf(false) }
     val dataMap = remember {
         mutableStateMapOf(
             "EXPENSE" to "calculating...",
@@ -113,22 +117,55 @@ fun Analysis(
         item {
             ListItemHeaderAccount(title = "Expense Analysis")
         }
-        items(data.size) {index->
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp),
-                contentAlignment = Alignment.CenterStart
-            ){
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(fraction = data[index].data.toFloat() / 100f)
-                        .height(40.dp)
-                        .background(data[index].color),
-
+        items(barList.size) {index->
+            BarItem(barList[index]) {
+                bar ->
+                selectedCategory = Category(
+                    id = bar.categoryId,
+                    title = bar.categoryName!!,
+                    icon = R.drawable.salary,
+                    type = CategoryType.EXPENSE
                 )
-                Text("${data[index].label!!}: ${data[index].data}%")
+                viewModel.showDetailsAction()
             }
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(start = 10.dp, end = 10.dp)
+//                    .clickable {
+//                        selectedCategory = Category(
+//                            id = barList[index].categoryId,
+//                            title = barList[index].categoryName!!,
+//                            icon = R.drawable.salary,
+//                            type = CategoryType.EXPENSE
+//                        )
+//                        viewModel.showDetailsAction()
+//                    },
+//                contentAlignment = Alignment.CenterStart,
+//            ){
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxWidth(fraction = barList[index].percentage.toFloat() / 100f)
+//                        .height(40.dp)
+//                        .background(Color.Red),
+//
+//                )
+//                Text("${barList[index].categoryName!!}: ${barList[index].percentage}%")
+//            }
 
            Spacer(modifier = Modifier.fillMaxWidth().height(5.dp).background(Color.White))
         }
+    }
+
+    BlankDialog(
+        showDialog = showDetails,
+        onDismiss = {
+            viewModel.hideDetailsAction()
+        }
+    ) {
+        CategoryDetails(selectedCategory,
+            onDismiss = {
+                viewModel.hideDetailsAction()
+            })
     }
 }

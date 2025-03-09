@@ -204,21 +204,16 @@ fun List(
 
 @Composable
 fun RecordsDetails(
-    selectedRecord : RecordWithCategoryAndAccount,
+    record : RecordWithCategoryAndAccount,
     recordsViewModel: RecordsViewModel,
     onDismiss : () -> Unit
 ){
-    LaunchedEffect(selectedRecord) {
-        recordsViewModel.getRecord(selectedRecord.recordId)
-    }
-
-    val record by recordsViewModel.selectedRecordDetails.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
-    ){
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth()
                 .height(360.dp)
@@ -226,7 +221,8 @@ fun RecordsDetails(
                 .padding(10.dp)
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().weight(0.5f).background(if(record.transactionType == TransactionType.INCOME) brightGreen else red)
+                modifier = Modifier.fillMaxWidth().weight(0.5f)
+                    .background(if (record.transactionType == TransactionType.INCOME) brightGreen else red)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth()
@@ -263,24 +259,30 @@ fun RecordsDetails(
                     }
                 }
 
-                Text(record.transactionType.name,
+                Text(
+                    record.transactionType.name,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    color = Color.White)
+                    color = Color.White
+                )
 
                 Spacer(modifier = Modifier.height(10.dp))
-                Text("₹${record.amount.toString().formatMoney()}",
+                Text(
+                    "₹${record.amount.toString().formatMoney()}",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    fontSize = 32.sp)
+                    fontSize = 32.sp
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
-                Text("${Date(record.date).toRequiredFormat()} ${record.time}",
+                Text(
+                    "${Date(record.date).toRequiredFormat()} ${record.time}",
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.End,
                     color = Color.White,
-                    fontSize = 16.sp)
+                    fontSize = 16.sp
+                )
             }
             Column(
                 modifier = Modifier.fillMaxWidth().weight(0.5f).background(Color.White)
