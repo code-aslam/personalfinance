@@ -57,6 +57,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.AccountType
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.common.toRequiredFormat
@@ -111,7 +112,7 @@ fun Accounts(
         for (record in recordList) {
             if(record.transactionType == TransactionType.INCOME)
                 income += record.amount
-            if(record.transactionType == TransactionType.EXPANSE)
+            if(record.transactionType == TransactionType.EXPENSE)
                 expense += record.amount
         }
         dataMap["INCOME SO FAR"] = income.toString()
@@ -124,8 +125,7 @@ fun Accounts(
     var selectedAccount by remember {
         mutableStateOf(
             Account(
-                name = "Saving",
-                icon = R.drawable.salary
+                name = "Saving"
             )
         )
     }
@@ -233,7 +233,7 @@ fun Accounts(
     if(showEdit){
         var textNameValue by remember { mutableStateOf(selectedAccount.name) }
         var textInitialAmountValue by remember { mutableStateOf(selectedAccount.initialAmount.toString()) }
-        var selectedIcon by remember { mutableIntStateOf(selectedAccount.icon) }
+        var selectedIcon by remember { mutableStateOf(selectedAccount.icon) }
         Dialog(
             title = "Edit account",
             content = {
@@ -297,7 +297,7 @@ fun Accounts(
                                     ) {
                                         rowItems.forEach { item ->
                                             Image(
-                                                painter = painterResource(id = item),
+                                                painter = painterResource(id = IconLib.getIcon(item)),
                                                 contentDescription = "",
                                                 modifier = Modifier
                                                     .size(if (selectedIcon == item) 52.dp else 50.dp)
@@ -336,7 +336,7 @@ fun Accounts(
     if(showAdd) {
         var textNameValue by remember { mutableStateOf("") }
         var textInitialAmountValue by remember { mutableStateOf("") }
-        var selectedIcon by remember { mutableIntStateOf(accountIconList[0]) }
+        var selectedIcon by remember { mutableStateOf(accountIconList[0]) }
         val types by remember {
             mutableStateOf(listOf(
                 AccountType.CREDIT_CARD.title,
@@ -426,7 +426,7 @@ fun Accounts(
                                     ) {
                                         rowItems.forEach { item ->
                                             Image(
-                                                painter = painterResource(id = item),
+                                                painter = painterResource(id = IconLib.getIcon(item)),
                                                 contentDescription = "",
                                                 modifier = Modifier
                                                     .size(if (selectedIcon == item) 52.dp else 50.dp)
@@ -466,7 +466,9 @@ fun Accounts(
 
     BlankDialog(
         showDialog = showDetails,
-        onDismiss = {  }
+        onDismiss = {
+            accountViewModel.hideDetailsAction()
+        }
     ) {
         AccountDetails (selectedAccount,
             recordsViewModel,
@@ -530,8 +532,8 @@ fun AccountDetails(selectedAccount : Account,
                     }
                 }
                 items(recordWithCategoryAndAccounts.size) { index ->
-                    ListItemRecord(
-                        iconWidth = DpSize(30.dp, 30.dp),
+                    ListItemAccountDetail(
+                        iconWidth = DpSize(35.dp, 35.dp),
                         record = recordWithCategoryAndAccounts[index],
                         onItemClick = {
                             //onItemClick(recordWithCategoryAndAccounts[index])

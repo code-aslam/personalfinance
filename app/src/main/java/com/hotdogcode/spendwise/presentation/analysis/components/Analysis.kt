@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.presentation.analysis.AnalysisViewModel
@@ -66,7 +67,7 @@ fun Analysis(
         mutableStateOf(
             Category(
                 title = "",
-                icon = 0,
+                icon = IconName.CAR,
                 type = CategoryType.INCOME
             )
         )
@@ -87,7 +88,7 @@ fun Analysis(
         var expense = 0.0
         for (record in recordList.values) {
             income += record.filter { it.transactionType == TransactionType.INCOME }.sumOf { it.amount }
-            expense += record.filter { it.transactionType == TransactionType.EXPANSE }.sumOf { it.amount }
+            expense += record.filter { it.transactionType == TransactionType.EXPENSE }.sumOf { it.amount }
         }
         dataMap["EXPENSE"] = expense.toString()
         dataMap["INCOME"] = income.toString()
@@ -123,7 +124,7 @@ fun Analysis(
                 selectedCategory = Category(
                     id = bar.categoryId,
                     title = bar.categoryName!!,
-                    icon = R.drawable.salary,
+                    icon = bar.categoryIcon,
                     type = CategoryType.EXPENSE
                 )
                 viewModel.showDetailsAction()

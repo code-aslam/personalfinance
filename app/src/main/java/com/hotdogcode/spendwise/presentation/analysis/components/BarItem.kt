@@ -1,5 +1,6 @@
 package com.hotdogcode.spendwise.presentation.analysis.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -25,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.ui.theme.dividerColor
 
 @Composable
@@ -41,13 +45,13 @@ fun BarItem(
             modifier = Modifier.fillMaxWidth().height(65.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.salary_new),
+            Image(
+                painter = painterResource(id = IconLib.getIcon(bar.categoryIcon)),
                 contentDescription = "",
-                modifier = Modifier.size(25.dp).weight(1f)
+                modifier = Modifier.size(40.dp).clip(CircleShape).weight(1f),
             )
             Column(
-                modifier = Modifier.weight(5f)
+                modifier = Modifier.weight(5f).padding(start = 10.dp)
             ) {
                 Row(modifier = Modifier.height(30.dp).fillMaxWidth()) {
                     Text(bar.categoryName, fontSize = 16.sp)

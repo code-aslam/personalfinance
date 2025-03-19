@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.common.toTitleCase
 import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
@@ -41,18 +43,17 @@ import com.hotdogcode.spendwise.ui.theme.dividerColor
 import com.hotdogcode.spendwise.ui.theme.dividerColor50
 import com.hotdogcode.spendwise.ui.theme.googlelightgray
 import com.hotdogcode.spendwise.ui.theme.googlelightgray2
-import com.hotdogcode.spendwise.ui.theme.orange
-import com.hotdogcode.spendwise.ui.theme.red
 
 @Composable
 fun ListItemRecord(
     iconWidth: DpSize,
     record: RecordWithCategoryAndAccount,
-    onItemClick : (RecordWithCategoryAndAccount) -> Unit
+    onItemClick: (RecordWithCategoryAndAccount) -> Unit,
+    showDescription: Boolean = true
 ) {
     Row(
         modifier = Modifier.padding(5.dp)
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,42 +66,44 @@ fun ListItemRecord(
                     .background(Color.White)
                     .clickable { onItemClick(record) }
             ) {
-                val (catIcon, catName , accountIcon, accountName, amount) = createRefs()
+                val (catIcon, catName, accountIcon, accountName, amount) = createRefs()
 
                 Box(
-                    modifier = Modifier.background(if(record.transactionType == TransactionType.INCOME) brightGreen else red, CircleShape)
-                        .size(40.dp)
-                        .constrainAs(catIcon){
+                    modifier = Modifier
+                        .background(Color.Transparent, CircleShape)
+                        .size(60.dp)
+                        .constrainAs(catIcon) {
                             top.linkTo(parent.top)
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                         },
                     contentAlignment = Alignment.Center
-                ){
-                    Icon(
-                        painter = painterResource(id = R.drawable.salary_new),
+                ) {
+                    Image(
+                        painter = painterResource(id = IconLib.getIcon(record.categoryIcon)),
                         contentDescription = "",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape),
                     )
                 }
 
                 Text(
-                    modifier = Modifier.constrainAs(catName){
+                    modifier = Modifier.constrainAs(catName) {
                         top.linkTo(parent.top)
                         bottom.linkTo(accountName.top)
                         start.linkTo(catIcon.end, margin = 5.dp)
                     },
-                    text = if(record.transactionType == TransactionType.INCOME)
+                    text = if (record.transactionType == TransactionType.INCOME)
                         "Credit for ${record.categoryTitle.toTitleCase()}"
                     else "Spent on ${record.categoryTitle.toTitleCase()}"
 
                 )
                 Image(
-                    painter = painterResource(id = record.accountIcon),
+                    painter = painterResource(id = IconLib.getIcon(record.accountIcon)),
                     contentDescription = "",
                     modifier = Modifier
-                        .constrainAs(accountIcon){
+                        .constrainAs(accountIcon) {
                             top.linkTo(catName.bottom)
                             bottom.linkTo(parent.bottom)
                             start.linkTo(catIcon.end, margin = 5.dp)
@@ -110,17 +113,18 @@ fun ListItemRecord(
                         .border(1.dp, Color.White, RoundedCornerShape(4.dp))
                 )
                 Text(
-                    modifier = Modifier.constrainAs(accountName){
+                    modifier = Modifier.constrainAs(accountName) {
                         top.linkTo(accountIcon.top)
                         bottom.linkTo(accountIcon.bottom)
                         start.linkTo(accountIcon.end, margin = 5.dp)
                     },
-                    text = if(record.transactionType == TransactionType.INCOME)
+                    text = if (record.transactionType == TransactionType.INCOME)
                         "in ${record.accountName}"
                     else "from ${record.accountName}",
-                    fontSize = 12.sp, color = googlelightgray2)
+                    fontSize = 12.sp, color = googlelightgray2
+                )
                 Text(
-                    modifier = Modifier.constrainAs(amount){
+                    modifier = Modifier.constrainAs(amount) {
                         top.linkTo(parent.top)
                         bottom.linkTo(parent.bottom)
                         end.linkTo(parent.end)
@@ -132,16 +136,17 @@ fun ListItemRecord(
             }
 
             Spacer(modifier = Modifier.height(10.dp))
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    dividerColor
-                ))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(
+                        dividerColor
+                    )
+            )
 
         }
     }
-
 
 
 }

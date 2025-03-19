@@ -50,12 +50,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.common.toRequiredFormat
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.presentation.accounts.components.AccountDetails
+import com.hotdogcode.spendwise.presentation.accounts.components.ListItemAccountDetail
 import com.hotdogcode.spendwise.presentation.categories.CategoryViewModel
 import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
 import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
@@ -106,7 +109,7 @@ fun Categories(
         for (record in recordList) {
             if(record.transactionType == TransactionType.INCOME)
                 income += record.amount
-            if(record.transactionType == TransactionType.EXPANSE)
+            if(record.transactionType == TransactionType.EXPENSE)
                 expense += record.amount
         }
         dataMap["INCOME SO FAR"] = income.toString()
@@ -118,7 +121,7 @@ fun Categories(
         mutableStateOf(
             Category(
                 title = "",
-                icon = 0,
+                icon = IconName.SPORT,
                 type = CategoryType.INCOME
             )
         )
@@ -248,7 +251,7 @@ fun Categories(
     }
 
     if(showEdit){
-        var selectedIcon by remember { mutableIntStateOf(selectedCategory.icon) }
+        var selectedIcon by remember { mutableStateOf(selectedCategory.icon) }
         var textValue by remember { mutableStateOf(selectedCategory.title) }
 
         Dialog(
@@ -295,7 +298,7 @@ fun Categories(
                                     ) {
                                         rowItems.forEach { item ->
                                             Image(
-                                                painter = painterResource(id = item),
+                                                painter = painterResource(id = IconLib.getIcon(item)),
                                                 contentDescription = "",
                                                 modifier = Modifier
                                                     .size(if (selectedIcon == item) 52.dp else 50.dp)
@@ -336,7 +339,7 @@ fun Categories(
             mutableStateOf(types[0])
         }
         var selectedIcon by remember {
-            mutableIntStateOf(categoryIconList[0])
+            mutableStateOf(categoryIconList[0])
         }
         Dialog(
             title = "Add new category",
@@ -399,7 +402,7 @@ fun Categories(
                                     ) {
                                         rowItems.forEach { item ->
                                             Image(
-                                                painter = painterResource(id = item),
+                                                painter = painterResource(id = IconLib.getIcon(item)),
                                                 contentDescription = "",
                                                 modifier = Modifier
                                                     .size(if (selectedIcon == item) 52.dp else 50.dp)
@@ -428,7 +431,7 @@ fun Categories(
                     title = textValue,
                     icon = selectedIcon,
                     type = when(selectedType){
-                        CategoryType.INCOME.name -> CategoryType.INCOME
+                        CategoryType.INCOME.title -> CategoryType.INCOME
                         else -> CategoryType.EXPENSE
                     }
                 )
@@ -500,8 +503,8 @@ fun CategoryDetails(selectedCategory: Category,
                     }
                 }
                 items(recordWithCategoryAndAccounts.size) { index ->
-                    ListItemRecord(
-                        iconWidth = DpSize(30.dp, 30.dp),
+                    ListItemCategoryDetail(
+                        iconWidth = DpSize(35.dp, 35.dp),
                         record = recordWithCategoryAndAccounts[index],
                         onItemClick = {
                             //onItemClick(recordWithCategoryAndAccounts[index])

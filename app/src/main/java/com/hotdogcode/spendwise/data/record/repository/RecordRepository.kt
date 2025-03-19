@@ -19,7 +19,7 @@ class RecordRepository @Inject constructor(
     }
 
     override suspend fun addOrUpdateRecord(record: Record): Long {
-        return recordDao.insertRecord(record)
+        return recordDao.insertOrUpdateRecord(record)
     }
 
     override suspend fun removeRecord(record: Record) {

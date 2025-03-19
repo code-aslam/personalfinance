@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.toTitleCase
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.ui.theme.MainColor
@@ -52,7 +54,7 @@ fun ListItemCategory(
         mutableStateOf(
             Category(
                 title = "test",
-                icon = 0,
+                icon = IconName.SPORT,
                 type = CategoryType.INCOME
             )
         )
@@ -67,7 +69,7 @@ fun ListItemCategory(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = category.icon),
+            painter = painterResource(id = IconLib.getIcon(category.icon)),
             contentDescription = "",
             modifier = Modifier
                 .size(iconWidth)

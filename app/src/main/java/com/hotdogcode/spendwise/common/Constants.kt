@@ -1,7 +1,9 @@
 package com.hotdogcode.spendwise.common
 
 import androidx.compose.ui.graphics.Color
+import com.hotdogcode.spendwise.presentation.home.ui.theme.Purple40
 import com.hotdogcode.spendwise.ui.theme.DarkForestGreenColor
+import com.hotdogcode.spendwise.ui.theme.DeepBurgundy
 import com.hotdogcode.spendwise.ui.theme.SoftPinkColor
 import com.hotdogcode.spendwise.ui.theme.brightGreen
 import com.hotdogcode.spendwise.ui.theme.gold
@@ -18,5 +20,7 @@ val RANDOM_COLOR_LIST = listOf(
     SoftPinkColor,
     orange,
     googleDarkblue,
-    gold
+    gold,
+    DeepBurgundy,
+    Purple40
 )

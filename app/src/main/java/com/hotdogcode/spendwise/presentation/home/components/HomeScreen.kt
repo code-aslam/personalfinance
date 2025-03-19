@@ -141,10 +141,11 @@ fun HomeScreen(mainNavController: NavHostController,
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
-                                mainNavController.navigate(Screens.CreateRecordScreen.route){
+                                mainNavController.navigate("${Screens.CreateRecordScreen.route}/${""}"){
                                     popUpTo(mainNavController.graph.startDestinationId)
                                     launchSingleTop = true
                                 }
+
                             },
                             containerColor = MainColor,
                             shape = CircleShape
@@ -157,6 +158,7 @@ fun HomeScreen(mainNavController: NavHostController,
                     },
                 ) { innerPadding ->
                     HomeScreenConfiguration(
+                        mainNavController,
                         navController,
                         innerPadding
                     ) {
@@ -177,6 +179,6 @@ fun HomeScreen(mainNavController: NavHostController,
 
 
 @Composable
-fun HomeScreenConfiguration(navController: NavHostController, padding : PaddingValues,handleDrawer : () -> Unit){
-    BottomNavigationHostForMainScreen(navController, padding, handleDrawer)
+fun HomeScreenConfiguration(mainNavController: NavHostController,navController: NavHostController, padding : PaddingValues,handleDrawer : () -> Unit){
+    BottomNavigationHostForMainScreen(mainNavController,navController, padding, handleDrawer)
 }

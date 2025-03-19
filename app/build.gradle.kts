@@ -89,6 +89,9 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.animation.v140)
 
+    implementation("com.google.code.gson:gson:2.10.1")
+
+
     implementation("io.github.ehsannarmani:compose-charts:0.1.2")
 
 

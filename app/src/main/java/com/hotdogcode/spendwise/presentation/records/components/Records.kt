@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -49,11 +50,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.common.toRequiredFormat
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
+import com.hotdogcode.spendwise.navigation.Screens
 import com.hotdogcode.spendwise.presentation.accounts.components.AccountDetails
 import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
 import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
@@ -76,7 +79,8 @@ import java.util.Date
 fun Records(padding: PaddingValues,
             handleDrawer: () -> Unit,
             recordsViewModel: RecordsViewModel,
-navController: NavHostController) {
+navController: NavHostController,
+            mainNavController: NavHostController) {
     val recordList by recordsViewModel.dateSortedRecords.collectAsState()
     var selectedRecord by remember { mutableStateOf(RecordWithCategoryAndAccount()) }
     var isCalculationCompleted by remember { mutableStateOf(false) }
@@ -92,7 +96,7 @@ navController: NavHostController) {
         var expense = 0.0
         for (record in recordList.values) {
             income += record.filter { it.transactionType == TransactionType.INCOME }.sumOf { it.amount }
-            expense += record.filter { it.transactionType == TransactionType.EXPANSE }.sumOf { it.amount }
+            expense += record.filter { it.transactionType == TransactionType.EXPENSE }.sumOf { it.amount }
         }
         dataMap["EXPENSE"] = expense.toString()
         dataMap["INCOME"] = income.toString()
@@ -104,7 +108,8 @@ navController: NavHostController) {
         padding,
         handleDrawer,
         { FinanceHeader(dataMap, isCalculationCompleted)},
-        recordsViewModel
+        recordsViewModel,
+        mainNavController
     )
 
 }
@@ -117,7 +122,8 @@ fun List(
          padding: PaddingValues,
          handleDrawer: () -> Unit,
          header : @Composable () -> Unit,
-    viewModel: RecordsViewModel){
+    viewModel: RecordsViewModel,
+    mainNavController: NavHostController){
 
     var selectedRecord by remember {
         mutableStateOf(
@@ -192,10 +198,13 @@ fun List(
 
     BlankDialog(
         showDialog = showDetails,
-        onDismiss = {  }
+        onDismiss = {
+            viewModel.hideDetailsAction()
+        }
     ) {
         RecordsDetails(selectedRecord,
             viewModel,
+            mainNavController,
             onDismiss = {
                 viewModel.hideDetailsAction()
             })
@@ -206,6 +215,7 @@ fun List(
 fun RecordsDetails(
     record : RecordWithCategoryAndAccount,
     recordsViewModel: RecordsViewModel,
+    mainNavController: NavHostController,
     onDismiss : () -> Unit
 ){
 
@@ -249,7 +259,11 @@ fun RecordsDetails(
                     }
 
                     IconButton(onClick = {
-
+                        onDismiss()
+                        mainNavController.navigate("${Screens.CreateRecordScreen.route}/${record.toJson()}"){
+                            popUpTo(mainNavController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.Default.Edit,
@@ -285,31 +299,45 @@ fun RecordsDetails(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxWidth().weight(0.5f).background(Color.White)
+                modifier = Modifier.fillMaxWidth().weight(0.5f).background(Color.White).padding(all = 10.dp)
             ) {
-                Row(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
-                    Text("Account", fontSize = 20.sp)
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.salary_new),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(record.accountName, fontSize = 20.sp)
+                Row(modifier = Modifier.fillMaxWidth().padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Account", fontSize = 20.sp, modifier = Modifier.weight(1.5f))
+                    Row(
+                        modifier = Modifier.weight(3f).padding(start = 10.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Image(
+                            painter = painterResource(id = IconLib.getIcon(record.accountIcon)),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(30.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(record.accountName, fontSize = 20.sp)
+                    }
+
                 }
-                Row(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
-                    Text("Category", fontSize = 20.sp)
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.salary_new),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(record.categoryTitle, fontSize = 20.sp)
+                Row(modifier = Modifier.fillMaxWidth().padding(5.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Category", fontSize = 20.sp,modifier = Modifier.weight(1.5f))
+                    Row(
+                        modifier = Modifier.weight(3f).padding(start = 10.dp),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painter = painterResource(id = IconLib.getIcon(record.categoryIcon)),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(30.dp)
+                        )
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(record.categoryTitle, fontSize = 20.sp)
+                    }
+
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(text = record.notes.ifEmpty { "No notes" }, textAlign = TextAlign.Center)

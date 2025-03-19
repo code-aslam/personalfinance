@@ -165,7 +165,7 @@ class SmartPurchaseViewModel @Inject constructor(
                     records.collect { list ->
                         _dateSortedRecords.value = groupDataByDaySorted(list).toMutableMap()
                         _monthlyIncome.value += list.filter { it.transactionType == TransactionType.INCOME }.sumOf { it.amount }
-                        _monthlyExpense.value += list.filter { it.transactionType == TransactionType.EXPANSE }.sumOf { it.amount }
+                        _monthlyExpense.value += list.filter { it.transactionType == TransactionType.EXPENSE }.sumOf { it.amount }
                     }
                 }
             }

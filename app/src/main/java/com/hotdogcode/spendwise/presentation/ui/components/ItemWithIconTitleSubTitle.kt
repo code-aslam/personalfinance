@@ -19,12 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.ui.theme.googlelightgray
 import com.hotdogcode.spendwise.ui.theme.googlelightgray2
 
 @Composable
 fun ItemWithIconTitleSubTitle(
-    icon: Int,
+    icon: IconName,
     title: String,
     subTitle: String? = null,
     smallTitle : String? = null
@@ -33,7 +35,7 @@ fun ItemWithIconTitleSubTitle(
         modifier = Modifier.fillMaxWidth().padding(4.dp),
     ) {
         Image(
-            painter = painterResource(id = icon),
+            painter = painterResource(id = IconLib.getIcon(icon)),
             contentDescription = "",
             modifier = Modifier
                 .size(45.dp)

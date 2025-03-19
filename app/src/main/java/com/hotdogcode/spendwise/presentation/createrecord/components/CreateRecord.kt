@@ -1,6 +1,7 @@
 package com.hotdogcode.spendwise.presentation.createrecord.components
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -65,9 +66,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.TransactionType
+import com.hotdogcode.spendwise.common.fromJsonStringToRecordWithCategoryAndAccount
+import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.data.record.entity.Record
+import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.presentation.accounts.AccountViewModel
 import com.hotdogcode.spendwise.presentation.categories.CategoryViewModel
 import com.hotdogcode.spendwise.presentation.createrecord.CreateRecordViewModel
@@ -95,7 +101,8 @@ fun CreateRecordScreen(
     accountViewModel: AccountViewModel,
     recordsViewModel: RecordsViewModel,
     categoryViewModel: CategoryViewModel,
-    createRecordViewModel: CreateRecordViewModel
+    createRecordViewModel: CreateRecordViewModel,
+    selectedRecord : String? = null
 ){
 
     LaunchedEffect(Unit) {
@@ -105,14 +112,27 @@ fun CreateRecordScreen(
     Scaffold(modifier = Modifier
         .fillMaxSize()
         .background(MainColor)) { innerPadding ->
-        CreateRecord(accountViewModel,recordsViewModel,categoryViewModel, createRecordViewModel,innerPadding, mainNavController)
+        CreateRecord(accountViewModel,
+            recordsViewModel,
+            categoryViewModel,
+            createRecordViewModel,
+            innerPadding,
+            mainNavController,
+            selectedRecord)
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsViewModel, categoryViewModel: CategoryViewModel,createRecordViewModel: CreateRecordViewModel, paddingValues: PaddingValues, mainNavController: NavHostController) {
+fun CreateRecord(
+    accountViewModel: AccountViewModel,
+    recordsViewModel: RecordsViewModel,
+    categoryViewModel: CategoryViewModel,
+    createRecordViewModel: CreateRecordViewModel,
+    paddingValues: PaddingValues,
+    mainNavController: NavHostController,
+    selectedRecord: String?) {
     val context = LocalContext.current
     val categoriesIncome by categoryViewModel.incomeCategoryList.collectAsState()
     val categoriesExpanse by categoryViewModel.expanseCategoryList.collectAsState()
@@ -122,7 +142,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val selectedCategory by createRecordViewModel.selectedCategory.collectAsState()
     val transferType by createRecordViewModel.transactionType.collectAsState()
     val scope = rememberCoroutineScope()
-    val types by remember { mutableStateOf(listOf("INCOME", "EXPENSE", "TRANSFER")) }
+    val types by remember { mutableStateOf(listOf(TransactionType.INCOME.name, TransactionType.EXPENSE.name, TransactionType.TRANSFER.name)) }
     var selectedType by remember { mutableStateOf(types[0]) }
     val result by createRecordViewModel.result.collectAsState()
     val symbol by createRecordViewModel.symbol.collectAsState()
@@ -133,6 +153,7 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     val selectedDateMills by createRecordViewModel.selectedDateMills.collectAsState()
 
     val selectedTime by createRecordViewModel.selectedTime.collectAsState()
+    val selectedRecordId by createRecordViewModel.selectedRecordId.collectAsState()
     var recordFrom by remember { mutableStateOf("Account") }
     recordFrom = when(selectedType){
         "INCOME", "EXPENSE" -> "Account"
@@ -142,6 +163,35 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
     recordTo = when(selectedType){
         "INCOME", "EXPENSE" -> "Category"
         else -> "To"
+    }
+
+    LaunchedEffect(selectedRecord?.isNotEmpty()) {
+        selectedRecord?.let {
+            val recordWithCategoryAndAccount = it.fromJsonStringToRecordWithCategoryAndAccount()
+            recordWithCategoryAndAccount?.let {
+                record->
+                selectedType = record.transactionType.name
+                createRecordViewModel.updateResult(record.amount.toString())
+                createRecordViewModel.updateAccount(Account(
+                    id = record.accountId,
+                    name = record.accountName,
+                    initialAmount = record.accountInitialAmount,
+                    icon = record.accountIcon,
+                    type = record.accountType
+                ))
+                createRecordViewModel.updateCategory(Category(
+                    id = record.categoryId,
+                    title = record.categoryTitle,
+                    icon = record.categoryIcon,
+                    type = record.categoryType
+                ))
+                textNotes = record.notes
+                createRecordViewModel.updateDate(record.date)
+                createRecordViewModel.updateTime(record.time)
+                createRecordViewModel.updateRecordId(record.recordId)
+            }
+
+        }
     }
 
 
@@ -187,7 +237,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     }else {
                         recordsViewModel.addNewRecord(
                             Record(
-                                transactionType = if (selectedType == "INCOME") TransactionType.INCOME else TransactionType.EXPANSE,
+                                id = selectedRecordId,
+                                transactionType = if (selectedType == "INCOME") TransactionType.INCOME else TransactionType.EXPENSE,
                                 categoryId = selectedCategory.id,
                                 accountId = selectedAccount.id,
                                 date = selectedDateMills,
@@ -284,8 +335,8 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = selectedAccount.icon),
-                        colorFilter = if(selectedAccount.icon == R.drawable.walletbig)
+                        painter = painterResource(id = IconLib.getIcon(selectedAccount.icon)),
+                        colorFilter = if(selectedAccount.icon == IconName.WALLET_BIG)
                             ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         contentDescription = selectedAccount.name,
                         modifier = Modifier
@@ -321,9 +372,9 @@ fun CreateRecord(accountViewModel: AccountViewModel, recordsViewModel: RecordsVi
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(
-                        painter = painterResource(id = selectedCategory.icon),
+                        painter = painterResource(id = IconLib.getIcon(selectedCategory.icon)),
                         contentDescription = "Category",
-                        colorFilter = if(selectedCategory.icon == R.drawable.price)
+                        colorFilter = if(selectedCategory.icon == IconName.CATEGORY_BIG)
                             ColorFilter.tint(Color.Black) else ColorFilter.tint(Color.Transparent, BlendMode.Color),
                         modifier = Modifier
                             .size(35.dp)

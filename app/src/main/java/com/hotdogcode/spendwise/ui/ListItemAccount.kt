@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.ui.theme.MainColor
@@ -68,7 +69,7 @@ fun ListItemAccount(
 
 
                 Image(
-                    painter = painterResource(id = account.icon),
+                    painter = painterResource(id = IconLib.getIcon(account.icon)),
                     contentDescription = "",
                     modifier = Modifier
                         .size(iconWidth)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.hotdogcode.spendwise.common.RANDOM_COLOR_LIST
+import com.hotdogcode.spendwise.common.TransactionType
 import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.hotdogcode.spendwise.domain.record.usecases.GetRecordForCategoryUseCase
@@ -49,11 +50,13 @@ class AnalysisViewModel @Inject constructor(
                 viewModelScope.launch {
                     records.collect { list ->
 
-                        for(record in list){
-                            if(!map.containsKey(record.categoryId)){
-                                map[record.categoryId] = listOf(record)
-                            }else{
-                                map[record.categoryId] = map[record.categoryId]!!.plus(record)
+                        for(record in list) {
+                            if (record.transactionType == TransactionType.EXPENSE) {
+                                if (!map.containsKey(record.categoryId)) {
+                                    map[record.categoryId] = listOf(record)
+                                } else {
+                                    map[record.categoryId] = map[record.categoryId]!!.plus(record)
+                                }
                             }
                         }
                         val list = mutableListOf<Bar>()
@@ -63,7 +66,8 @@ class AnalysisViewModel @Inject constructor(
                         }
                         for((id,categories) in map){
                             val bar = Bar(categoryId = id)
-                            bar.color = RANDOM_COLOR_LIST.random()
+                            bar.color = categories[0].categoryIcon.color
+                            bar.categoryIcon = categories[0].categoryIcon
                             bar.categoryName = categories[0].categoryTitle
                             bar.spending = categories.sumOf { it.amount }
                             bar.percentage =   String.format("%.2f", ((bar.spending / totalSpending) * 100)).toDouble()

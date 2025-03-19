@@ -145,7 +145,7 @@ class RecordsViewModel @Inject constructor(
                             firstAccount.balance += record.amount
                             updateAccount(firstAccount)
                         }
-                        TransactionType.EXPANSE -> {
+                        TransactionType.EXPENSE -> {
                             firstAccount.balance -= record.amount
                             updateAccount(firstAccount)
                         }
