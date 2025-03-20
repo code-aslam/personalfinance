@@ -1,7 +1,10 @@
 package com.hotdogcode.spendwise.data.record.entity
 
 import androidx.annotation.DrawableRes
+import com.google.gson.Gson
+import com.hotdogcode.spendwise.common.AccountType
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.TransactionType
 
 data class RecordWithCategoryAndAccount(
@@ -23,11 +26,13 @@ data class RecordWithCategoryAndAccount(
 
     val accountInitialAmount : Double = 0.0,
     val accountName : String = "",
-    @DrawableRes
-    val accountIcon : Int = -1,
+    val accountIcon : IconName = IconName.HOME,
+    val accountType : AccountType = AccountType.BANK_ACCOUNT,
+    //val accountBalance : Double = 0.0,
 
     val categoryTitle :String = "",
-    @DrawableRes
-    var categoryIcon : Int = -1,
+    var categoryIcon : IconName = IconName.HOME,
     var categoryType : CategoryType = CategoryType.INCOME
-)
+){
+    fun toJson() = Gson().toJson(this)
+}

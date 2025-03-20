@@ -62,6 +62,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(project(":spendwise_ml"))
+    implementation(libs.tensorflow.lite.v290)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.room.runtime.v261)
     annotationProcessor(libs.androidx.room.compiler.v261)
@@ -87,13 +89,18 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.compose)
     implementation (libs.androidx.animation.v140)
 
+    implementation("com.google.code.gson:gson:2.10.1")
+
+
+    implementation("io.github.ehsannarmani:compose-charts:0.1.2")
+
+
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.core)
     implementation(libs.firebase.ui.auth)
     implementation(libs.firebase.auth.ktx)
-
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

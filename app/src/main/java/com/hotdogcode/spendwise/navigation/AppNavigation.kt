@@ -12,14 +12,18 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navArgument
 import com.hotdogcode.spendwise.presentation.createrecord.components.CreateRecordScreen
 import com.hotdogcode.spendwise.presentation.home.components.HomeScreen
+import com.hotdogcode.spendwise.presentation.smartpurchase.components.SmartPurchaseScreen
 
 
 @SuppressLint("UnusedContentLambdaTargetStateParameter")
@@ -38,7 +42,34 @@ fun AppNavigation(
         composable(Screens.HomeScreen.route) {
             HomeScreen(mainNavController = mainNavController)
         }
-        composable(Screens.CreateRecordScreen.route) {
+//        composable(Screens.CreateRecordScreen.route) {
+//            AnimatedContent(
+//                targetState = Screens.CreateRecordScreen.route,
+//                transitionSpec = {
+//                    scaleIn(animationSpec = tween(durationMillis = 500)) togetherWith
+//                            scaleOut(animationSpec = tween(durationMillis = 500))
+//                }
+//            ) {
+//                currentBackStackEntry?.let {
+//                        entry ->
+//                    CreateRecordScreen(mainNavController,
+//                        accountViewModel = hiltViewModel(entry),
+//                        recordsViewModel = hiltViewModel(entry),
+//                        categoryViewModel = hiltViewModel(entry),
+//                        createRecordViewModel = hiltViewModel(entry))
+//                }
+//
+//            }
+//
+//        }
+
+
+        composable(route = "${Screens.CreateRecordScreen.route}/{selectedRecord}",
+            arguments = listOf(navArgument("selectedRecord") {
+                type = NavType.StringType
+            }))
+        { backStackEntry ->
+            val selectedRecord = backStackEntry.arguments?.getString("selectedRecord")
             AnimatedContent(
                 targetState = Screens.CreateRecordScreen.route,
                 transitionSpec = {
@@ -52,11 +83,13 @@ fun AppNavigation(
                         accountViewModel = hiltViewModel(entry),
                         recordsViewModel = hiltViewModel(entry),
                         categoryViewModel = hiltViewModel(entry),
-                        createRecordViewModel = hiltViewModel(entry))
+                        createRecordViewModel = hiltViewModel(entry),
+                        selectedRecord = selectedRecord)
                 }
 
             }
-
         }
+
+
     }
 }

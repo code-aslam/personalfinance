@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.ui.theme.MainColor
 
@@ -41,7 +42,7 @@ fun ListItemCreateRecordCategory(
     ) {
 
         Image(
-            painter = painterResource(id = category.icon),
+            painter = painterResource(id = IconLib.getIcon(category.icon)),
             contentDescription = "",
             modifier = Modifier
                 .width(60.dp)

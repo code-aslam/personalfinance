@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.hotdogcode.spendwise.common.IconLib
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.ui.theme.MainColor
 
@@ -56,7 +57,7 @@ fun ListItemCreateRecordAccount(
         ) {
 
             Image(
-                painter = painterResource(id = account.icon),
+                painter = painterResource(id = IconLib.getIcon(account.icon)),
                 contentDescription = "",
                 modifier = Modifier
                     .size(iconWidth)

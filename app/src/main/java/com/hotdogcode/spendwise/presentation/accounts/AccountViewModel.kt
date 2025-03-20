@@ -2,6 +2,7 @@ package com.hotdogcode.spendwise.presentation.accounts
 
 import androidx.lifecycle.viewModelScope
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.domain.account.usecases.AddOrUpdateAccountUseCase
@@ -43,8 +44,13 @@ class AccountViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
-    private val _accountIconList = MutableStateFlow(mutableListOf<Int>())
+    private val _showDetails = MutableStateFlow(false)
+    var showDetails = _showDetails.asStateFlow()
+
+    private val _accountIconList = MutableStateFlow(mutableListOf<IconName>())
     val accountIconList = _accountIconList.asStateFlow()
+
+
 
 
     init {
@@ -54,15 +60,34 @@ class AccountViewModel @Inject constructor(
     }
 
 
-    private fun addAccountIcon() {
+    private fun addAccountIcon(){
         _accountIconList.value.clear()
         _accountIconList.value.addAll(
-            intArrayOf(
-                R.drawable.cashicon,
-                R.drawable.cardicon,
-                R.drawable.savingsicon
-            ).toMutableList()
-        )
+            arrayOf<IconName>(
+                IconName.AWARD,
+                IconName.BABY,
+                IconName.BEAUTY,
+                IconName.BILLS,
+                IconName.CAR,
+                IconName.CLOTHING,
+                IconName.COUPONS,
+                IconName.EDUCATION,
+                IconName.ELECTRONICS,
+                IconName.ENTERTAINMENT,
+                IconName.FOOD,
+                IconName.GRANTS,
+                IconName.HEALTH,
+                IconName.HOME,
+                IconName.INSURANCE,
+                IconName.LOTTERY,
+                IconName.REFUNDS,
+                IconName.RENTALS,
+                IconName.SALARY,
+                IconName.SALE,
+                IconName.SHOPPING,
+                IconName.SOCIAL,
+                IconName.SPORT
+            ).toMutableList())
     }
 
     private fun fetchRecords() {
@@ -165,6 +190,14 @@ class AccountViewModel @Inject constructor(
 
     fun hideAddAction() {
         _showAdd.value = false
+    }
+
+    fun showDetailsAction() {
+        _showDetails.value = true
+    }
+
+    fun hideDetailsAction() {
+        _showDetails.value = false
     }
 
 }

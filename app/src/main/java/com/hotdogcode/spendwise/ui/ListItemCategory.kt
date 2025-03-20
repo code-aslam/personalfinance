@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.IconName
+import com.hotdogcode.spendwise.common.toTitleCase
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
@@ -51,7 +54,7 @@ fun ListItemCategory(
         mutableStateOf(
             Category(
                 title = "test",
-                icon = 0,
+                icon = IconName.SPORT,
                 type = CategoryType.INCOME
             )
         )
@@ -66,7 +69,7 @@ fun ListItemCategory(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painter = painterResource(id = category.icon),
+            painter = painterResource(id = IconLib.getIcon(category.icon)),
             contentDescription = "",
             modifier = Modifier
                 .size(iconWidth)
@@ -74,7 +77,7 @@ fun ListItemCategory(
                 .border(2.dp, Color.White, CircleShape)
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = category.title, modifier = Modifier.weight(4f), fontSize = 18.sp, color = SecondaryColor)
+        Text(text = category.title.toTitleCase(), modifier = Modifier.weight(4f), fontSize = 18.sp, color = Color.Black)
 
         Box(
             modifier = Modifier.weight(1f),
@@ -84,14 +87,14 @@ fun ListItemCategory(
                 painter = painterResource(id = R.drawable.dots),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(DpSize(25.dp, 25.dp))
+                    .size(DpSize(25.dp, 18.dp))
                     .clickable { expanded = true }
             )
             DropdownMenu(
                 modifier = Modifier
                     .background(MainColor)
                     .width(200.dp)
-                    .shadow(elevation = 2.dp),
+                    .shadow(elevation = 1.dp),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
             ) {
@@ -100,7 +103,7 @@ fun ListItemCategory(
                         expanded = false
                         menuAction(option)
                     }) {
-                        Text(text = option, color = SecondaryColor)
+                        Text(text = option, color = Color.Black)
                     }
                 }
             }

@@ -14,12 +14,27 @@ class RecordRepository @Inject constructor(
         return recordDao.getRecordList()
     }
 
+    override fun fetchRecord(recordId: Long): Flow<RecordWithCategoryAndAccount> {
+        return recordDao.getRecord(recordId)
+    }
 
     override suspend fun addOrUpdateRecord(record: Record): Long {
-        return recordDao.insertRecord(record)
+        return recordDao.insertOrUpdateRecord(record)
     }
 
     override suspend fun removeRecord(record: Record) {
         recordDao.deleteRecord(record)
+    }
+
+    override fun fetchRecordForAccount(accountId: Long): Flow<List<RecordWithCategoryAndAccount>> {
+        return recordDao.getRecordListForAccount(accountId)
+    }
+
+    override fun fetchRecordForCategory(categoryId: Long): Flow<List<RecordWithCategoryAndAccount>> {
+        return recordDao.getRecordListForCategory(categoryId)
+    }
+
+    override suspend fun deleteRecordWithId(recordId: Long) {
+        recordDao.deleteRecordWithId(recordId)
     }
 }

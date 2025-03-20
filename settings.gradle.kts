@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "PersonalFinance"
 include(":app")
- 
+include(":spendwise_ml")

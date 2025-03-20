@@ -5,6 +5,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
+import com.google.gson.Gson
+import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,3 +57,12 @@ fun String.toTitleCase():String{
         ) else it.toString()
     }
 }
+
+fun String.formatMoney(): String {
+    val numberFormat = NumberFormat.getInstance(Locale("en", "IN")) // Indian locale
+    return if(this.toDoubleOrNull() != null)
+        numberFormat.format(this.toDouble())
+    else this
+}
+
+fun String.fromJsonStringToRecordWithCategoryAndAccount() = Gson().fromJson(this, RecordWithCategoryAndAccount::class.java)

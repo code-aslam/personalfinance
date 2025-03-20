@@ -29,13 +29,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.hotdogcode.spendwise.R
+import com.hotdogcode.spendwise.common.IconLib
+import com.hotdogcode.spendwise.common.formatMoney
 import com.hotdogcode.spendwise.data.accounts.entity.Account
 import com.hotdogcode.spendwise.ui.theme.MainColor
 import com.hotdogcode.spendwise.ui.theme.SecondaryColor
 import com.hotdogcode.spendwise.ui.theme.SharpMainColor
+import com.hotdogcode.spendwise.ui.theme.onPrimary
 
 @Composable
 fun ListItemAccount(
@@ -53,11 +57,11 @@ fun ListItemAccount(
             .clickable { onItemClick(account) }) {
             Row(
                 modifier = Modifier
-                    .background(SharpMainColor)
+                    .background(MainColor)
                     .fillMaxWidth()
                     .height(70.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
+                    .border(1.dp, onPrimary, RoundedCornerShape(5.dp))
                     .padding(start = 10.dp, end = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -65,7 +69,7 @@ fun ListItemAccount(
 
 
                 Image(
-                    painter = painterResource(id = account.icon),
+                    painter = painterResource(id = IconLib.getIcon(account.icon)),
                     contentDescription = "",
                     modifier = Modifier
                         .size(iconWidth)
@@ -76,8 +80,8 @@ fun ListItemAccount(
                 Column(
                     modifier = Modifier.weight(4f)
                 ) {
-                    Text(text = account.name)
-                    Text(text = (account.initialAmount + account.balance).toString())
+                    Text(text = account.name, fontWeight = FontWeight.Bold)
+                    Text(text =  "₹ "+ (account.initialAmount + account.balance).toString().formatMoney())
                 }
 
                 Box(
@@ -88,14 +92,14 @@ fun ListItemAccount(
                         painter = painterResource(id = R.drawable.dots),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(DpSize(25.dp, 25.dp))
+                            .size(DpSize(25.dp, 18.dp))
                             .clickable { expanded = true }
                     )
                     DropdownMenu(
                         modifier = Modifier
-                            .background(MainColor)
+                            .background(Color.White, RoundedCornerShape(2.dp))
                             .width(200.dp)
-                            .shadow(elevation = 2.dp),
+                            .shadow(elevation = 1.dp),
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                     ) {
@@ -104,7 +108,7 @@ fun ListItemAccount(
                                 expanded = false
                                 menuAction(option)
                             }) {
-                                Text(text = option, color = SecondaryColor)
+                                Text(text = option, color = Color.Black)
                             }
                         }
                     }

@@ -3,6 +3,7 @@ package com.hotdogcode.spendwise.presentation.categories
 import androidx.lifecycle.viewModelScope
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.data.record.entity.RecordWithCategoryAndAccount
 import com.hotdogcode.spendwise.domain.category.usecases.AddOrUpdateCategoryUseCase
@@ -36,7 +37,7 @@ class CategoryViewModel @Inject constructor(
     private val _expanseCategoryList = MutableStateFlow(mutableListOf<Category>())
     val expanseCategoryList = _expanseCategoryList.asStateFlow()
 
-    private val _categoryIconList = MutableStateFlow(mutableListOf<Int>())
+    private val _categoryIconList = MutableStateFlow(mutableListOf<IconName>())
     val categoryIconList = _categoryIconList.asStateFlow()
 
     private val _showDelete = MutableStateFlow(false)
@@ -48,6 +49,9 @@ class CategoryViewModel @Inject constructor(
     private val _showAdd = MutableStateFlow(false)
     var showAdd = _showAdd.asStateFlow()
 
+    private val _showDetails = MutableStateFlow(false)
+    var showDetails = _showDetails.asStateFlow()
+
     init {
         fetchCategories()
         addCategoryIcon()
@@ -57,12 +61,30 @@ class CategoryViewModel @Inject constructor(
     private fun addCategoryIcon(){
         _categoryIconList.value.clear()
         _categoryIconList.value.addAll(
-            intArrayOf(
-                R.drawable.gifticon,
-                R.drawable.awardicon,
-                R.drawable.homeicon,
-                R.drawable.refundicon,
-                R.drawable.walleticon
+            arrayOf<IconName>(
+                IconName.AWARD,
+                IconName.BABY,
+                IconName.BEAUTY,
+                IconName.BILLS,
+                IconName.CAR,
+                IconName.CLOTHING,
+                IconName.COUPONS,
+                IconName.EDUCATION,
+                IconName.ELECTRONICS,
+                IconName.ENTERTAINMENT,
+                IconName.FOOD,
+                IconName.GRANTS,
+                IconName.HEALTH,
+                IconName.HOME,
+                IconName.INSURANCE,
+                IconName.LOTTERY,
+                IconName.REFUNDS,
+                IconName.RENTALS,
+                IconName.SALARY,
+                IconName.SALE,
+                IconName.SHOPPING,
+                IconName.SOCIAL,
+                IconName.SPORT
             ).toMutableList())
     }
 
@@ -165,4 +187,14 @@ class CategoryViewModel @Inject constructor(
     fun hideAddAction(){
         _showAdd.value = false
     }
+
+
+    fun showDetailsAction() {
+        _showDetails.value = true
+    }
+
+    fun hideDetailsAction() {
+        _showDetails.value = false
+    }
+
 }

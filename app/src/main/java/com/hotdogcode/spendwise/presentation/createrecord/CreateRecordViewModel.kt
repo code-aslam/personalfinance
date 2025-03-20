@@ -1,7 +1,10 @@
 package com.hotdogcode.spendwise.presentation.createrecord
 
+import androidx.compose.material3.Icon
+import androidx.lifecycle.viewModelScope
 import com.hotdogcode.spendwise.R
 import com.hotdogcode.spendwise.common.CategoryType
+import com.hotdogcode.spendwise.common.IconName
 import com.hotdogcode.spendwise.common.toRequiredFormat
 import com.hotdogcode.spendwise.common.toRequiredTimeFormat
 import com.hotdogcode.spendwise.data.accounts.entity.Account
@@ -9,9 +12,11 @@ import com.hotdogcode.spendwise.data.category.entity.Category
 import com.hotdogcode.spendwise.domain.cleanarchitecture.usecase.UseCaseExecutor
 import com.hotdogcode.spendwise.presentation.cleanarchitecture.viewmodel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
@@ -28,21 +33,15 @@ class CreateRecordViewModel @Inject constructor(
 
     private val _selectedAccount = MutableStateFlow(Account(
         name = "Account",
-        icon = R.drawable.walletbig,
-        initialAmount = 0.0
+        initialAmount = 0.0,
+        icon = IconName.WALLET_BIG
     ))
     val selectedAccount = _selectedAccount.asStateFlow()
 
-    private val _selectedAccountForCategory = MutableStateFlow(Account(
-        name = "Account",
-        icon = R.drawable.walletbig,
-        initialAmount = 0.0
-    ))
-    val selectedAccountForCategory = _selectedAccountForCategory.asStateFlow()
 
     private val _selectedCategory = MutableStateFlow(Category(
         title = "Category",
-        icon = R.drawable.price,
+        icon = IconName.CATEGORY_BIG,
         type = CategoryType.INCOME
     ))
     val selectedCategory = _selectedCategory.asStateFlow()
@@ -67,6 +66,9 @@ class CreateRecordViewModel @Inject constructor(
 
     private var part1 = ""
     private var part2 = ""
+
+    private val _selectedRecordId = MutableStateFlow(-1L)
+    var selectedRecordId = _selectedRecordId.asStateFlow()
 
     fun updateAccount(newAccount : Account){
         _selectedAccount.value = newAccount
@@ -156,4 +158,17 @@ class CreateRecordViewModel @Inject constructor(
         _selectedTime.value = newDate
     }
 
+
+    fun updateRecordId(newId : Long){
+        _selectedRecordId.value = newId
+    }
+
+    fun updateResult(newResult : String){
+        viewModelScope.launch {
+            for(symbol in newResult){
+                processCalculation(symbol)
+            }
+        }
+
+    }
 }
