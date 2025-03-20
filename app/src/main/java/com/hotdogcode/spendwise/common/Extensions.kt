@@ -50,6 +50,10 @@ fun Date.getCurrentDateInRequireFormat():String{
     return SimpleDateFormat("dd MMM yyyy", Locale.US).format(this)
 }
 
+fun Date.getCurrentDateInMonthYearFormat():String{
+    return SimpleDateFormat("MMMM, yyyy", Locale.US).format(this)
+}
+
 fun String.toTitleCase():String{
     return this.replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(

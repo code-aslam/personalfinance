@@ -71,6 +71,7 @@ import com.hotdogcode.spendwise.ui.theme.brightGreen
 import com.hotdogcode.spendwise.ui.theme.dividerColor
 import com.hotdogcode.spendwise.ui.theme.red
 import java.time.LocalDate
+import java.util.Calendar
 import java.util.Date
 
 
@@ -81,7 +82,8 @@ fun Records(padding: PaddingValues,
             recordsViewModel: RecordsViewModel,
 navController: NavHostController,
             mainNavController: NavHostController) {
-    val recordList by recordsViewModel.dateSortedRecords.collectAsState()
+    val recordList by recordsViewModel.dateSortedRecordsPerMonth.collectAsState()
+
     var selectedRecord by remember { mutableStateOf(RecordWithCategoryAndAccount()) }
     var isCalculationCompleted by remember { mutableStateOf(false) }
     val dataMap = remember {
@@ -107,7 +109,14 @@ navController: NavHostController,
     List(recordList,
         padding,
         handleDrawer,
-        { FinanceHeader(dataMap, isCalculationCompleted)},
+        {
+            FinanceHeader(
+                dataMap,
+                isCalculationCompleted,
+                recordsViewModel.currentDate){
+                month-> recordsViewModel.updateCurrentMonth(month)
+            }
+        },
         recordsViewModel,
         mainNavController
     )
@@ -131,6 +140,8 @@ fun List(
         )
     }
 
+
+    val currentDate by viewModel.currentDate.collectAsState()
 
     var selectedIndex by remember { mutableIntStateOf(0) }
     val showDetails by viewModel.showDetails.collectAsState()
