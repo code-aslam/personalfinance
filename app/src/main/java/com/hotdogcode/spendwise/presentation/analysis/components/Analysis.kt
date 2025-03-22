@@ -41,13 +41,8 @@ import com.hotdogcode.spendwise.presentation.categories.components.CategoryDetai
 import com.hotdogcode.spendwise.presentation.records.RecordsViewModel
 import com.hotdogcode.spendwise.presentation.ui.components.BlankDialog
 import com.hotdogcode.spendwise.presentation.ui.components.FinanceHeader
-import com.hotdogcode.spendwise.presentation.ui.components.HDCPieChart
 import com.hotdogcode.spendwise.ui.ListItemHeaderAccount
 import com.hotdogcode.spendwise.ui.Toolbar
-import com.hotdogcode.spendwise.ui.theme.brightGreen
-import com.hotdogcode.spendwise.ui.theme.red
-import ir.ehsannarmani.compose_charts.PieChart
-import ir.ehsannarmani.compose_charts.models.Pie
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -108,7 +103,13 @@ fun Analysis(
             }
         }
         stickyHeader {
-            FinanceHeader(dataMap, isCalculationCompleted)
+            FinanceHeader(
+                dataMap,
+                isCalculationCompleted,
+                viewModel.currentDate
+            ){
+                month-> viewModel.updateCurrentMonth(month)
+            }
         }
         item{
             Spacer(modifier = Modifier

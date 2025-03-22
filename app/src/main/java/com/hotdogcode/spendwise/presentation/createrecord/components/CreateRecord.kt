@@ -108,6 +108,7 @@ fun CreateRecordScreen(
     LaunchedEffect(Unit) {
         accountViewModel.fetchAccounts()
         categoryViewModel.fetchCategories()
+        createRecordViewModel.updateRecordId(0)
     }
     Scaffold(modifier = Modifier
         .fillMaxSize()
@@ -165,7 +166,7 @@ fun CreateRecord(
         else -> "To"
     }
 
-    LaunchedEffect(selectedRecord?.isNotEmpty()) {
+    LaunchedEffect(selectedRecord) {
         selectedRecord?.let {
             val recordWithCategoryAndAccount = it.fromJsonStringToRecordWithCategoryAndAccount()
             recordWithCategoryAndAccount?.let {
