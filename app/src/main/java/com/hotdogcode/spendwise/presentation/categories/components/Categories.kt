@@ -95,7 +95,7 @@ fun Categories(
 
 
     var isCalculationCompleted by remember { mutableStateOf(false) }
-    val recordList by viewModel.dataRecords.collectAsState()
+    val recordList by viewModel.dateSortedRecordsPerMonth.collectAsState()
     val dataMap = remember {
         mutableStateMapOf(
             "INCOME SO FAR" to "calculating...",
@@ -106,11 +106,9 @@ fun Categories(
         isCalculationCompleted = false
         var income = 0.0
         var expense = 0.0
-        for (record in recordList) {
-            if(record.transactionType == TransactionType.INCOME)
-                income += record.amount
-            if(record.transactionType == TransactionType.EXPENSE)
-                expense += record.amount
+        for (record in recordList.values) {
+            income += record.filter { it.transactionType == TransactionType.INCOME }.sumOf { it.amount }
+            expense += record.filter { it.transactionType == TransactionType.EXPENSE }.sumOf { it.amount }
         }
         dataMap["INCOME SO FAR"] = income.toString()
         dataMap["EXPENSE SO FAR"] = expense.toString()
@@ -147,7 +145,12 @@ fun Categories(
             }
         }
         stickyHeader {
-            FinanceHeader(dataMap, isCalculationCompleted)
+            FinanceHeader(dataMap,
+                isCalculationCompleted,
+                viewModel.currentDate
+            ){
+                    month-> viewModel.updateCurrentMonth(month)
+            }
         }
         item{
             Spacer(modifier = Modifier

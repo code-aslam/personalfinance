@@ -52,7 +52,7 @@ fun Analysis(
     viewModel: AnalysisViewModel
 ) {
     val recordsViewModel : RecordsViewModel = hiltViewModel()
-    val recordList by recordsViewModel.dateSortedRecords.collectAsState()
+    val recordList by viewModel.dateSortedRecordsPerMonth.collectAsState()
     val barList by viewModel.barList.collectAsState()
 
     val showDetails by viewModel.showDetails.collectAsState()

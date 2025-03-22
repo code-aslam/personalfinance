@@ -33,14 +33,15 @@ class AnalysisViewModel @Inject constructor(
 
 
     private val _dateSortedRecords = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
-    val dateSortedRecords = _dateSortedRecords.asStateFlow()
     private val  map = mutableMapOf<Long,List<RecordWithCategoryAndAccount>>()
+
+
+    private val _dateSortedRecordsPerMonth = MutableStateFlow(mutableMapOf<LocalDate, List<RecordWithCategoryAndAccount>>())
+    val dateSortedRecordsPerMonth = _dateSortedRecordsPerMonth.asStateFlow()
 
     private val _barList = MutableStateFlow(listOf<Bar>())
     var barList = _barList.asStateFlow()
 
-    private val _barPerMonthList = MutableStateFlow(listOf<Bar>())
-    var barPerMonthList = _barPerMonthList.asStateFlow()
 
     private val _showDetails = MutableStateFlow(false)
     var showDetails = _showDetails.asStateFlow()
@@ -107,9 +108,9 @@ class AnalysisViewModel @Inject constructor(
     }
 
     private fun updateData(){
-        val perMonthMap = filterRecordsByMonth(_dateSortedRecords.value, _currentDate.value.time).toMutableMap()
+        _dateSortedRecordsPerMonth.value = filterRecordsByMonth(_dateSortedRecords.value, _currentDate.value.time).toMutableMap()
         map.clear()
-        for((key, value) in perMonthMap) {
+        for((key, value) in _dateSortedRecordsPerMonth.value) {
             for (record in value) {
                 if (record.transactionType == TransactionType.EXPENSE) {
                     if (!map.containsKey(record.categoryId)) {
